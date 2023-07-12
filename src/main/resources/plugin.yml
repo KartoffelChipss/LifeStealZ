@@ -1,0 +1,59 @@
+name: LifeStealZ
+version: '${project.version}'
+main: org.strassburger.lifestealz.Lifestealz
+api-version: 1.19
+authors: [Kartoffelchips]
+website: strassburger.org
+
+softdepend: [PlaceholderAPI]
+
+commands:
+  lifestealz:
+    aliases:
+      - lsz
+    description: lifestealz admin commands
+    permission-message: §cYou don't have permission to use this command!
+  eliminate:
+    permission: lifestealz.admin.eliminate
+    description: eliminate a player
+    permission-message: §cYou don't have permission to use this command!
+  revive:
+    permission: lifestealz.admin.revive
+    description: revive a player
+    permission-message: §cYou don't have permission to use this command!
+  withdrawheart:
+    permission: lifestealz.withdraw
+    description: withdraw a heart
+    permission-message: §cYou don't have permission to use this command!
+
+permissions:
+  lifestealz.admin.reload:
+    description: permission to reload plugin
+    default: op
+  lifestealz.admin.setlife:
+    description: set a players hearts
+    default: op
+  lifestealz.admin.giveitem:
+    description: give custom items to player
+    default: op
+  lifestealz.admin.eliminate:
+    description: eliminate a player
+    default: op
+  lifestealz.admin.revive:
+    description: revive a player
+    default: op
+  lifestealz.bypassrevivelimit:
+    description: bypass the player revive limit
+    default: op
+  lifestealz.withdraw:
+    description: withdraw a heart
+    default: true
+  lifestealz.revive:
+    description: allow to revive player
+    default: true
+  lifestealz.viewrecipes:
+    description: allows to view recipes
+    default: true
+  lifestealz.help:
+    description: allows to see help page
+    default: true

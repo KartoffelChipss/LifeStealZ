@@ -1,0 +1,106 @@
+#     _      _  __        _____ _             _   ______
+#    | |    (_)/ _|      / ____| |           | | |___  /
+#    | |     _| |_ ___  | (___ | |_ ___  __ _| |    / /
+#    | |    | |  _/ _ \  \___ \| __/ _ \/ _` | |   / /
+#    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
+#    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
+
+#The amount of hearts a player has, when joining for the first time
+startHearts: 10
+#The maximal amount of hearts, a player can have
+maxHearts: 20
+
+#If a heart should be dropped, when the killer already has the max amount of hearts
+dropHeartsIfMax: true
+#If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
+looseHeartsToNature: true
+#Whether it should be announced, when a player got eliminated (has no more hearts)
+announceElimination: true
+
+#Allows to craft hearts
+allowHeartCrafting: true
+#Allows players to withdraw a heart, even if they only have one left
+allowDyingFromWithdraw: true
+#If the totem effect should be played, when you use a heart
+playTotemEffect: false
+
+#How many times a player can be revived. Set to -1 to make it infinite
+maxRevives: -1
+#Allows to craft revive crystal
+allowReviveCrafting: true
+
+#If the use of totems of undying should be prevented
+preventTotems: false
+#If crystalpvp should be disabled
+preventCrystalPVP: false
+
+#Here you can modify everything about the custom items
+items:
+  heart:
+    name: "&cHeart"
+    lore:
+      - "&7Rightclick to use"
+#     - "This would be a second line"
+#     - "And this possibly a third line"
+    material: "NETHER_STAR"
+    enchanted: false
+    recipe:
+      #Every item represents one slot in the crafting table
+      #The first item in a row is the left most item in the crafting table
+      #If you want a slot to be blant, use 'AIR'
+      rowOne:
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+      rowTwo:
+        - "OBSIDIAN"
+        - "NETHER_STAR"
+        - "OBSIDIAN"
+      rowThree:
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+
+  revive:
+    name: "&dRevive Crystal"
+    lore:
+      - "&7Rightclick to use"
+    material: "AMETHYST_SHARD"
+    enchanted: true
+    recipe:
+      rowOne:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+      rowTwo:
+        - "OBSIDIAN"
+        - "BEACON"
+        - "OBSIDIAN"
+      rowThree:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+
+#You can modify all messages here
+messages:
+  prefix: "&8[&cLifeStealZ&8]"
+  usageError: "&cUsage: %usage%"
+  noPermissionError: "&cYou don't have permission to use this!"
+  noPlayerData: "&cThis player has not played on this server yet!"
+  eliminateSuccess: "&7You successfully eliminated &c%player%&7!"
+  reviveSuccess: "&7You successfully revived &c%player%!"
+  reviveMaxReached: "&cThis player has already been revived %amount% times!"
+  onlyReviveElimPlayers: "&cYou can only revive eliminated players!"
+  eliminatedJoin: "&cYou don't have any hearts left!"
+  eliminationAnnouncement: "&c%player% &7has been eliminated by &c%killer%&7!"
+  eliminateionAnnouncementNature: "&c%player% &7has been eliminated!"
+  setHeartsConfirm: "&7Successfully set &c%player%&7's hearts to &c%amount%"
+  getHearts: "&c%player% &7currently has &c%amount% &7hearts!"
+  reloadMsg: "&7Successfully reloaded the plugin!"
+  versionMsg: "&7You are using version %version%"
+  noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
+  withdrawConfirmmsg: "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"
+  maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"
+  closeBtn: "&cClose"
+  reviveTitle: "&8Revive a player"
+  revivePlayerDesc: "&7Click to revive this player"
