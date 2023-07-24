@@ -67,16 +67,23 @@ class PlayerInteractionListener : Listener {
 
                     addNavbar(inventory)
 
+                    //player.sendMessage(uuidList.toString())
+
                     for (uuidString in uuidList) {
-                        val uuid = convertStringToUUID(uuidString) ?: break
+                        //player.sendMessage(Component.text(uuidString))
+                        val uuid: UUID = convertStringToUUID(uuidString) ?: continue
 
                         val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
 
-                        if (offlinePlayer.name == null) break
+                        //player.sendMessage(Component.text(offlinePlayer.name?: "no name"))
+
+                        if (offlinePlayer.name == null) continue
 
                         val offlinePlayerData = ManagePlayerdata().getPlayerData(name = offlinePlayer.name!!, uuid = offlinePlayer.uniqueId.toString())
 
-                        if (offlinePlayerData.maxhp > 0.0) break
+                        //player.sendMessage(Component.text("Maxhp: " + offlinePlayerData.maxhp.toString()))
+
+                        if (offlinePlayerData.maxhp > 0.0) continue
 
                         inventory.addItem(getPlayerHead(offlinePlayer))
                     }
