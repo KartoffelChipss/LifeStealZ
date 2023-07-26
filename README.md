@@ -194,6 +194,10 @@ If you are using [Placeholderapi](https://www.spigotmc.org/resources/placeholder
 
 If you need help with the setup of the plugin, or found a bug, you can join my discord [here](https://discord.com/invite/Cc76tYwXvy) ore message me directly (Kartoffelchips#0445).
 
+If you like the plugin and want to support the development, please consider buying me a tea!
+
+<a href="https://www.buymeacoffee.com/kartoffelchips"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a tea&emoji=🍵&slug=kartoffelchips&button_colour=40DCA5&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" height="45px"/></a>
+
 ---
 
 [![Usage](https://bstats.org/signatures/bukkit/LifeStealZ.svg)](https://bstats.org/plugin/bukkit/LifeStealZ/18735)
