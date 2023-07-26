@@ -192,7 +192,7 @@ If you are using [Placeholderapi](https://www.spigotmc.org/resources/placeholder
 
 ![PlaceholderBanner](https://strassburger.org/img/lifestealz/banner_support.png)
 
-If you need help with the setup of the plugin, or found a bug, you can join my discord [here](https://discord.com/invite/Cc76tYwXvy) ore message me directly (Kartoffelchips#0445).
+If you need help with the setup of the plugin, or found a bug, you can join my discord [here](https://discord.com/invite/Cc76tYwXvy) or message me directly (Kartoffelchips#0445).
 
 If you like the plugin and want to support the development, please consider buying me a tea!
 
