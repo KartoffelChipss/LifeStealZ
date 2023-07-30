@@ -49,7 +49,7 @@ class Lifestealz : JavaPlugin() {
     }
 
     override fun onEnable() {
-        config.options().copyDefaults()
+        config.options().copyDefaults(true)
         saveConfig()
 
         registerCommands()
@@ -237,14 +237,23 @@ class Lifestealz : JavaPlugin() {
             #If crystalpvp should be disabled
             preventCrystalPVP: false
             
+            #Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
+            disablePlayerBanOnElimination: false
+            # The amount of hp a player should have after getting eliminated
+            respawnHP: 10
+            # The command that should be executed when a player gets eliminated
+            # You can use %player% to insert the player name
+            # For example: tempban %player% banreason 1d
+            eliminationCommand: %player% got eliminated
+            
             #Here you can modify everything about the custom items
             items:
               heart:
                 name: "&cHeart"
                 lore:
                   - "&7Rightclick to use"
-                #  - "This would be a second line"
-                #  - "And this possibly a third line"
+            #     - "This would be a second line"
+            #     - "And this possibly a third line"
                 material: "NETHER_STAR"
                 enchanted: false
                 recipe:

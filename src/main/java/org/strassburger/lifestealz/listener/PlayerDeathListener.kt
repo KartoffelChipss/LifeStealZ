@@ -12,6 +12,7 @@ import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
 
 class PlayerDeathListener : Listener {
+    val disabledBanOnDeath = Lifestealz.instance.config.getBoolean("disablePlayerBanOnElimination")
     @EventHandler
     fun playerDeathFunction(event: PlayerDeathEvent) {
         val player = event.entity as? Player ?: return
@@ -38,15 +39,27 @@ class PlayerDeathListener : Listener {
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
             if (playerData.maxhp - 2.0 <= 0.0) {
-                player.inventory.clear()
-                val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-                player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
-                if (Lifestealz.instance.config.getBoolean("announceElimination")) {
-                    val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!").replace("%player%", player.name).replace("%killer%", killer.name)
-                    Bukkit.broadcast(Component.text(elimAannouncementMsg))
+
+                if (!disabledBanOnDeath) {
+                    player.inventory.clear()
+                    val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+                    player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
+                    if (Lifestealz.instance.config.getBoolean("announceElimination")) {
+                        val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!").replace("%player%", player.name).replace("%killer%", killer.name)
+                        Bukkit.broadcast(Component.text(elimAannouncementMsg))
+                    }
+                    ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
+                    return
+                } else {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), (Lifestealz.instance.config.getString("eliminationCommand")?: "say &player& got eliminated").replace("&player&", player.name))
+                    var respawnHP = (Lifestealz.instance.config.getInt("respawnHP") * 2).toDouble()
+
+                    if (respawnHP < 2.0) respawnHP = 2.0
+
+                    ManagePlayerdata().manageHearts(player = player, direction = "set", amount = respawnHP)
+                    player.maxHealth = respawnHP
+                    return
                 }
-                ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
-                return
             }
 
             ManagePlayerdata().manageHearts(player = player, direction = "dec", amount = 2.0)
@@ -58,12 +71,18 @@ class PlayerDeathListener : Listener {
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
             if (playerData.maxhp - 2.0 <= 0.0) {
-                val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-                player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
-                if (Lifestealz.instance.config.getBoolean("announceElimination")) {
-                    val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!").replace("%player%", player.name)
-                    Bukkit.broadcast(Component.text(elimAannouncementMsg))
+
+                if (!disabledBanOnDeath) {
+                    val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+                    player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
+                    if (Lifestealz.instance.config.getBoolean("announceElimination")) {
+                        val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!").replace("%player%", player.name)
+                        Bukkit.broadcast(Component.text(elimAannouncementMsg))
+                    }
+                } else {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "say Test")
                 }
+
                 ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
                 return
             }
