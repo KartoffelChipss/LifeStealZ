@@ -26,7 +26,7 @@ class PlayerJoinListener(private val plugin: JavaPlugin) : Listener {
         val attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)
         if (attribute != null) {
             attribute.baseValue = maxHealth
-            player.health = maxHealth
+            //player.health = maxHealth
         }
     }
 
