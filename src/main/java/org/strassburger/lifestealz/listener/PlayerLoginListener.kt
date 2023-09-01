@@ -37,6 +37,10 @@ class PlayerLoginListener(private val plugin: JavaPlugin) : Listener {
             return
         }
 
+        val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+
+        if (worldWhitelisted == null || !worldWhitelisted) return
+
         if (playerData.maxhp <= 0.0 && !disabledBanOnDeath) {
 
             event.result = PlayerLoginEvent.Result.KICK_OTHER

@@ -7,6 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
+import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.ManagePlayerdata
 
 class PlayerJoinListener(private val plugin: JavaPlugin) : Listener {
@@ -16,6 +17,10 @@ class PlayerJoinListener(private val plugin: JavaPlugin) : Listener {
     fun playerJoinFunction(event: PlayerJoinEvent) {
         val player = event.player
         val playerData = ManagePlayerdata().getPlayerData(name = player.name, uuid = player.uniqueId.toString())
+
+        val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+
+        if (worldWhitelisted == null || !worldWhitelisted) return
 
         applyInvulnerability(player)
 

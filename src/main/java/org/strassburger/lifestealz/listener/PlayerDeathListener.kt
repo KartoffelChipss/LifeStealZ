@@ -18,6 +18,9 @@ class PlayerDeathListener : Listener {
         val player = event.entity as? Player ?: return
         val killer = player.killer
 
+        val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+        if (worldWhitelisted == null || !worldWhitelisted) return
+
         if (killer != null) {
             //If player was killed by other player
 

@@ -21,6 +21,9 @@ class CraftItemListener(private val plugin: JavaPlugin) : Listener {
         val reviveRecipeKey = NamespacedKey(plugin, "reviverecipe")
 
         if (isHeart(event.recipe.result)) {
+            val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+            if (worldWhitelisted == null || !worldWhitelisted) return
+
             if (!Lifestealz.instance.config.getBoolean("allowHeartCrafting")) {
                 event.isCancelled = true
             } else {
@@ -29,6 +32,9 @@ class CraftItemListener(private val plugin: JavaPlugin) : Listener {
         }
 
         if (isReviveCrystal(event.recipe.result)) {
+            val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+            if (worldWhitelisted == null || !worldWhitelisted) return
+
             if (!Lifestealz.instance.config.getBoolean("allowReviveCrafting")) {
                 event.isCancelled = true
             } else {

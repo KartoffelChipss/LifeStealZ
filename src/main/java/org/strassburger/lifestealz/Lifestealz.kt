@@ -208,6 +208,12 @@ class Lifestealz : JavaPlugin() {
             #    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
             #    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
             
+            #A list of worlds, where the plugin should take effect
+            worlds:
+              - "world"
+              - "world_nether"
+              - "world_the_end"
+            
             #The amount of hearts a player has, when joining for the first time
             startHearts: 10
             #The maximal amount of hearts, a player can have

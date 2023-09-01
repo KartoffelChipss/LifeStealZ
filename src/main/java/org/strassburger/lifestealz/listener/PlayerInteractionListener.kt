@@ -20,6 +20,10 @@ class PlayerInteractionListener : Listener {
     fun playerInteractionListener(event: PlayerInteractEvent) {
         val player = event.player
 
+        val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
+
+        if (worldWhitelisted == null || !worldWhitelisted) return
+
         if (event.action.isRightClick) { // Check if it's a right-click event
             val item = event.item
 
