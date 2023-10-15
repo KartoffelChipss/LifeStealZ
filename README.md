@@ -64,6 +64,12 @@ Here is an example of the configuration file:
 #    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
 #    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
 
+#A list of worlds, where the plugin should take effect
+worlds:
+  - "world"
+  - "world_nether"
+  - "world_the_end"
+
 #The amount of hearts a player has, when joining for the first time
 startHearts: 10
 #The maximal amount of hearts, a player can have
@@ -73,6 +79,8 @@ maxHearts: 20
 dropHeartsIfMax: true
 #If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
 looseHeartsToNature: true
+#If a player should lose a heart, when being killed by another player
+looseHeartsToPlayer: true
 #Whether it should be announced, when a player got eliminated (has no more hearts)
 announceElimination: true
 
@@ -108,8 +116,8 @@ items:
     name: "&cHeart"
     lore:
       - "&7Rightclick to use"
-    #     - "This would be a second line"
-    #     - "And this possibly a third line"
+#     - "This would be a second line"
+#     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
     recipe:
