@@ -27,7 +27,7 @@ class Lifestealz : JavaPlugin() {
         lateinit var instance: Lifestealz
 
         // Maps to check if a player has opened a custom gui
-        val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
+            val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
         val reviveGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
 
         // Namespace keys for custom items
@@ -50,7 +50,7 @@ class Lifestealz : JavaPlugin() {
 
     override fun onEnable() {
         config.options().copyDefaults(true)
-        saveConfig()
+        saveDefaultConfig()
 
         registerCommands()
         registerEvents()
@@ -223,6 +223,8 @@ class Lifestealz : JavaPlugin() {
             dropHeartsIfMax: true
             #If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
             looseHeartsToNature: true
+            #If a player should lose a heart, when being killed by another player
+            looseHeartsToPlayer: true
             #Whether it should be announced, when a player got eliminated (has no more hearts)
             announceElimination: true
             

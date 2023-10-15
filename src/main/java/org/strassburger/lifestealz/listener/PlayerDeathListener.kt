@@ -21,7 +21,7 @@ class PlayerDeathListener : Listener {
         val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
         if (worldWhitelisted == null || !worldWhitelisted) return
 
-        if (killer != null) {
+        if (killer != null && Lifestealz.instance.config.getBoolean("looseHeartsToPlayer")) {
             //If player was killed by other player
 
             val killerPlayerdata = ManagePlayerdata().getPlayerData(name = killer.name, uuid = killer.uniqueId.toString())

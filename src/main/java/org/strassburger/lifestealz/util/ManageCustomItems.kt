@@ -39,6 +39,8 @@ class ManageCustomItems {
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
+        itemMeta?.setCustomModelData(1)
+
         itemStack.itemMeta = itemMeta
 
         return itemStack
@@ -71,6 +73,8 @@ class ManageCustomItems {
         itemMeta?.lore = itemLore
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+
+        itemMeta?.setCustomModelData(1)
 
         itemStack.itemMeta = itemMeta
 

@@ -25,7 +25,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
         val optionOne = args?.getOrNull(0)
 
         if (args == null || args.isEmpty() || optionOne == null) {
-            sender.sendMessage(Component.text(formatMsg(true,"messages.versionMsg", "&8[&cLifestealZ&8] &7You are using version %version%").replace("%version%", "1.0.3")))
+            sender.sendMessage(Component.text(formatMsg(true,"messages.versionMsg", "&8[&cLifestealZ&8] &7You are using version %version%").replace("%version%", "1.0.4")))
 //            val messageOne = Lifestealz.instance.config.getString("lang") ?: "Test"
 //            sender.sendMessage(Component.text(messageOne))
 //            Lifestealz.instance.config.set("lang", "This is new")
