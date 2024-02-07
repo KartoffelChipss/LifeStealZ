@@ -125,6 +125,7 @@ items:
 #     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
+    customModelData: 100
     recipe:
       #Every item represents one slot in the crafting table
       #The first item in a row is the left most item in the crafting table
@@ -148,6 +149,7 @@ items:
       - "&7Rightclick to use"
     material: "AMETHYST_SHARD"
     enchanted: true
+    customModelData: 101
     recipe:
       rowOne:
         - "AMETHYST_SHARD"

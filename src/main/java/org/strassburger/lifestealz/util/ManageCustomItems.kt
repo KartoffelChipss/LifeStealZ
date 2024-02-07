@@ -39,7 +39,7 @@ class ManageCustomItems {
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
-        itemMeta?.setCustomModelData(1)
+        itemMeta?.setCustomModelData(Lifestealz.instance.config.getInt("items.heart.customModelData"))
 
         itemStack.itemMeta = itemMeta
 
@@ -74,7 +74,7 @@ class ManageCustomItems {
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
-        itemMeta?.setCustomModelData(1)
+        itemMeta?.setCustomModelData(Lifestealz.instance.config.getInt("items.revive.customModelData"))
 
         itemStack.itemMeta = itemMeta
 
