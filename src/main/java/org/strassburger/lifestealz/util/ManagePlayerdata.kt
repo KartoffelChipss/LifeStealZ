@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.util
 
 import com.google.gson.GsonBuilder
 import org.bukkit.entity.Player
+import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.data.PlayerData
 import java.io.File
 import java.io.IOException
@@ -14,14 +15,11 @@ class ManagePlayerdata {
         val gson = GsonBuilder().setPrettyPrinting().create()
         val json = gson.toJson(playerdata)
 
-        val dir = File("./plugins/lifestealz/userData")
+        val dir = File(Lifestealz.instance.dataFolder, "userData")
         if (!dir.exists()) {
             dir.mkdirs()
         }
 
-        fun addKill(player: Player) {
-
-        }
         file = File(dir, "${uuid}.json")
         if (!file.exists()) {
             try {
@@ -37,7 +35,7 @@ class ManagePlayerdata {
     }
 
     fun checkForPlayer(uuid: String) : Boolean {
-        val dir = File("./plugins/lifestealz/userData")
+        val dir = File(Lifestealz.instance.dataFolder, "userData")
         if (!dir.exists()) {
             dir.mkdirs()
         }
@@ -49,7 +47,8 @@ class ManagePlayerdata {
     fun savePlayerData(playerData: PlayerData) {
         val gson = GsonBuilder().setPrettyPrinting().create()
         val json = gson.toJson(playerData)
-        File("./plugins/lifestealz/userData/${playerData.uuid}.json").writeText(json)
+        val userDataFolder = File(Lifestealz.instance.dataFolder, "userData")
+        File(userDataFolder, "${playerData.uuid}.json").writeText(json)
     }
 
     fun manageHearts(player: Player, direction: String, amount: Double) : PlayerData {

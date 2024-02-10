@@ -20,6 +20,7 @@ import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
 
 class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
+    val config = Lifestealz.instance.config
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 
         val optionOne = args?.getOrNull(0)
@@ -148,10 +149,21 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
 
             when (optionTwo) {
                 "add" -> {
+                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayer.maxHealth + amount.toDouble() * 2 > config.getInt("maxHearts") * 2) {
+                        val maxHeartsMsg = formatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", config.getInt("maxHearts").toString())
+                        sender.sendMessage(maxHeartsMsg)
+                        return false
+                    }
+
                     targetPlayer.maxHealth += amount.toDouble() * 2
                     targetPlayer.health += amount.toDouble() * 2
                 }
                 "set" -> {
+                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
+                        val maxHeartsMsg = formatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", config.getInt("maxHearts").toString())
+                        sender.sendMessage(maxHeartsMsg)
+                        return false
+                    }
                     setMaxHealth(targetPlayer, amount.toDouble() * 2)
                 }
                 else -> {

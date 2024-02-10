@@ -35,9 +35,6 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 
 ![PermissionsBanner](https://strassburger.org/img/lifestealz/banner_permissions.png)
 
-<details>
-<summary>View permissions</summary>
-
 - **lifestealz.admin.reload** - Allow to reload the plugin
 - **lifestealz.admin.setlife** - Allow to set the amount of hearts, a player has
 - **lifestealz.admin.giveitem** - Allow to give custom items to a player
@@ -48,8 +45,6 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 - **lifestealz.revive** - Allow a player to revive others with a revive crystal (true by default)
 - **lifestealz.viewrecipes** - Allow a player to view the custom recipes (true by default)
 - **lifestealz.help** - Allow a player to access the help menu (true by default)
-
-</details>
 
 <br>
 
@@ -79,6 +74,8 @@ worlds:
 startHearts: 10
 #The maximal amount of hearts, a player can have
 maxHearts: 20
+# This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
+enforceMaxHeartsOnAdminCommands: false
 
 #If a heart should be dropped, when the killer already has the max amount of hearts
 dropHeartsIfMax: true
@@ -121,8 +118,8 @@ items:
     name: "&cHeart"
     lore:
       - "&7Rightclick to use"
-#     - "This would be a second line"
-#     - "And this possibly a third line"
+    #     - "This would be a second line"
+    #     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
     customModelData: 100
@@ -199,16 +196,12 @@ If you want a slot in the crafting recipe to be blank, replace the block name wi
 ![PlaceholderBanner](https://strassburger.org/img/lifestealz/banner_placeholder.png)
 
 If you are using [Placeholderapi](https://www.spigotmc.org/resources/placeholderapi.6245/) on your server, you can use the following placeholders:
-<details>
-<summary>View placeholders</summary>
 
 - **%lifestealz_hearts%** - The amount of hearts a user has
 - **%lifestealz_maxhearts%** - The maximum amount of hearts a user can have
 - **%lifestealz_revived%** - The amount of times a player has been revived
 - **%lifestealz_craftedhearts%** - The amount of times a player has crafted a heart
 - **%lifestealz_craftedrevives%** - The amount of times a player has crafted a revive crystal
-
-</details>
 
 <br>
 
