@@ -27,6 +27,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Disable crystal pvp
 * ✅ Ingame recipe viewer
 * ✅ PlaceholderAPI placeholders
+* ✅ Custom WorldGuard flags 
 * ✅ Admin commands
 
 <br>
@@ -188,6 +189,13 @@ messages:
 </details>
 
 If you want a slot in the crafting recipe to be blank, replace the block name with `AIR`.
+
+### WorldGuard Flags
+
+To set a custom worldguard flag, you have to use `/rg flags` and scroll to the last page.
+
+There you can set the following flags:
+- **heartloss** - Allow heart loss in this region
 
 <bR>
 

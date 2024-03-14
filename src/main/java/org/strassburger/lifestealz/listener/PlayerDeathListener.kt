@@ -1,7 +1,12 @@
 package org.strassburger.lifestealz.listener
 
+import com.sk89q.worldedit.util.task.Task.State
+import com.sk89q.worldguard.WorldGuard
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin
+import com.sk89q.worldguard.protection.flags.Flags
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -10,6 +15,8 @@ import org.bukkit.event.player.PlayerKickEvent
 import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
+import org.strassburger.lifestealz.util.worldguardflags.HeartLossFlag
+
 
 class PlayerDeathListener : Listener {
     val disabledBanOnDeath = Lifestealz.instance.config.getBoolean("disablePlayerBanOnElimination")
@@ -20,6 +27,21 @@ class PlayerDeathListener : Listener {
 
         val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
         if (worldWhitelisted == null || !worldWhitelisted) return
+
+        if (Lifestealz.hasWorldGuard) {
+            val localPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
+            val loc: com.sk89q.worldedit.util.Location = com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(player.location)
+            val container = WorldGuard.getInstance().platform.regionContainer
+            val query = container.createQuery()
+
+            val set = query.getApplicableRegions(loc)
+
+            val flagValue: Boolean = set.testState(localPlayer, Lifestealz.worldGuardManager.heartLossFlag)
+
+            if (!flagValue) {
+                return
+            }
+        }
 
         if (killer != null && Lifestealz.instance.config.getBoolean("looseHeartsToPlayer")) {
             //If player was killed by other player

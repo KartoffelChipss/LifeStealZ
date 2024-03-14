@@ -2,10 +2,13 @@ name: LifeStealZ
 version: '${project.version}'
 main: org.strassburger.lifestealz.Lifestealz
 api-version: 1.20
+author: Kartoffelchips
 authors: [Kartoffelchips]
 website: strassburger.org
 
-softdepend: [PlaceholderAPI]
+softdepend:
+  - PlaceholderAPI
+  - WorldGuard
 
 commands:
   lifestealz:

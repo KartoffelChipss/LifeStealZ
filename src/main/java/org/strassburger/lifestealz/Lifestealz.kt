@@ -17,6 +17,7 @@ import org.strassburger.lifestealz.listener.*
 import org.strassburger.lifestealz.util.LifestealZpapi
 import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.MyTabCompleter
+import org.strassburger.lifestealz.util.WorldGuardManager
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -26,8 +27,12 @@ class Lifestealz : JavaPlugin() {
     companion object {
         lateinit var instance: Lifestealz
 
+        lateinit var worldGuardManager: WorldGuardManager
+
+        val hasWorldGuard: Boolean = Bukkit.getPluginManager().getPlugin("WorldGuard") != null
+
         // Maps to check if a player has opened a custom gui
-            val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
+        val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
         val reviveGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
 
         // Namespace keys for custom items
@@ -36,9 +41,9 @@ class Lifestealz : JavaPlugin() {
         val REVIVEITEM_KEY = NamespacedKey("lifesetalz", "reviveitem")
 
         fun formatMsg(addPrefix: Boolean, path: String, fallback: String): String {
-            var msg = Lifestealz.instance.config.getString(path) ?: fallback
+            var msg = instance.config.getString(path) ?: fallback
             msg = ChatColor.translateAlternateColorCodes('&', msg)
-            val prefix = ChatColor.translateAlternateColorCodes('&',Lifestealz.instance.config.getString("messages.prefix") ?: "§8[§cLifestealZ§8]")
+            val prefix = ChatColor.translateAlternateColorCodes('&',instance.config.getString("messages.prefix") ?: "§8[§cLifestealZ§8]")
             if (addPrefix) msg = "$prefix $msg"
             return msg
         }
@@ -63,6 +68,7 @@ class Lifestealz : JavaPlugin() {
         // Register placeholders if papi is installed
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             LifestealZpapi().register()
+            logger.info("PlaceholderAPI found! Enabled PlaceholderAPI support!")
         }
 
         // Register bstats
@@ -72,11 +78,18 @@ class Lifestealz : JavaPlugin() {
         logger.info("LifestealZ has been loaded!")
     }
 
+    override fun onLoad() {
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+            worldGuardManager = WorldGuardManager()
+            logger.info("WorldGuard found! Enabled WorldGuard support!")
+        }
+    }
+
     override fun onDisable() {
         logger.info("LifestealZ has been disabled!")
     }
 
-    fun registerCommands() {
+    private fun registerCommands() {
         // Register all Commands
 
         val settingsCommand = getCommand("lifestealz")
@@ -126,7 +139,7 @@ class Lifestealz : JavaPlugin() {
         logger.info("Commands have been registered!")
     }
 
-    fun registerEvents() {
+    private fun registerEvents() {
         // Register all events
 
         server.pluginManager.registerEvents(PlayerLoginListener(this), this)
@@ -143,7 +156,7 @@ class Lifestealz : JavaPlugin() {
         logger.info("Events have been registered!")
     }
 
-    fun registerHeartRecipe() {
+    private fun registerHeartRecipe() {
         // Register Heart recipe if recipe is enabled
         if (!instance.config.getBoolean("allowHeartCrafting")) return
 
@@ -195,10 +208,10 @@ class Lifestealz : JavaPlugin() {
         Bukkit.addRecipe(reviveRecipe)
     }
 
-    fun initializeConfig() {
+    private fun initializeConfig() {
         // Write config file if it is empty
 
-        val f = File(this.getDataFolder(), "config.yml")
+        val f = File(this.dataFolder, "config.yml")
 
         val configData = """
             #     _      _  __        _____ _             _   ______
