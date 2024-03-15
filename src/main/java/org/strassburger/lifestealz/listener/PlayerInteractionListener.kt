@@ -11,7 +11,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.strassburger.lifestealz.Lifestealz
+import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
+import org.strassburger.lifestealz.util.Replaceable
 import java.io.File
 import java.util.*
 
@@ -33,7 +35,7 @@ class PlayerInteractionListener : Listener {
 
                     val configLimit = Lifestealz.instance.config.getInt("maxHearts")
                     if (playerdata.maxhp >= (configLimit * 2).toDouble()) {
-                        player.sendMessage(Component.text(Lifestealz.formatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", configLimit.toString())))
+                        player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", Replaceable("%limit%", configLimit.toString())))
                         return
                     }
 
@@ -67,7 +69,7 @@ class PlayerInteractionListener : Listener {
                         if (!uuidList.contains(filename) && filename != "userData") uuidList.add(filename)
                     }
 
-                    val inventory: Inventory =  Bukkit.createInventory(null, 6 * 9, Lifestealz.formatMsg(false, "messages.reviveTitle", "&8Revive a player"))
+                    val inventory: Inventory =  Bukkit.createInventory(null, 6 * 9, Lifestealz.getAndFormatMsg(false, "messages.reviveTitle", "&8Revive a player"))
 
                     addNavbar(inventory)
 
@@ -128,7 +130,7 @@ class PlayerInteractionListener : Listener {
     }
 
     private fun addNavbar(inventory: Inventory) {
-        inventory.setItem(49, makeCustomItem(material = Material.BARRIER, amount = 1, name = Lifestealz.formatMsg(false, "messages.closeBtn", "&cClose"), lore = mutableListOf()))
+        inventory.setItem(49, ManageCustomItems().createCloseItem())
 
         val glass = ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1)
         val glassMeta = glass.itemMeta
@@ -140,10 +142,10 @@ class PlayerInteractionListener : Listener {
         }
     }
 
-    private fun makeCustomItem(material: Material, name: String, amount: Int, lore: MutableList<String>) : ItemStack {
+    private fun makeCustomItem(material: Material, name: Component, amount: Int, lore: MutableList<String>) : ItemStack {
         val customItem = ItemStack(material, amount)
         val customItemMeta = customItem.itemMeta
-        customItemMeta.displayName(Component.text(name))
+        customItemMeta.displayName(name)
         customItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         customItemMeta.lore = lore
         customItem.itemMeta = customItemMeta
@@ -164,7 +166,11 @@ class PlayerInteractionListener : Listener {
         val skullMeta = head.itemMeta as SkullMeta
 
         skullMeta.displayName(Component.text("§d" + offlinePlayer.name))
-        skullMeta.lore(mutableListOf(Component.text(Lifestealz.formatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player")), Component.text("§8" + offlinePlayer.uniqueId.toString())))
+        val lines: MutableList<Component> = mutableListOf(
+                Lifestealz.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"),
+                Lifestealz.formatMsg("§8" + offlinePlayer.uniqueId.toString())
+        )
+        skullMeta.lore(lines)
         skullMeta.owningPlayer = offlinePlayer
         head.itemMeta = skullMeta
         return head

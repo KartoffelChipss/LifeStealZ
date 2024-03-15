@@ -1,12 +1,9 @@
 package org.strassburger.lifestealz.listener
 
-import com.sk89q.worldedit.util.task.Task.State
 import com.sk89q.worldguard.WorldGuard
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin
-import com.sk89q.worldguard.protection.flags.Flags
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,7 +12,7 @@ import org.bukkit.event.player.PlayerKickEvent
 import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
-import org.strassburger.lifestealz.util.worldguardflags.HeartLossFlag
+import org.strassburger.lifestealz.util.Replaceable
 
 
 class PlayerDeathListener : Listener {
@@ -49,16 +46,21 @@ class PlayerDeathListener : Listener {
             val killerPlayerdata = ManagePlayerdata().getPlayerData(name = killer.name, uuid = killer.uniqueId.toString())
 
             val configLimit = Lifestealz.instance.config.getInt("maxHearts")
-            if (killerPlayerdata.maxhp >= (configLimit * 2).toDouble()) {
-                if (Lifestealz.instance.config.getBoolean("dropHeartsIfMax")) {
-                    player.world.dropItemNaturally(player.location, ManageCustomItems().createHeartItem())
-                } else {
-                    killer.sendMessage(Component.text(Lifestealz.formatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", configLimit.toString())))
-                }
+
+            if (Lifestealz.instance.config.getBoolean("dropHearts")) {
+                player.world.dropItemNaturally(player.location, ManageCustomItems().createHeartItem())
             } else {
-                ManagePlayerdata().manageHearts(player = killer, direction = "inc", amount = 2.0)
-                killer.maxHealth += 2.0
-                killer.health += 2.0
+                if (killerPlayerdata.maxhp >= (configLimit * 2).toDouble()) {
+                    if (Lifestealz.instance.config.getBoolean("dropHeartsIfMax")) {
+                        player.world.dropItemNaturally(player.location, ManageCustomItems().createHeartItem())
+                    } else {
+                        killer.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", Replaceable("%limit%", configLimit.toString())))
+                    }
+                } else {
+                    ManagePlayerdata().manageHearts(player = killer, direction = "inc", amount = 2.0)
+                    killer.maxHealth += 2.0
+                    killer.health += 2.0
+                }
             }
 
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
@@ -67,11 +69,11 @@ class PlayerDeathListener : Listener {
 
                 if (!disabledBanOnDeath) {
                     player.inventory.clear()
-                    val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-                    player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
+                    val kickmsg = Lifestealz.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+                    player.kick(kickmsg, PlayerKickEvent.Cause.BANNED)
                     if (Lifestealz.instance.config.getBoolean("announceElimination")) {
-                        val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!").replace("%player%", player.name).replace("%killer%", killer.name)
-                        Bukkit.broadcast(Component.text(elimAannouncementMsg))
+                        val elimAannouncementMsg = Lifestealz.getAndFormatMsg(true, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", Replaceable("%player%", player.name), Replaceable("%killer%", killer.name))
+                        Bukkit.broadcast(elimAannouncementMsg)
                     }
                     ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
                     return
@@ -98,11 +100,11 @@ class PlayerDeathListener : Listener {
             if (playerData.maxhp - 2.0 <= 0.0) {
 
                 if (!disabledBanOnDeath) {
-                    val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-                    player.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
+                    val kickmsg = Lifestealz.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+                    player.kick(kickmsg, PlayerKickEvent.Cause.BANNED)
                     if (Lifestealz.instance.config.getBoolean("announceElimination")) {
-                        val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!").replace("%player%", player.name)
-                        Bukkit.broadcast(Component.text(elimAannouncementMsg))
+                        val elimAannouncementMsg = Lifestealz.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", Replaceable("%player%", player.name))
+                        Bukkit.broadcast(elimAannouncementMsg)
                     }
                 } else {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "say Test")

@@ -27,7 +27,7 @@ class PlayerJoinListener(private val plugin: JavaPlugin) : Listener {
         setMaxHealth(player, playerData.maxhp)
     }
 
-    fun setMaxHealth(player: Player, maxHealth: Double) {
+    private fun setMaxHealth(player: Player, maxHealth: Double) {
         val attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)
         if (attribute != null) {
             attribute.baseValue = maxHealth

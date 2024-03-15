@@ -1,6 +1,5 @@
 package org.strassburger.lifestealz.commands
 
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.command.Command
@@ -11,6 +10,7 @@ import org.bukkit.event.player.PlayerKickEvent
 import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
+import org.strassburger.lifestealz.util.Replaceable
 
 class WithdrawCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
@@ -23,10 +23,10 @@ class WithdrawCommand : CommandExecutor {
         val withdrawtoDeath: Boolean = Lifestealz.instance.config.getBoolean("allowDyingFromWithdraw")
 
         if (playerdata.maxhp <= 2.0 && (confirmOption == null || confirmOption != "confirm")) {
-            sender.sendMessage(Component.text(Lifestealz.formatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!")))
+            sender.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!"))
 
             if (withdrawtoDeath) {
-                sender.sendMessage(Component.text(Lifestealz.formatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse /withdrawheart confirm if you really want to withdraw a heart")))
+                sender.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"))
             }
 
             return false
@@ -34,7 +34,7 @@ class WithdrawCommand : CommandExecutor {
 
         if (playerdata.maxhp <= 2.0) {
             if (!withdrawtoDeath) {
-                sender.sendMessage(Component.text(Lifestealz.formatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!")))
+                sender.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!"))
                 return false
             }
 
@@ -42,12 +42,12 @@ class WithdrawCommand : CommandExecutor {
 
             ManagePlayerdata().manageHearts(player = sender, amount = 0.0, direction = "set")
 
-            val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-            sender.kick(Component.text(kickmsg), PlayerKickEvent.Cause.BANNED)
+            val kickmsg = Lifestealz.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+            sender.kick(kickmsg, PlayerKickEvent.Cause.BANNED)
 
             if (Lifestealz.instance.config.getBoolean("announceElimination")) {
-                val elimAannouncementMsg = Lifestealz.formatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!").replace("%player%", sender.name)
-                Bukkit.broadcast(Component.text(elimAannouncementMsg))
+                val elimAannouncementMsg = Lifestealz.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", Replaceable("%player%", sender.name))
+                Bukkit.broadcast(elimAannouncementMsg)
             }
 
             return false

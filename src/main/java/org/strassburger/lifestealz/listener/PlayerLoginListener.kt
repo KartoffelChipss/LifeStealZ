@@ -44,8 +44,8 @@ class PlayerLoginListener(private val plugin: JavaPlugin) : Listener {
         if (playerData.maxhp <= 0.0 && !disabledBanOnDeath) {
 
             event.result = PlayerLoginEvent.Result.KICK_OTHER
-            val kickmsg = Lifestealz.formatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
-            event.kickMessage(Component.text(kickmsg))
+            val kickmsg = Lifestealz.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
+            event.kickMessage(kickmsg)
 
         }
     }

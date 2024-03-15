@@ -11,13 +11,13 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.java.JavaPlugin
 import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.ManageCustomItems
 import org.strassburger.lifestealz.util.ManagePlayerdata
+import org.strassburger.lifestealz.util.Replaceable
 
 class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
     val config = Lifestealz.instance.config
@@ -26,11 +26,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
         val optionOne = args?.getOrNull(0)
 
         if (args == null || args.isEmpty() || optionOne == null) {
-            sender.sendMessage(Component.text(formatMsg(true,"messages.versionMsg", "&8[&cLifestealZ&8] &7You are using version %version%").replace("%version%", Lifestealz.instance.description.version)))
-//            val messageOne = Lifestealz.instance.config.getString("lang") ?: "Test"
-//            sender.sendMessage(Component.text(messageOne))
-//            Lifestealz.instance.config.set("lang", "This is new")
-//            Lifestealz.instance.saveConfig()
+            sender.sendMessage(Lifestealz.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", Replaceable("%version%", Lifestealz.instance.description.version)))
         }
 
         if (optionOne == "reload") {
@@ -44,7 +40,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
             Bukkit.resetRecipes()
             registerHeartRecipe()
             registerReviveRecipe()
-            sender.sendMessage(Lifestealz.formatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"))
+            sender.sendMessage(Lifestealz.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"))
         }
 
         if (optionOne == "help") {
@@ -121,8 +117,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
 
             if (optionTwo == "get") {
                 val heartsString = (targetplayerData.maxhp / 2).toInt().toString()
-                val msg = Lifestealz.formatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!").replace("%player%", targetPlayer.name).replace("%amount%", heartsString)
-                sender.sendMessage(Component.text(msg))
+                sender.sendMessage(Lifestealz.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!", Replaceable("%player%", targetPlayer.name), Replaceable("%amount%", heartsString)))
                 return false
             }
 
@@ -150,7 +145,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
             when (optionTwo) {
                 "add" -> {
                     if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayer.maxHealth + amount.toDouble() * 2 > config.getInt("maxHearts") * 2) {
-                        val maxHeartsMsg = formatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", config.getInt("maxHearts").toString())
+                        val maxHeartsMsg = Lifestealz.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", Replaceable("%limit%", config.getInt("maxHearts").toString()))
                         sender.sendMessage(maxHeartsMsg)
                         return false
                     }
@@ -160,7 +155,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
                 }
                 "set" -> {
                     if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
-                        val maxHeartsMsg = formatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!").replace("%limit%", config.getInt("maxHearts").toString())
+                        val maxHeartsMsg = Lifestealz.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", Replaceable("%limit%", config.getInt("maxHearts").toString()))
                         sender.sendMessage(maxHeartsMsg)
                         return false
                     }
@@ -171,8 +166,8 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
                 }
             }
 
-            val setHeartsConfirmMessage = formatMsg(true, "messages.setHeartsConfirm", "&7Successfully set &c%player%&7's hearts to &c%amount%").replace("%player%", targetPlayer.name).replace("%amount%", (targetPlayer.maxHealth / 2).toInt().toString())
-            sender.sendMessage(Component.text(setHeartsConfirmMessage))
+            val setHeartsConfirmMessage = Lifestealz.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!", Replaceable("%option%", optionTwo), Replaceable("%player%", targetPlayer.name), Replaceable("%amount%", amount.toString()))
+            sender.sendMessage(setHeartsConfirmMessage)
 
         }
 
@@ -230,31 +225,23 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
     }
 
     private fun throwUsageError(sender: CommandSender) {
-        val usageMessage = formatMsg(false, "messages.usageError", "&cUsage: %usage%").replace("%usage%", "/lifestealz lifes <add | set | remove> <player> <amount>")
-        sender.sendMessage(Component.text(usageMessage))
+        val msg = Lifestealz.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"))
+        sender.sendMessage(msg)
     }
 
     private fun throwGiveItemUsageError(sender: CommandSender) {
-        val usageMessage = formatMsg(false, "messages.usageError", "&cUsage: %usage%").replace("%usage%", "/lifestealz giveItem <player> <item> <amount>")
-        sender.sendMessage(Component.text(usageMessage))
+        val msg = Lifestealz.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"))
+        sender.sendMessage(msg)
     }
 
     private fun throwRecipeUsageError(sender: CommandSender) {
-        val usageMessage = formatMsg(false, "messages.usageError", "&cUsage: %usage%").replace("%usage%", "/lifestealz recipe <item>")
-        sender.sendMessage(Component.text(usageMessage))
+        val msg = Lifestealz.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", Replaceable("%usage%", "/lifestealz recipe <heart | revivecrystal>"))
+        sender.sendMessage(msg)
     }
 
     private fun throwPermissionError(sender: CommandSender) {
-        val usageMessage = formatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!")
-        sender.sendMessage(Component.text(usageMessage))
-    }
-
-    private fun formatMsg(addPrefix: Boolean, path: String, fallback: String) : String {
-        var msg = Lifestealz.instance.config.getString(path) ?: fallback
-        msg = ChatColor.translateAlternateColorCodes('&', msg)
-        val prefix = ChatColor.translateAlternateColorCodes('&', Lifestealz.instance.config.getString("messages.prefix") ?: "§8[§cLifestealZ§8]")
-        if (addPrefix) msg = "$prefix $msg"
-        return msg
+        val msg = Lifestealz.getAndFormatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!")
+        sender.sendMessage(msg)
     }
 
     fun setMaxHealth(player: Player, maxHealth: Double) {
@@ -318,7 +305,7 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
     private fun renderRecipe(player: Player, recipe: String) {
         val inventory: Inventory =  Bukkit.createInventory(null, 5 * 9, "§8Crafting recipe")
 
-        inventory.setItem(40, makeCustomItem(material = Material.BARRIER, amount = 1, name = Lifestealz.formatMsg(false, "messages.closeBtn", "&cClose"), lore = mutableListOf()))
+        inventory.setItem(40, ManageCustomItems().createCloseItem())
 
         val glass = ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1)
         val glassMeta = glass.itemMeta
@@ -367,16 +354,5 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
 
         player.openInventory(inventory)
         Lifestealz.recipeGuiMap[player.uniqueId] = inventory
-    }
-
-    private fun makeCustomItem(material: Material, name: String, amount: Int, lore: MutableList<String>) : ItemStack {
-        val customItem = ItemStack(material, amount)
-        val customItemMeta = customItem.itemMeta
-        customItemMeta.displayName(Component.text(name))
-        customItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-        customItemMeta.lore = lore
-        customItem.itemMeta = customItemMeta
-
-        return customItem
     }
 }

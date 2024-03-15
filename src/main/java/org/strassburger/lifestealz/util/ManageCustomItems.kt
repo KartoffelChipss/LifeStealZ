@@ -22,20 +22,20 @@ class ManageCustomItems {
         itemMeta?.persistentDataContainer?.set(Lifestealz.HEART_KEY, PersistentDataType.STRING, predefinedIdentifier)
 
         // Set the display name and lore
-        val itemDisplayName = Lifestealz.formatMsg(false, "items.heart.name", "&cHeart")
-        itemMeta?.displayName(Component.text(itemDisplayName))
+        val itemDisplayName = Lifestealz.getAndFormatMsg(false, "items.heart.name", "&cHeart")
+        itemMeta?.displayName(itemDisplayName)
 
         if (Lifestealz.instance.config.getBoolean("items.heart.enchanted")) {
             itemMeta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             itemMeta?.addEnchant(Enchantment.DURABILITY, 1, true)
         }
 
-        val heartLorelist = Lifestealz.instance.config.getList("items.heart.lore") ?: listOf<String>("&7Rightclick to use")
-        val itemLore = mutableListOf<String>()
+        val heartLorelist = Lifestealz.instance.config.getStringList("items.heart.lore") ?: listOf<String>("&7Rightclick to use")
+        val itemLore = mutableListOf<Component>()
         for (loreItem in heartLorelist) {
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', loreItem as String))
+            itemLore.add(Lifestealz.formatMsg(loreItem))
         }
-        itemMeta?.lore = itemLore
+        itemMeta?.lore(itemLore)
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
@@ -57,20 +57,20 @@ class ManageCustomItems {
         itemMeta?.persistentDataContainer?.set(Lifestealz.REVIVEITEM_KEY, PersistentDataType.STRING, predefinedIdentifier)
 
         // Set the display name and lore
-        val itemDisplayName = Lifestealz.formatMsg(false, "items.revive.name", "&dRevive Crystal")
-        itemMeta?.displayName(Component.text(itemDisplayName))
+        val itemDisplayName = Lifestealz.getAndFormatMsg(false, "items.revive.name", "&dRevive Crystal")
+        itemMeta?.displayName(itemDisplayName)
 
         if (Lifestealz.instance.config.getBoolean("items.revive.enchanted")) {
             itemMeta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             itemMeta?.addEnchant(Enchantment.DURABILITY, 1, true)
         }
 
-        val heartLorelist = Lifestealz.instance.config.getList("items.revive.lore") ?: listOf<String>("&7Rightclick to use")
-        val itemLore = mutableListOf<String>()
+        val heartLorelist = Lifestealz.instance.config.getStringList("items.revive.lore") ?: listOf<String>("&7Rightclick to use")
+        val itemLore = mutableListOf<Component>()
         for (loreItem in heartLorelist) {
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', loreItem as String))
+            itemLore.add(Lifestealz.formatMsg(loreItem))
         }
-        itemMeta?.lore = itemLore
+        itemMeta?.lore(itemLore)
 
         itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
@@ -79,5 +79,29 @@ class ManageCustomItems {
         itemStack.itemMeta = itemMeta
 
         return itemStack
+    }
+
+    fun createCloseItem(): ItemStack {
+        return makeCustomItem(material = Material.BARRIER, amount = 1, name = Lifestealz.getAndFormatMsg(false, "messages.closeBtn", "&cClose"), lore = mutableListOf(), customModelData = 999)
+    }
+
+    fun makeCustomItem(material: Material, name: Component, amount: Int, lore: MutableList<String>) : ItemStack {
+        val customItem = ItemStack(material, amount)
+        val customItemMeta = customItem.itemMeta
+        customItemMeta.displayName(name)
+        customItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        customItemMeta.lore = lore
+        customItem.itemMeta = customItemMeta
+
+        return customItem
+    }
+
+    fun makeCustomItem(material: Material, name: Component, amount: Int, lore: MutableList<String>, customModelData: Int) : ItemStack {
+        val customItem = makeCustomItem(material, name, amount, lore)
+        val customItemMeta = customItem.itemMeta
+        customItemMeta.setCustomModelData(customModelData)
+        customItem.itemMeta = customItemMeta
+
+        return customItem
     }
 }

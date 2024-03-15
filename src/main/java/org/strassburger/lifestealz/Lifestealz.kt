@@ -1,11 +1,13 @@
 package org.strassburger.lifestealz
 
+import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.java.JavaPlugin
@@ -14,10 +16,7 @@ import org.strassburger.lifestealz.commands.ReviveCommand
 import org.strassburger.lifestealz.commands.SettingsCommand
 import org.strassburger.lifestealz.commands.WithdrawCommand
 import org.strassburger.lifestealz.listener.*
-import org.strassburger.lifestealz.util.LifestealZpapi
-import org.strassburger.lifestealz.util.ManageCustomItems
-import org.strassburger.lifestealz.util.MyTabCompleter
-import org.strassburger.lifestealz.util.WorldGuardManager
+import org.strassburger.lifestealz.util.*
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -30,6 +29,7 @@ class Lifestealz : JavaPlugin() {
         lateinit var worldGuardManager: WorldGuardManager
 
         val hasWorldGuard: Boolean = Bukkit.getPluginManager().getPlugin("WorldGuard") != null
+        val hasPlaceholderApi: Boolean = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
 
         // Maps to check if a player has opened a custom gui
         val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
@@ -40,12 +40,76 @@ class Lifestealz : JavaPlugin() {
         val HEART_KEY = NamespacedKey("lifesetalz", "heart")
         val REVIVEITEM_KEY = NamespacedKey("lifesetalz", "reviveitem")
 
-        fun formatMsg(addPrefix: Boolean, path: String, fallback: String): String {
-            var msg = instance.config.getString(path) ?: fallback
-            msg = ChatColor.translateAlternateColorCodes('&', msg)
-            val prefix = ChatColor.translateAlternateColorCodes('&',instance.config.getString("messages.prefix") ?: "§8[§cLifestealZ§8]")
-            if (addPrefix) msg = "$prefix $msg"
-            return msg
+        private val colorMap = mapOf(
+                "&0" to "<black>",
+                "&1" to "<dark_blue>",
+                "&2" to "<dark_green>",
+                "&3" to "<dark_aqua>",
+                "&4" to "<dark_red>",
+                "&5" to "<dark_purple>",
+                "&6" to "<gold>",
+                "&7" to "<gray>",
+                "&8" to "<dark_gray>",
+                "&9" to "<blue>",
+                "&a" to "<green>",
+                "&b" to "<aqua>",
+                "&c" to "<red>",
+                "&d" to "<light_purple>",
+                "&e" to "<yellow>",
+                "&f" to "<white>",
+                "&k" to "<obfuscated>",
+                "&l" to "<bold>",
+                "&m" to "<strikethrough>",
+                "&n" to "<underline>",
+                "&o" to "<italic>",
+                "&r" to "<reset>"
+        )
+
+        fun formatMsg(msg: String, vararg replaceables: Replaceable): Component {
+            var newMsg = msg
+            for (replaceable in replaceables) {
+                newMsg = newMsg.replace(replaceable.placeholder, replaceable.value)
+            }
+
+            colorMap.forEach { (oldCode, newCode) ->
+                newMsg = newMsg.replace(oldCode, newCode)
+            }
+
+            val mm = MiniMessage.miniMessage()
+            return mm.deserialize("<!i>$newMsg")
+        }
+
+        fun getAndFormatMsg(addPrefix: Boolean, path: String, fallback: String?, vararg replaceables: Replaceable): Component {
+            val mm = MiniMessage.miniMessage()
+
+            var newPath = path
+            if (!path.contains("messages.")) newPath = "messages.$newPath"
+            val msgString = instance.config.getString(newPath)
+            var msg = "<!i>" + (msgString ?: fallback)
+
+            if (addPrefix) {
+                val prefixString = instance.config.getString("messages.prefix")
+                val prefix = prefixString ?: "&8[&cLifeStealZ&8]"
+                msg = "$prefix $msg"
+            }
+
+            for (replaceable in replaceables) {
+                msg = msg.replace(replaceable.placeholder, replaceable.value)
+            }
+
+            colorMap.forEach { (oldCode, newCode) ->
+                msg = msg.replace(oldCode, newCode)
+            }
+
+            return mm.deserialize(msg)
+        }
+
+        fun setPlaceholders(player: Player, message: String): String {
+            return if (hasPlaceholderApi) {
+                PlaceholderAPI.setPlaceholders(player, message)
+            } else {
+                message
+            }
         }
     }
 
@@ -73,7 +137,7 @@ class Lifestealz : JavaPlugin() {
 
         // Register bstats
         val pluginId = 18735
-        val metrics = Metrics(this, pluginId)
+        Metrics(this, pluginId)
 
         logger.info("LifestealZ has been loaded!")
     }
@@ -96,44 +160,38 @@ class Lifestealz : JavaPlugin() {
         settingsCommand!!.setExecutor(SettingsCommand(this))
         settingsCommand.tabCompleter = MyTabCompleter()
         settingsCommand.permissionMessage(
-            Component.text(
-                formatMsg(
-                    false,
-                    "messages.noPermissionError",
-                    "&7You successfully eliminated &c%player%&7!"
+                getAndFormatMsg(
+                        false,
+                        "messages.noPermissionError",
+                        "&7You successfully eliminated &c%player%&7!"
                 )
-            )
         )
 
         val eliminateCommand = getCommand("eliminate")
         eliminateCommand!!.setExecutor(EliminateCommand())
         eliminateCommand.tabCompleter = MyTabCompleter()
-        eliminateCommand.permissionMessage(Component.text(formatMsg(false,"messages.noPermissionError","&7You successfully eliminated &c%player%&7!")))
+        eliminateCommand.permissionMessage(getAndFormatMsg(false,"messages.noPermissionError","&7You successfully eliminated &c%player%&7!"))
 
         val reviveCommand = getCommand("revive")
         reviveCommand!!.setExecutor(ReviveCommand())
         reviveCommand.tabCompleter = MyTabCompleter()
         reviveCommand.permissionMessage(
-            Component.text(
-                formatMsg(
-                    false,
-                    "messages.noPermissionError",
-                    "&7You successfully eliminated &c%player%&7!"
+                getAndFormatMsg(
+                        false,
+                        "messages.noPermissionError",
+                        "&7You successfully eliminated &c%player%&7!"
                 )
-            )
         )
 
         val withdrawCommand = getCommand("withdrawheart")
         withdrawCommand!!.setExecutor(WithdrawCommand())
         withdrawCommand.tabCompleter = MyTabCompleter()
         withdrawCommand.permissionMessage(
-            Component.text(
-                formatMsg(
-                    false,
-                    "messages.noPermissionError",
-                    "&7You successfully eliminated &c%player%&7!"
+                getAndFormatMsg(
+                        false,
+                        "messages.noPermissionError",
+                        "&7You successfully eliminated &c%player%&7!"
                 )
-            )
         )
 
         logger.info("Commands have been registered!")
@@ -182,7 +240,7 @@ class Lifestealz : JavaPlugin() {
         Bukkit.addRecipe(heartRecipe)
     }
 
-    fun registerReviveRecipe() {
+    private fun registerReviveRecipe() {
         // Register reviveitem recipe if recipe is enabled
         if (!instance.config.getBoolean("allowReviveCrafting")) return
 
@@ -221,6 +279,12 @@ class Lifestealz : JavaPlugin() {
             #    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
             #    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
             
+            # !!! COLOR CODES !!!
+            # This plugin supports old color codes like: &c, &l, &o, etc
+            # It also supports minimessage, which is a more advanced way to format messages:
+            # https://docs.advntr.dev/minimessage/format.html
+            # With these, you can also add HEX colors, gradients, hover and click events, etc
+            
             #A list of worlds, where the plugin should take effect
             worlds:
               - "world"
@@ -232,6 +296,8 @@ class Lifestealz : JavaPlugin() {
             #The maximal amount of hearts, a player can have
             maxHearts: 20
             
+            #If hearts should be dropped instead of directly added to the killer
+            dropHearts: false
             #If a heart should be dropped, when the killer already has the max amount of hearts
             dropHeartsIfMax: true
             #If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
@@ -330,7 +396,7 @@ class Lifestealz : JavaPlugin() {
               setHeartsConfirm: "&7Successfully set &c%player%&7's hearts to &c%amount%"
               getHearts: "&c%player% &7currently has &c%amount% &7hearts!"
               reloadMsg: "&7Successfully reloaded the plugin!"
-              versionMsg: "&7You are using version %version%"
+              versionMsg: "&7You are using version <red>%version%"
               noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
               withdrawConfirmmsg: "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"
               maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"

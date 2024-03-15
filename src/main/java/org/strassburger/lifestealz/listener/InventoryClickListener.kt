@@ -11,9 +11,9 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.strassburger.lifestealz.Lifestealz
-import org.strassburger.lifestealz.Lifestealz.Companion.formatMsg
-import org.strassburger.lifestealz.util.ManageCustomItems
+import org.strassburger.lifestealz.Lifestealz.Companion.getAndFormatMsg
 import org.strassburger.lifestealz.util.ManagePlayerdata
+import org.strassburger.lifestealz.util.Replaceable
 import java.util.*
 
 class InventoryClickListener : Listener {
@@ -28,9 +28,7 @@ class InventoryClickListener : Listener {
 
             when(event.currentItem!!.type) {
                 Material.BARRIER -> {
-                    if (item!!.itemMeta.displayName == Lifestealz.formatMsg(false, "messages.closeBtn", "&cClose")) {
-                        event.inventory.close()
-                    }
+                    if (item!!.itemMeta.hasCustomModelData() && item.itemMeta.customModelData == 999) event.inventory.close()
                 }
 
                 else -> {}
@@ -46,9 +44,7 @@ class InventoryClickListener : Listener {
 
             when(event.currentItem!!.type) {
                 Material.BARRIER -> {
-                    if (item!!.itemMeta.displayName == Lifestealz.formatMsg(false, "messages.closeBtn", "&cClose")) {
-                        event.inventory.close()
-                    }
+                    if (item!!.itemMeta.hasCustomModelData() && item.itemMeta.customModelData == 999) event.inventory.close()
                 }
 
                 Material.PLAYER_HEAD -> {
@@ -81,15 +77,13 @@ class InventoryClickListener : Listener {
 
                     val reviveMaximum = Lifestealz.instance.config.getInt("maxRevives")
                     if (reviveMaximum != -1 && targetPlayerData.hasbeenRevived >= reviveMaximum) {
-                        player.sendMessage(Component.text(
-                            formatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!").replace("%amount%", targetPlayerData.hasbeenRevived.toString())
-                        ))
+                        player.sendMessage(getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", Replaceable("%amount%", targetPlayerData.hasbeenRevived.toString())))
                         event.isCancelled = true
                         return
                     }
 
                     if (targetPlayerData.maxhp > 0.0) {
-                        player.sendMessage(Component.text(formatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!")))
+                        player.sendMessage(getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"))
                         event.isCancelled = true
                         return
                     }
@@ -99,18 +93,18 @@ class InventoryClickListener : Listener {
 
                     event.inventory.close()
 
-                    player.sendMessage(Component.text(formatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!").replace("%player%", targetPlayer.name!!)))
+                    player.sendMessage(getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", Replaceable("%player%", targetPlayer.name!!)))
 
                     val mainHandItem = player.inventory.itemInMainHand
                     val offHandItem = player.inventory.itemInOffHand
 
                     if (isReviveCrystal(mainHandItem)) {
                         val itemStack = mainHandItem.clone()
-                        itemStack.amount = itemStack.amount - 1
+                        itemStack.amount -= 1
                         player.inventory.setItemInMainHand(itemStack)
                     } else if (isReviveCrystal(offHandItem)) {
                         val itemStack = offHandItem.clone()
-                        itemStack.amount = itemStack.amount - 1
+                        itemStack.amount -= 1
                         player.inventory.setItemInOffHand(itemStack)
                     }
                 }
@@ -123,8 +117,8 @@ class InventoryClickListener : Listener {
     }
 
     private fun throwPermissionError(sender: CommandSender) {
-        val usageMessage = formatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!")
-        sender.sendMessage(Component.text(usageMessage))
+        val usageMessage = getAndFormatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!")
+        sender.sendMessage(usageMessage)
     }
 
     private fun convertStringToUUID(uuidString: String): UUID? {
