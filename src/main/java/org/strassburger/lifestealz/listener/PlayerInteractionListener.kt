@@ -57,7 +57,7 @@ class PlayerInteractionListener : Listener {
                 }
 
                 if (isReviveCrystal(item)) {
-                    val dir = File("./plugins/lifestealz/userData")
+                    val dir: File = Lifestealz.instance.dataFolder
                     if (!dir.exists()) {
                         dir.mkdirs()
                     }
@@ -73,21 +73,21 @@ class PlayerInteractionListener : Listener {
 
                     addNavbar(inventory)
 
-                    //player.sendMessage(uuidList.toString())
+//                    player.sendMessage(uuidList.toString())
 
                     for (uuidString in uuidList) {
-                        //player.sendMessage(Component.text(uuidString))
+//                        player.sendMessage(Component.text(uuidString))
                         val uuid: UUID = convertStringToUUID(uuidString) ?: continue
 
                         val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
 
-                        //player.sendMessage(Component.text(offlinePlayer.name?: "no name"))
+//                        player.sendMessage(Component.text(offlinePlayer.name?: "no name"))
 
                         if (offlinePlayer.name == null) continue
 
                         val offlinePlayerData = ManagePlayerdata().getPlayerData(name = offlinePlayer.name!!, uuid = offlinePlayer.uniqueId.toString())
 
-                        //player.sendMessage(Component.text("Maxhp: " + offlinePlayerData.maxhp.toString()))
+//                        player.sendMessage(Component.text("Maxhp: " + offlinePlayerData.maxhp.toString()))
 
                         if (offlinePlayerData.maxhp > 0.0) continue
 
@@ -168,7 +168,7 @@ class PlayerInteractionListener : Listener {
         skullMeta.displayName(Component.text("§d" + offlinePlayer.name))
         val lines: MutableList<Component> = mutableListOf(
                 Lifestealz.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"),
-                Lifestealz.formatMsg("§8" + offlinePlayer.uniqueId.toString())
+                Lifestealz.formatMsg("<dark_gray>" + offlinePlayer.uniqueId.toString())
         )
         skullMeta.lore(lines)
         skullMeta.owningPlayer = offlinePlayer

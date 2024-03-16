@@ -22,13 +22,13 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Custom crafting recipes
 * ✅ Revive item
 * ✅ Maximal and starter hearts
-* ✅ Optional heart loss by natural death
 * ✅ Disable totems
 * ✅ Disable crystal pvp
 * ✅ Ingame recipe viewer
 * ✅ PlaceholderAPI placeholders
 * ✅ Custom WorldGuard flags 
 * ✅ Admin commands
+* ✅ HEX colors and gradients support
 
 <br>
 
@@ -65,6 +65,12 @@ Here is an example of the configuration file:
 #    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
 #    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
 
+# !!! COLOR CODES !!!
+# This plugin supports old color codes like: &c, &l, &o, etc
+# It also supports minimessage, which is a more advanced way to format messages:
+# https://docs.advntr.dev/minimessage/format.html
+# With these, you can also add HEX colors, gradients, hover and click events, etc
+
 #A list of worlds, where the plugin should take effect
 worlds:
   - "world"
@@ -78,6 +84,8 @@ maxHearts: 20
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
 
+#If hearts should be dropped instead of directly added to the killer
+dropHearts: false
 #If a heart should be dropped, when the killer already has the max amount of hearts
 dropHeartsIfMax: true
 #If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
@@ -178,7 +186,7 @@ messages:
   setHeartsConfirm: "&7Successfully set &c%player%&7's hearts to &c%amount%"
   getHearts: "&c%player% &7currently has &c%amount% &7hearts!"
   reloadMsg: "&7Successfully reloaded the plugin!"
-  versionMsg: "&7You are using version %version%"
+  versionMsg: "&7You are using version <red>%version%"
   noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
   withdrawConfirmmsg: "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"
   maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"

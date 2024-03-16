@@ -110,29 +110,6 @@ items:
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
 
-customHeartItems:
-  3hearts:
-    name: "<dark_red>3 <red>Hearts"
-    lore:
-      - "&7Rightclick to use"
-    material: "NETHER_STAR"
-    enchanted: true
-    customModelData: 105
-    craftable: true
-    recipe:
-      rowOne:
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-      rowTwo:
-        - "NETHERITE_INGOT"
-        - "NETHER_STAR"
-        - "NETHERITE_INGOT"
-      rowThree:
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-
 #You can modify all messages here
 messages:
   prefix: "&8[&cLifeStealZ&8]"

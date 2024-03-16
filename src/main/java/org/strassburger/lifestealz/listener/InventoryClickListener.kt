@@ -3,6 +3,7 @@ package org.strassburger.lifestealz.listener
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -48,8 +49,6 @@ class InventoryClickListener : Listener {
                 }
 
                 Material.PLAYER_HEAD -> {
-                    val playerdata = ManagePlayerdata().getPlayerData(name = player.name, uuid = player.uniqueId.toString())
-
                     if (!player.hasPermission("lifestealz.revive")) {
                         throwPermissionError(player)
                         return
@@ -92,6 +91,8 @@ class InventoryClickListener : Listener {
                     ManagePlayerdata().addRevive(name = targetPlayer.name!!, uuid = targetPlayer.uniqueId.toString())
 
                     event.inventory.close()
+
+                    player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f)
 
                     player.sendMessage(getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", Replaceable("%player%", targetPlayer.name!!)))
 
