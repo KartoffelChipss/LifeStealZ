@@ -17,9 +17,6 @@ class CraftItemListener(private val plugin: JavaPlugin) : Listener {
         if (event.whoClicked !is Player) return
         val player = event.whoClicked as Player
 
-        val heartRecipeKey = NamespacedKey(plugin, "heartrecipe")
-        val reviveRecipeKey = NamespacedKey(plugin, "reviverecipe")
-
         if (isHeart(event.recipe.result)) {
             val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
             if (worldWhitelisted == null || !worldWhitelisted) return

@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz.util
 
 import net.kyori.adventure.text.Component
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -30,7 +29,7 @@ class ManageCustomItems {
             itemMeta?.addEnchant(Enchantment.DURABILITY, 1, true)
         }
 
-        val heartLorelist = Lifestealz.instance.config.getStringList("items.heart.lore") ?: listOf<String>("&7Rightclick to use")
+        val heartLorelist = Lifestealz.instance.config.getStringList("items.heart.lore")
         val itemLore = mutableListOf<Component>()
         for (loreItem in heartLorelist) {
             itemLore.add(Lifestealz.formatMsg(loreItem))
@@ -65,7 +64,7 @@ class ManageCustomItems {
             itemMeta?.addEnchant(Enchantment.DURABILITY, 1, true)
         }
 
-        val heartLorelist = Lifestealz.instance.config.getStringList("items.revive.lore") ?: listOf<String>("&7Rightclick to use")
+        val heartLorelist = Lifestealz.instance.config.getStringList("items.revive.lore")
         val itemLore = mutableListOf<Component>()
         for (loreItem in heartLorelist) {
             itemLore.add(Lifestealz.formatMsg(loreItem))
@@ -90,7 +89,7 @@ class ManageCustomItems {
         val customItemMeta = customItem.itemMeta
         customItemMeta.displayName(name)
         customItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-        customItemMeta.lore = lore
+        customItemMeta.lore(lore.map { Lifestealz.formatMsg(it) })
         customItem.itemMeta = customItemMeta
 
         return customItem

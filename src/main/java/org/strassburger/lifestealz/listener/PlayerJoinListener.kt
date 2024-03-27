@@ -25,6 +25,10 @@ class PlayerJoinListener(private val plugin: JavaPlugin) : Listener {
         applyInvulnerability(player)
 
         setMaxHealth(player, playerData.maxhp)
+
+        if (player.isOp && Lifestealz.instance.config.getBoolean("checkForUpdates") && Lifestealz.NEW_VERSION_AVAILABLE) {
+            player.sendMessage(Lifestealz.getAndFormatMsg(true, "messages.newVersionAvailable", "&7A new version of LifeStealZ is available!\\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"))
+        }
     }
 
     private fun setMaxHealth(player: Player, maxHealth: Double) {

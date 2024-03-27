@@ -11,16 +11,20 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.java.JavaPlugin
+import org.json.simple.JSONArray
+import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 import org.strassburger.lifestealz.commands.EliminateCommand
 import org.strassburger.lifestealz.commands.ReviveCommand
 import org.strassburger.lifestealz.commands.SettingsCommand
 import org.strassburger.lifestealz.commands.WithdrawCommand
 import org.strassburger.lifestealz.listener.*
 import org.strassburger.lifestealz.util.*
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
+
 
 class Lifestealz : JavaPlugin() {
     companion object {
@@ -39,6 +43,9 @@ class Lifestealz : JavaPlugin() {
         // Used to identify items
         val HEART_KEY = NamespacedKey("lifesetalz", "heart")
         val REVIVEITEM_KEY = NamespacedKey("lifesetalz", "reviveitem")
+
+        val MODRINTH_PROJECT_URL = "https://api.modrinth.com/v2/project/l8Uv7FzS"
+        var NEW_VERSION_AVAILABLE : Boolean = false
 
         private val colorMap = mapOf(
                 "&0" to "<black>",
@@ -133,6 +140,14 @@ class Lifestealz : JavaPlugin() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             LifestealZpapi().register()
             logger.info("PlaceholderAPI found! Enabled PlaceholderAPI support!")
+        }
+
+        if (config.getBoolean("checkForUpdates")) {
+            val modrinthVersion = getLatestVersionFromModrinth()
+            if (modrinthVersion != null && modrinthVersion.trim().lowercase() != description.version.trim().lowercase()) {
+                logger.info("A new version of LifestealZ is available! Version: $modrinthVersion\nDownload the latest version here: https://modrinth.com/plugin/lifestealz/versions")
+                NEW_VERSION_AVAILABLE = true
+            }
         }
 
         // Register bstats
@@ -265,6 +280,106 @@ class Lifestealz : JavaPlugin() {
 
         Bukkit.addRecipe(reviveRecipe)
     }
+
+    private fun getLatestVersionFromModrinth(): String? {
+        try {
+            // Query project information
+            val projectUrl = URL(MODRINTH_PROJECT_URL)
+            val projectConnection = projectUrl.openConnection() as HttpURLConnection
+            projectConnection.requestMethod = "GET"
+            val projectResponseCode = projectConnection.responseCode
+            if (projectResponseCode == HttpURLConnection.HTTP_OK) {
+                val projectReader = BufferedReader(InputStreamReader(projectConnection.inputStream))
+                val projectResponse = StringBuilder()
+                var projectInputLine: String?
+                while (projectReader.readLine().also { projectInputLine = it } != null) {
+                    projectResponse.append(projectInputLine)
+                }
+                projectReader.close()
+
+                val parser = JSONParser()
+                // Parse JSON response to get the latest version ID
+                val projectJson = parser.parse(projectResponse.toString()) as JSONObject
+                val versionArray = projectJson["versions"] as JSONArray
+                val latestVersionId = versionArray[versionArray.size - 1] as String
+
+                // Query version details using latest version ID
+                val versionUrl = URL("$MODRINTH_PROJECT_URL/version/$latestVersionId")
+                val versionConnection = versionUrl.openConnection() as HttpURLConnection
+                versionConnection.requestMethod = "GET"
+                val versionResponseCode = versionConnection.responseCode
+                if (versionResponseCode == HttpURLConnection.HTTP_OK) {
+                    val versionReader = BufferedReader(InputStreamReader(versionConnection.inputStream))
+                    val versionResponse = StringBuilder()
+                    var versionInputLine: String?
+                    while (versionReader.readLine().also { versionInputLine = it } != null) {
+                        versionResponse.append(versionInputLine)
+                    }
+                    versionReader.close()
+
+                    // Parse JSON response to get the latest version number
+                    val versionJson = parser.parse(versionResponse.toString()) as JSONObject
+                    return versionJson["version_number"] as String
+                } else {
+                    logger.warning("Failed to retrieve version details from Modrinth. Response code: $versionResponseCode")
+                }
+            } else {
+                logger.warning("Failed to retrieve project information from Modrinth. Response code: $projectResponseCode")
+            }
+        } catch (e: Exception) {
+            logger.warning("Failed to check for updates: ${e.message}")
+        }
+        return null
+    }
+
+//    private fun getLatestVersionFromModrinth(): String? {
+//        try {
+//            // Query project information
+//            val projectUrl = URL(MODRINTH_PROJECT_URL)
+//            val projectConnection = projectUrl.openConnection() as HttpURLConnection
+//            projectConnection.requestMethod = "GET"
+//            val projectResponseCode = projectConnection.responseCode
+//            if (projectResponseCode == HttpURLConnection.HTTP_OK) {
+//                val projectReader = BufferedReader(InputStreamReader(projectConnection.inputStream))
+//                val projectResponse = StringBuilder()
+//                var projectInputLine: String?
+//                while (projectReader.readLine().also { projectInputLine = it } != null) {
+//                    projectResponse.append(projectInputLine)
+//                }
+//                projectReader.close()
+//
+//                // Parse JSON response to get the latest version ID
+//                val projectJson = JSONObject(projectResponse.toString())
+//                val latestVersionId = projectJson.getJSONArray("versions").getJSONObject(0).getString("id")
+//
+//                // Query version details using latest version ID
+//                val versionUrl = URL("$MODRINTH_PROJECT_URL/version/$latestVersionId")
+//                val versionConnection = versionUrl.openConnection() as HttpURLConnection
+//                versionConnection.requestMethod = "GET"
+//                val versionResponseCode = versionConnection.responseCode
+//                if (versionResponseCode == HttpURLConnection.HTTP_OK) {
+//                    val versionReader = BufferedReader(InputStreamReader(versionConnection.inputStream))
+//                    val versionResponse = StringBuilder()
+//                    var versionInputLine: String?
+//                    while (versionReader.readLine().also { versionInputLine = it } != null) {
+//                        versionResponse.append(versionInputLine)
+//                    }
+//                    versionReader.close()
+//
+//                    // Parse JSON response to get the latest version number
+//                    val versionJson = JSONObject(versionResponse.toString())
+//                    return versionJson.getString("version_number")
+//                } else {
+//                    logger.warning("Failed to retrieve version details from Modrinth. Response code: $versionResponseCode")
+//                }
+//            } else {
+//                logger.warning("Failed to retrieve project information from Modrinth. Response code: $projectResponseCode")
+//            }
+//        } catch (e: Exception) {
+//            logger.warning("Failed to check for updates: ${e.message}")
+//        }
+//        return null
+//    }
 
     private fun initializeConfig() {
         // Write config file if it is empty

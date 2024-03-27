@@ -53,6 +53,11 @@ class PlayerInteractionListener : Listener {
                     player.health += 2.0
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f)
 
+                    val heartuseCommands = Lifestealz.instance.config.getStringList("heartuseCommands")
+                    heartuseCommands.forEach {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name))
+                    }
+
                     if (Lifestealz.instance.config.getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT)
                 }
 

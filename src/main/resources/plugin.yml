@@ -3,8 +3,8 @@ version: '${project.version}'
 main: org.strassburger.lifestealz.Lifestealz
 api-version: 1.20
 author: Kartoffelchips
-authors: [Kartoffelchips]
-website: strassburger.org
+website: https://modrinth.com/plugin/lifestealz
+description: A LifeSteal SMP plugin providing you all the features you need!
 
 softdepend:
   - PlaceholderAPI

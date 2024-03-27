@@ -2,7 +2,6 @@ package org.strassburger.lifestealz.commands
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
@@ -60,9 +59,9 @@ class SettingsCommand(private val plugin: JavaPlugin) : CommandExecutor {
             if (sender.hasPermission("lifestealz.withdraw")) helpMessage += "\n&c/withdrawheart &8- &7withdraw a heart"
             helpMessage += "\n&8----------------------------------------------------\n&r "
 
-            helpMessage = ChatColor.translateAlternateColorCodes('&', helpMessage)
+            val helpMessageFormatted = Lifestealz.formatMsg(helpMessage)
 
-            sender.sendMessage(Component.text(helpMessage))
+            sender.sendMessage(helpMessageFormatted)
         }
 
         if (optionOne == "recipe") {

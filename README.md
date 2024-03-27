@@ -71,6 +71,8 @@ Here is an example of the configuration file:
 # https://docs.advntr.dev/minimessage/format.html
 # With these, you can also add HEX colors, gradients, hover and click events, etc
 
+checkForUpdates: true
+
 #A list of worlds, where the plugin should take effect
 worlds:
   - "world"
@@ -116,10 +118,19 @@ preventCrystalPVP: false
 disablePlayerBanOnElimination: false
 # The amount of hp a player should have after getting eliminated
 respawnHP: 10
-# The command that should be executed when a player gets eliminated
+
+# Execute custom commands on events:
 # You can use &player& to insert the player name
 # For example: tempban &player& banreason 1d
-eliminationCommand: say &player& got eliminated
+eliminationCommands:
+# - "say &player& got eliminated"
+# - "niceCommandtwo"
+
+heartuseCommands:
+# - "say &player& used a heart item"
+
+reviveuseCommands:
+# - "say &player& revived &target&"
 
 #Here you can modify everything about the custom items
 items:
@@ -173,6 +184,7 @@ items:
 #You can modify all messages here
 messages:
   prefix: "&8[&cLifeStealZ&8]"
+  newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
   usageError: "&cUsage: %usage%"
   noPermissionError: "&cYou don't have permission to use this!"
   noPlayerData: "&cThis player has not played on this server yet!"

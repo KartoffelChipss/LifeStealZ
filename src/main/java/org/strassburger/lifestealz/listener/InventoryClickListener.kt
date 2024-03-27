@@ -96,6 +96,11 @@ class InventoryClickListener : Listener {
 
                     player.sendMessage(getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", Replaceable("%player%", targetPlayer.name!!)))
 
+                    val reviveuseCommands = Lifestealz.instance.config.getStringList("reviveuseCommands")
+                    reviveuseCommands.forEach {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name).replace("&target&", targetPlayer.name!!))
+                    }
+
                     val mainHandItem = player.inventory.itemInMainHand
                     val offHandItem = player.inventory.itemInOffHand
 

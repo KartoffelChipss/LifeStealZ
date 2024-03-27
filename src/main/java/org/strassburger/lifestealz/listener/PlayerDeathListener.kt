@@ -66,6 +66,10 @@ class PlayerDeathListener : Listener {
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
             if (playerData.maxhp - 2.0 <= 0.0) {
+                val eleminationCommands = Lifestealz.instance.config.getStringList("eliminationCommands")
+                eleminationCommands.forEach {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name))
+                }
 
                 if (!disabledBanOnDeath) {
                     player.inventory.clear()
@@ -78,9 +82,7 @@ class PlayerDeathListener : Listener {
                     ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
                     return
                 } else {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), (Lifestealz.instance.config.getString("eliminationCommand")?: "say &player& got eliminated").replace("&player&", player.name))
                     var respawnHP = (Lifestealz.instance.config.getInt("respawnHP") * 2).toDouble()
-
                     if (respawnHP < 2.0) respawnHP = 2.0
 
                     ManagePlayerdata().manageHearts(player = player, direction = "set", amount = respawnHP)
@@ -95,6 +97,11 @@ class PlayerDeathListener : Listener {
         }
 
         if (Lifestealz.instance.config.getBoolean("looseHeartsToNature")) {
+            val eleminationCommands = Lifestealz.instance.config.getStringList("eliminationCommands")
+            eleminationCommands.forEach {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name))
+            }
+
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
             if (playerData.maxhp - 2.0 <= 0.0) {

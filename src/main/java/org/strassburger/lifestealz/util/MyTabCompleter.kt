@@ -32,8 +32,8 @@ class MyTabCompleter : TabCompleter {
                     return mutableListOf("heart", "revivecrystal")
                 }
             } else if (args.size == 4) {
-                if (args[1] == "hearts") {
-                    return mutableListOf("1", "5", "10")
+                if (args[0] == "hearts" || args[0] == "giveItem") {
+                    return mutableListOf("1", "32", "64")
                 }
             }
         }
