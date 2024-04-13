@@ -332,55 +332,6 @@ class Lifestealz : JavaPlugin() {
         return null
     }
 
-//    private fun getLatestVersionFromModrinth(): String? {
-//        try {
-//            // Query project information
-//            val projectUrl = URL(MODRINTH_PROJECT_URL)
-//            val projectConnection = projectUrl.openConnection() as HttpURLConnection
-//            projectConnection.requestMethod = "GET"
-//            val projectResponseCode = projectConnection.responseCode
-//            if (projectResponseCode == HttpURLConnection.HTTP_OK) {
-//                val projectReader = BufferedReader(InputStreamReader(projectConnection.inputStream))
-//                val projectResponse = StringBuilder()
-//                var projectInputLine: String?
-//                while (projectReader.readLine().also { projectInputLine = it } != null) {
-//                    projectResponse.append(projectInputLine)
-//                }
-//                projectReader.close()
-//
-//                // Parse JSON response to get the latest version ID
-//                val projectJson = JSONObject(projectResponse.toString())
-//                val latestVersionId = projectJson.getJSONArray("versions").getJSONObject(0).getString("id")
-//
-//                // Query version details using latest version ID
-//                val versionUrl = URL("$MODRINTH_PROJECT_URL/version/$latestVersionId")
-//                val versionConnection = versionUrl.openConnection() as HttpURLConnection
-//                versionConnection.requestMethod = "GET"
-//                val versionResponseCode = versionConnection.responseCode
-//                if (versionResponseCode == HttpURLConnection.HTTP_OK) {
-//                    val versionReader = BufferedReader(InputStreamReader(versionConnection.inputStream))
-//                    val versionResponse = StringBuilder()
-//                    var versionInputLine: String?
-//                    while (versionReader.readLine().also { versionInputLine = it } != null) {
-//                        versionResponse.append(versionInputLine)
-//                    }
-//                    versionReader.close()
-//
-//                    // Parse JSON response to get the latest version number
-//                    val versionJson = JSONObject(versionResponse.toString())
-//                    return versionJson.getString("version_number")
-//                } else {
-//                    logger.warning("Failed to retrieve version details from Modrinth. Response code: $versionResponseCode")
-//                }
-//            } else {
-//                logger.warning("Failed to retrieve project information from Modrinth. Response code: $projectResponseCode")
-//            }
-//        } catch (e: Exception) {
-//            logger.warning("Failed to check for updates: ${e.message}")
-//        }
-//        return null
-//    }
-
     private fun initializeConfig() {
         // Write config file if it is empty
 
@@ -400,6 +351,8 @@ class Lifestealz : JavaPlugin() {
             # https://docs.advntr.dev/minimessage/format.html
             # With these, you can also add HEX colors, gradients, hover and click events, etc
             
+            checkForUpdates: true
+            
             #A list of worlds, where the plugin should take effect
             worlds:
               - "world"
@@ -410,6 +363,8 @@ class Lifestealz : JavaPlugin() {
             startHearts: 10
             #The maximal amount of hearts, a player can have
             maxHearts: 20
+            # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
+            enforceMaxHeartsOnAdminCommands: false
             
             #If hearts should be dropped instead of directly added to the killer
             dropHearts: false
@@ -443,10 +398,19 @@ class Lifestealz : JavaPlugin() {
             disablePlayerBanOnElimination: false
             # The amount of hp a player should have after getting eliminated
             respawnHP: 10
-            # The command that should be executed when a player gets eliminated
-            # You can use %player% to insert the player name
-            # For example: tempban %player% banreason 1d
-            eliminationCommand: %player% got eliminated
+            
+            # Execute custom commands on events:
+            # You can use &player& to insert the player name
+            # For example: tempban &player& banreason 1d
+            eliminationCommands:
+              # - "say &player& got eliminated"
+              # - "niceCommandtwo"
+            
+            heartuseCommands:
+              # - "say &player& used a heart item"
+            
+            reviveuseCommands:
+              # - "say &player& revived &target&"
             
             #Here you can modify everything about the custom items
             items:
@@ -458,6 +422,7 @@ class Lifestealz : JavaPlugin() {
             #     - "And this possibly a third line"
                 material: "NETHER_STAR"
                 enchanted: false
+                customModelData: 100
                 recipe:
                   #Every item represents one slot in the crafting table
                   #The first item in a row is the left most item in the crafting table
@@ -481,6 +446,7 @@ class Lifestealz : JavaPlugin() {
                   - "&7Rightclick to use"
                 material: "AMETHYST_SHARD"
                 enchanted: true
+                customModelData: 101
                 recipe:
                   rowOne:
                     - "AMETHYST_SHARD"
@@ -498,6 +464,7 @@ class Lifestealz : JavaPlugin() {
             #You can modify all messages here
             messages:
               prefix: "&8[&cLifeStealZ&8]"
+              newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
               usageError: "&cUsage: %usage%"
               noPermissionError: "&cYou don't have permission to use this!"
               noPlayerData: "&cThis player has not played on this server yet!"
