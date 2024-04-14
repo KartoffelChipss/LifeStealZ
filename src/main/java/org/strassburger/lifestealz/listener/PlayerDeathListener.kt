@@ -97,14 +97,13 @@ class PlayerDeathListener : Listener {
         }
 
         if (Lifestealz.instance.config.getBoolean("looseHeartsToNature")) {
-            val eleminationCommands = Lifestealz.instance.config.getStringList("eliminationCommands")
-            eleminationCommands.forEach {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name))
-            }
-
             val playerData = ManagePlayerdata().getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
             if (playerData.maxhp - 2.0 <= 0.0) {
+                val eleminationCommands = Lifestealz.instance.config.getStringList("eliminationCommands")
+                eleminationCommands.forEach {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("&player&", player.name))
+                }
 
                 if (!disabledBanOnDeath) {
                     val kickmsg = Lifestealz.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!")
@@ -113,11 +112,16 @@ class PlayerDeathListener : Listener {
                         val elimAannouncementMsg = Lifestealz.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", Replaceable("%player%", player.name))
                         Bukkit.broadcast(elimAannouncementMsg)
                     }
+                    ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
                 } else {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "say Test")
+                    var respawnHP = (Lifestealz.instance.config.getInt("respawnHP") * 2).toDouble()
+                    if (respawnHP < 2.0) respawnHP = 2.0
+
+                    ManagePlayerdata().manageHearts(player = player, direction = "set", amount = respawnHP)
+                    player.maxHealth = respawnHP
+                    return
                 }
 
-                ManagePlayerdata().manageHearts(player = player, direction = "set", amount = 0.0)
                 return
             }
 
