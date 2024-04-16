@@ -186,6 +186,9 @@ messages:
   prefix: "&8[&cLifeStealZ&8]"
   newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
   usageError: "&cUsage: %usage%"
+  playerNotFound: "&cPlayer not found!"
+  worldNotWhitelisted: "&cThis world is not whitelisted for LifeStealZ!"
+  specifyPlayerOrBePlayer: "&cYou need to either specify a player or be a player yourself!"
   noPermissionError: "&cYou don't have permission to use this!"
   noPlayerData: "&cThis player has not played on this server yet!"
   eliminateSuccess: "&7You successfully eliminated &c%player%&7!"
@@ -205,6 +208,8 @@ messages:
   closeBtn: "&cClose"
   reviveTitle: "&8Revive a player"
   revivePlayerDesc: "&7Click to revive this player"
+  viewheartsYou: "&7You currently have &c%amount% &7hearts!"
+  viewheartsOther: "&c%player% &7currently has &c%amount% &7hearts!"
 ```
 </details>
 
