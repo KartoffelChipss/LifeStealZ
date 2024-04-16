@@ -25,16 +25,16 @@ class PlayerInteractionListener : Listener {
 
         val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
 
-        if (worldWhitelisted == null || !worldWhitelisted) {
-            player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"))
-            return
-        }
-
         if (event.action.isRightClick) { // Check if it's a right-click event
             val item = event.item
 
             if (item != null) {
                 if (isHeart(item)) {
+                    if (worldWhitelisted == null || !worldWhitelisted) {
+                        player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"))
+                        return
+                    }
+
                     val playerdata = ManagePlayerdata().getPlayerData(name = player.name, uuid = player.uniqueId.toString())
 
                     val configLimit = Lifestealz.instance.config.getInt("maxHearts")
@@ -66,6 +66,11 @@ class PlayerInteractionListener : Listener {
                 }
 
                 if (isReviveCrystal(item)) {
+                    if (worldWhitelisted == null || !worldWhitelisted) {
+                        player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"))
+                        return
+                    }
+
                     val dir: File = Lifestealz.instance.dataFolder
                     if (!dir.exists()) {
                         dir.mkdirs()
