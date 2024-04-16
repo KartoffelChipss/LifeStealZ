@@ -14,10 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import org.strassburger.lifestealz.commands.EliminateCommand
-import org.strassburger.lifestealz.commands.ReviveCommand
-import org.strassburger.lifestealz.commands.SettingsCommand
-import org.strassburger.lifestealz.commands.WithdrawCommand
+import org.strassburger.lifestealz.commands.*
 import org.strassburger.lifestealz.listener.*
 import org.strassburger.lifestealz.util.*
 import java.io.*
@@ -178,14 +175,14 @@ class Lifestealz : JavaPlugin() {
                 getAndFormatMsg(
                         false,
                         "messages.noPermissionError",
-                        "&7You successfully eliminated &c%player%&7!"
+                        "&cYou don't have permission to use this!"
                 )
         )
 
         val eliminateCommand = getCommand("eliminate")
         eliminateCommand!!.setExecutor(EliminateCommand())
         eliminateCommand.tabCompleter = MyTabCompleter()
-        eliminateCommand.permissionMessage(getAndFormatMsg(false,"messages.noPermissionError","&7You successfully eliminated &c%player%&7!"))
+        eliminateCommand.permissionMessage(getAndFormatMsg(false,"messages.noPermissionError","&cYou don't have permission to use this!"))
 
         val reviveCommand = getCommand("revive")
         reviveCommand!!.setExecutor(ReviveCommand())
@@ -194,7 +191,7 @@ class Lifestealz : JavaPlugin() {
                 getAndFormatMsg(
                         false,
                         "messages.noPermissionError",
-                        "&7You successfully eliminated &c%player%&7!"
+                        "&cYou don't have permission to use this!"
                 )
         )
 
@@ -205,8 +202,19 @@ class Lifestealz : JavaPlugin() {
                 getAndFormatMsg(
                         false,
                         "messages.noPermissionError",
-                        "&7You successfully eliminated &c%player%&7!"
+                        "&cYou don't have permission to use this!"
                 )
+        )
+
+        val heartCommand = getCommand("hearts")
+        heartCommand!!.setExecutor(HeartCommand())
+        heartCommand.tabCompleter = MyTabCompleter()
+        heartCommand.permissionMessage(
+            getAndFormatMsg(
+                false,
+                "messages.noPermissionError",
+                "&cYou don't have permission to use this!"
+            )
         )
 
         logger.info("Commands have been registered!")
@@ -225,6 +233,7 @@ class Lifestealz : JavaPlugin() {
         server.pluginManager.registerEvents(InventoryClickListener(), this)
         server.pluginManager.registerEvents(InventoryCloseListener(), this)
         server.pluginManager.registerEvents(CraftItemListener(this), this)
+        server.pluginManager.registerEvents(WorldSwitchListener(), this)
 
         logger.info("Events have been registered!")
     }

@@ -28,6 +28,10 @@ commands:
     permission: lifestealz.withdraw
     description: withdraw a heart
     permission-message: §cYou don't have permission to use this command!
+  hearts:
+    permission: lifestealz.viewhearts
+    description: view other players max hearts
+    permission-message: §cYou don't have permission to use this command!
 
 permissions:
   lifestealz.admin.reload:
@@ -59,4 +63,7 @@ permissions:
     default: true
   lifestealz.help:
     description: allows to see help page
+    default: true
+  lifestealz.viewhearts:
+    description: allows to view other players max hearts
     default: true

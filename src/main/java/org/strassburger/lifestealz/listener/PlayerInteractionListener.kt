@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.listener
 
 import net.kyori.adventure.text.Component
 import org.bukkit.*
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
@@ -24,7 +25,10 @@ class PlayerInteractionListener : Listener {
 
         val worldWhitelisted = Lifestealz.instance.config.getList("worlds")?.contains(player.location.world.name)
 
-        if (worldWhitelisted == null || !worldWhitelisted) return
+        if (worldWhitelisted == null || !worldWhitelisted) {
+            player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"))
+            return
+        }
 
         if (event.action.isRightClick) { // Check if it's a right-click event
             val item = event.item
@@ -40,7 +44,7 @@ class PlayerInteractionListener : Listener {
                     }
 
                     val itemStack = item.clone() // Create a copy of the item
-                    itemStack.amount = itemStack.amount - 1
+                    itemStack.amount -= 1
 
                     if (player.inventory.itemInMainHand == item) {
                         player.inventory.setItemInMainHand(itemStack)
@@ -110,11 +114,7 @@ class PlayerInteractionListener : Listener {
         val itemMeta = item.itemMeta
 
         if (itemMeta != null && itemMeta.persistentDataContainer.has(Lifestealz.HEART_KEY, PersistentDataType.STRING)) {
-            val swordIdentifier = itemMeta.persistentDataContainer.get(Lifestealz.HEART_KEY, PersistentDataType.STRING)
-
-            // Compare the sword identifier with your predefined value
-            val predefinedIdentifier = "heart"
-            return swordIdentifier == predefinedIdentifier
+            return itemMeta.persistentDataContainer.get(Lifestealz.HEART_KEY, PersistentDataType.STRING) == "heart"
         }
 
         return false
@@ -124,11 +124,7 @@ class PlayerInteractionListener : Listener {
         val itemMeta = item.itemMeta
 
         if (itemMeta != null && itemMeta.persistentDataContainer.has(Lifestealz.REVIVEITEM_KEY, PersistentDataType.STRING)) {
-            val swordIdentifier = itemMeta.persistentDataContainer.get(Lifestealz.REVIVEITEM_KEY, PersistentDataType.STRING)
-
-            // Compare the sword identifier with your predefined value
-            val predefinedIdentifier = "reviveitem"
-            return swordIdentifier == predefinedIdentifier
+            return itemMeta.persistentDataContainer.get(Lifestealz.REVIVEITEM_KEY, PersistentDataType.STRING) == "reviveitem"
         }
 
         return false

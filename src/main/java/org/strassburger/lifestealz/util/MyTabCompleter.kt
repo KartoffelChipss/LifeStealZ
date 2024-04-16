@@ -47,6 +47,8 @@ class MyTabCompleter : TabCompleter {
             }
         }
 
+        if (command.name.equals("hearts", ignoreCase = true) && args.size == 1) return null
+
         return mutableListOf<String>()
     }
 }
