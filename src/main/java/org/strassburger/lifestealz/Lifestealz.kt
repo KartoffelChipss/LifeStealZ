@@ -36,6 +36,8 @@ class Lifestealz : JavaPlugin() {
         val recipeGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
         val reviveGuiMap: MutableMap<UUID, Inventory> = mutableMapOf()
 
+        val heartconsumeMap: MutableMap<UUID, Long> = mutableMapOf()
+
         // Namespace keys for custom items
         // Used to identify items
         val HEART_KEY = NamespacedKey("lifesetalz", "heart")
@@ -87,7 +89,6 @@ class Lifestealz : JavaPlugin() {
             val mm = MiniMessage.miniMessage()
 
             var newPath = path
-            if (!path.contains("messages.")) newPath = "messages.$newPath"
             val msgString = instance.config.getString(newPath)
             var msg = "<!i>" + (msgString ?: fallback)
 
@@ -392,6 +393,8 @@ class Lifestealz : JavaPlugin() {
             allowDyingFromWithdraw: true
             #If the totem effect should be played, when you use a heart
             playTotemEffect: false
+            #The time you have to wait, before you can use another heart in Milliseconds
+            heartCooldown: 0
             
             #How many times a player can be revived. Set to -1 to make it infinite
             maxRevives: -1
@@ -499,6 +502,8 @@ class Lifestealz : JavaPlugin() {
               revivePlayerDesc: "&7Click to revive this player"
               viewheartsYou: "&7You currently have &c%amount% &7hearts!"
               viewheartsOther: "&c%player% &7currently has &c%amount% &7hearts!"
+              heartconsume: "&7You got &c%amount% &7hearts!"
+              heartconsumeCooldown: "&cYou have to wait before using another heart!"
         """.trimIndent()
 
         if (f.length().toInt() == 0) {

@@ -14,19 +14,19 @@ class ManageCustomItems {
         val material = Material.valueOf(Lifestealz.instance.config.getString("items.heart.material") ?: "NETHER_STAR")
         val itemStack = ItemStack(material, 1)
 
-        val itemMeta: ItemMeta? = itemStack.itemMeta
+        val itemMeta: ItemMeta = itemStack.itemMeta
 
         // Set the sword identifier using NBT tags
         val predefinedIdentifier = "heart"
-        itemMeta?.persistentDataContainer?.set(Lifestealz.HEART_KEY, PersistentDataType.STRING, predefinedIdentifier)
+        itemMeta.persistentDataContainer.set(Lifestealz.HEART_KEY, PersistentDataType.STRING, predefinedIdentifier)
 
         // Set the display name and lore
-        val itemDisplayName = Lifestealz.getAndFormatMsg(false, "items.heart.name", "&cHeart")
-        itemMeta?.displayName(itemDisplayName)
+        val itemDisplayName : Component = Lifestealz.getAndFormatMsg(false, "items.heart.name", "&cHeart")
+        itemMeta.displayName(itemDisplayName)
 
         if (Lifestealz.instance.config.getBoolean("items.heart.enchanted")) {
-            itemMeta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            itemMeta?.addEnchant(Enchantment.DURABILITY, 1, true)
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+            itemMeta.addEnchant(Enchantment.DURABILITY, 1, true)
         }
 
         val heartLorelist = Lifestealz.instance.config.getStringList("items.heart.lore")
@@ -34,11 +34,11 @@ class ManageCustomItems {
         for (loreItem in heartLorelist) {
             itemLore.add(Lifestealz.formatMsg(loreItem))
         }
-        itemMeta?.lore(itemLore)
+        itemMeta.lore(itemLore)
 
-        itemMeta?.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
-        itemMeta?.setCustomModelData(Lifestealz.instance.config.getInt("items.heart.customModelData"))
+        itemMeta.setCustomModelData(Lifestealz.instance.config.getInt("items.heart.customModelData"))
 
         itemStack.itemMeta = itemMeta
 

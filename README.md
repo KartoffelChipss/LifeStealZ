@@ -46,6 +46,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 - **lifestealz.revive** - Allow a player to revive others with a revive crystal (true by default)
 - **lifestealz.viewrecipes** - Allow a player to view the custom recipes (true by default)
 - **lifestealz.help** - Allow a player to access the help menu (true by default)
+- **lifestealz.viewhearts** - Allow a player to view the amount of hearts (`/hearts``) he has (true by default)
 
 <br>
 
@@ -103,6 +104,8 @@ allowHeartCrafting: true
 allowDyingFromWithdraw: true
 #If the totem effect should be played, when you use a heart
 playTotemEffect: false
+#The time you have to wait, before you can use another heart in Milliseconds
+heartCooldown: 0
 
 #How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
@@ -210,6 +213,8 @@ messages:
   revivePlayerDesc: "&7Click to revive this player"
   viewheartsYou: "&7You currently have &c%amount% &7hearts!"
   viewheartsOther: "&c%player% &7currently has &c%amount% &7hearts!"
+  heartconsume: "&7You got &c%amount% &7hearts!"
+  heartconsumeCooldown: "&cYou have to wait before using another heart!"
 ```
 </details>
 
