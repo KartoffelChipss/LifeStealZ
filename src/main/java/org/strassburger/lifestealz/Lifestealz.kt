@@ -129,6 +129,8 @@ class Lifestealz : JavaPlugin() {
         registerEvents()
 
         initializeConfig()
+        ManagePlayerdata.initializeDatabase()
+        DataMigration.migrateData()
 
         registerHeartRecipe()
         registerReviveRecipe()
