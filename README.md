@@ -251,6 +251,8 @@ If you need help with the setup of the plugin, or found a bug, you can join my d
 
 [![discord-plural](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/social/discord-plural_vector.svg)](https://strassburger.org/discord)
 
+[Spigot Page](https://www.spigotmc.org/resources/lifestealz.111469/)
+
 ---
 
 [![Usage](https://bstats.org/signatures/bukkit/LifeStealZ.svg)](https://bstats.org/plugin/bukkit/LifeStealZ/18735)
