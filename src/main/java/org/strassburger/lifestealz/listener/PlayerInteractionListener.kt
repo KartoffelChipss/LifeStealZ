@@ -35,6 +35,12 @@ class PlayerInteractionListener : Listener {
                         return
                     }
 
+                    val timeoutTime = Lifestealz.instance.config.getLong("heartCooldown")
+                    if (Lifestealz.heartconsumeMap.get(player.uniqueId) != null && (Lifestealz.heartconsumeMap.get(player.uniqueId) as Long) + timeoutTime > System.currentTimeMillis()) {
+                        player.sendMessage(Lifestealz.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"))
+                        return
+                    }
+
                     val playerdata = ManagePlayerdata().getPlayerData(name = player.name, uuid = player.uniqueId.toString())
 
                     val configLimit = Lifestealz.instance.config.getInt("maxHearts")
@@ -63,6 +69,9 @@ class PlayerInteractionListener : Listener {
                     }
 
                     if (Lifestealz.instance.config.getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT)
+
+                    player.sendMessage(Lifestealz.getAndFormatMsg(true, "messages.heartconsume", "&7Cansumed a heart and got &c%amount% &7hearts!", Replaceable("%amount%", "1")))
+                    Lifestealz.heartconsumeMap.put(player.uniqueId, System.currentTimeMillis())
                 }
 
                 if (isReviveCrystal(item)) {
