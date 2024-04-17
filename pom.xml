@@ -6,7 +6,7 @@
 
     <groupId>org.strassburger</groupId>
     <artifactId>lifestealz</artifactId>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <packaging>jar</packaging>
 
     <name>lifestealz</name>
@@ -160,6 +160,11 @@
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.3.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,57 +1,72 @@
 package org.strassburger.lifestealz.util
 
-import com.google.gson.GsonBuilder
 import org.bukkit.entity.Player
 import org.strassburger.lifestealz.Lifestealz
 import org.strassburger.lifestealz.util.data.PlayerData
-import java.io.File
-import java.io.IOException
+import java.sql.Connection
+import java.sql.DriverManager
+
 
 class ManagePlayerdata {
-    fun getPlayerData(uuid: String, name: String) : PlayerData {
-        val playerdata = PlayerData(name = name, uuid = uuid)
 
-        val file: File
-        val gson = GsonBuilder().setPrettyPrinting().create()
-        val json = gson.toJson(playerdata)
-
-        val dir = File(Lifestealz.instance.dataFolder, "userData")
-        if (!dir.exists()) {
-            dir.mkdirs()
+    companion object {
+        fun initializeDatabase() {
+            val plugin = Lifestealz.instance;
+            val pluginFolderPath = plugin.dataFolder.path
+            val connection = DriverManager.getConnection("jdbc:sqlite:$pluginFolderPath/userData.db")
+            val statement = connection.createStatement()
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid TEXT PRIMARY KEY, name TEXT, maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER)")
         }
-
-        file = File(dir, "${uuid}.json")
-        if (!file.exists()) {
-            try {
-                file.createNewFile()
-                file.writeText(json)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
-        val newJson = file.readText()
-        return gson.fromJson(newJson, PlayerData::class.java)
     }
 
-    fun checkForPlayer(uuid: String) : Boolean {
-        val dir = File(Lifestealz.instance.dataFolder, "userData")
-        if (!dir.exists()) {
-            dir.mkdirs()
+    private fun createConnection(): Connection? {
+        val pluginFolderPath = Lifestealz.instance.dataFolder.path
+        return try {
+            DriverManager.getConnection("jdbc:sqlite:$pluginFolderPath/userData.db");
+        } catch (e: Exception) {
+            Lifestealz.instance.logger.severe("Failed to create a database connection: " + e.message)
+            null
         }
-        val file: File = File(dir, "${uuid}.json")
+    }
 
-        return file.exists()
+    fun getPlayerData(uuid: String, name: String): PlayerData {
+        val playerdata = PlayerData(name = name, uuid = uuid)
+
+        createConnection().use { conn ->
+            conn!!.createStatement().use { stmt ->
+                val rs = stmt.executeQuery("SELECT * FROM hearts WHERE uuid = '$uuid'")
+                if (rs.next()) {
+                    playerdata.name = rs.getString("name")
+                    playerdata.maxhp = rs.getDouble("maxhp")
+                    playerdata.hasbeenRevived = rs.getInt("hasbeenRevived")
+                    playerdata.craftedHearts = rs.getInt("craftedHearts")
+                    playerdata.craftedRevives = rs.getInt("craftedRevives")
+                    playerdata.killedOtherPlayers = rs.getInt("killedOtherPlayers")
+                }
+            }
+        }
+        return playerdata
+    }
+
+
+    fun checkForPlayer(uuid: String): Boolean {
+        createConnection().use { conn ->
+            conn!!.createStatement().use { stmt ->
+                val rs = stmt.executeQuery("SELECT * FROM hearts WHERE uuid = '$uuid'")
+                return rs.next()
+            }
+        }
     }
 
     fun savePlayerData(playerData: PlayerData) {
-        val gson = GsonBuilder().setPrettyPrinting().create()
-        val json = gson.toJson(playerData)
-        val userDataFolder = File(Lifestealz.instance.dataFolder, "userData")
-        File(userDataFolder, "${playerData.uuid}.json").writeText(json)
+        createConnection().use { conn ->
+            conn!!.createStatement().use { stmt ->
+                stmt.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('${playerData.uuid}','${playerData.name}', ${playerData.maxhp}, ${playerData.hasbeenRevived}, ${playerData.craftedHearts}, ${playerData.craftedRevives}, ${playerData.killedOtherPlayers})")
+            }
+        }
     }
 
-    fun manageHearts(player: Player, direction: String, amount: Double) : PlayerData {
+    fun manageHearts(player: Player, direction: String, amount: Double): PlayerData {
         val playerdata = getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
         if (direction == "inc" || direction == "add") {
@@ -66,7 +81,7 @@ class ManagePlayerdata {
         return playerdata
     }
 
-    fun manageOfflineHearts(name: String, uuid: String, direction: String, amount: Double) : PlayerData {
+    fun manageOfflineHearts(name: String, uuid: String, direction: String, amount: Double): PlayerData {
         val playerdata = getPlayerData(uuid = uuid, name = name)
 
         if (direction == "inc") {
@@ -81,7 +96,7 @@ class ManagePlayerdata {
         return playerdata
     }
 
-    fun addRevive(name: String, uuid: String) : PlayerData {
+    fun addRevive(name: String, uuid: String): PlayerData {
         val playerdata = getPlayerData(uuid = uuid, name = name)
 
         playerdata.hasbeenRevived += 1
@@ -90,7 +105,7 @@ class ManagePlayerdata {
         return playerdata
     }
 
-    fun addHeartCraft(player: Player) : PlayerData {
+    fun addHeartCraft(player: Player): PlayerData {
         val playerdata = getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
         playerdata.craftedHearts += 1
@@ -99,7 +114,7 @@ class ManagePlayerdata {
         return playerdata
     }
 
-    fun addReviveCraft(player: Player) : PlayerData {
+    fun addReviveCraft(player: Player): PlayerData {
         val playerdata = getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
         playerdata.craftedRevives += 1
@@ -108,7 +123,7 @@ class ManagePlayerdata {
         return playerdata
     }
 
-    fun addKill(player: Player) : PlayerData {
+    fun addKill(player: Player): PlayerData {
         val playerdata = getPlayerData(uuid = player.uniqueId.toString(), name = player.name)
 
         playerdata.killedOtherPlayers += 1
