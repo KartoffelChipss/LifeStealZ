@@ -126,14 +126,20 @@ respawnHP: 10
 # You can use &player& to insert the player name
 # For example: tempban &player& banreason 1d
 eliminationCommands:
-# - "say &player& got eliminated"
-# - "niceCommandtwo"
+  # - "say &player& got eliminated"
+  # - "niceCommandtwo"
 
 heartuseCommands:
-# - "say &player& used a heart item"
+  # - "say &player& used a heart item"
+
+heartuseSound:
+  enabled: true
+  sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+  volume: 1.0
+  pitch: 1.0
 
 reviveuseCommands:
-# - "say &player& revived &target&"
+  # - "say &player& revived &target&"
 
 #Here you can modify everything about the custom items
 items:
@@ -141,8 +147,8 @@ items:
     name: "&cHeart"
     lore:
       - "&7Rightclick to use"
-    #     - "This would be a second line"
-    #     - "And this possibly a third line"
+#     - "This would be a second line"
+#     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
     customModelData: 100
