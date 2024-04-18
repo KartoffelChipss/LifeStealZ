@@ -71,6 +71,12 @@ eliminationCommands:
 heartuseCommands:
   # - "say &player& used a heart item"
 
+heartuseSound:
+  enabled: true
+  sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+  volume: 1.0
+  pitch: 1.0
+
 reviveuseCommands:
   # - "say &player& revived &target&"
 

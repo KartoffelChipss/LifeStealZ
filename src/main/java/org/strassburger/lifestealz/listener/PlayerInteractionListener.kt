@@ -61,7 +61,13 @@ class PlayerInteractionListener : Listener {
                     ManagePlayerdata().manageHearts(player = player, amount = 2.0, direction = "inc")
                     player.maxHealth += 2.0
                     player.health += 2.0
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f)
+
+                    if (Lifestealz.instance.config.getBoolean("heartuseSound.enabled")) {
+                        val sound = Sound.valueOf(Lifestealz.instance.config.getString("heartuseSound.sound")!!)
+                        val volume = Lifestealz.instance.config.getDouble("heartuseSound.volume").toFloat()
+                        val pitch = Lifestealz.instance.config.getDouble("heartuseSound.pitch").toFloat()
+                        player.playSound(player.location, sound, volume, pitch)
+                    }
 
                     val heartuseCommands = Lifestealz.instance.config.getStringList("heartuseCommands")
                     heartuseCommands.forEach {
