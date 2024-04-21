@@ -1,8 +1,8 @@
 package org.strassburger.lifestealz.util;
 
 public class Replaceable {
-    private String placeholder;
-    private String value;
+    private final String placeholder;
+    private final String value;
 
     public Replaceable(String placeholder, String value) {
         this.placeholder = placeholder;

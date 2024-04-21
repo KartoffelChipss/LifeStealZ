@@ -65,32 +65,42 @@ respawnHP: 10
 # You can use &player& to insert the player name
 # For example: tempban &player& banreason 1d
 eliminationCommands:
-  # - "say &player& got eliminated"
-  # - "niceCommandtwo"
+# - "say &player& got eliminated"
+# - "niceCommandtwo"
 
 heartuseCommands:
-  # - "say &player& used a heart item"
-
-heartuseSound:
-  enabled: true
-  sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-  volume: 1.0
-  pitch: 1.0
+# - "say &player& used a heart item"
 
 reviveuseCommands:
-  # - "say &player& revived &target&"
+# - "say &player& revived &target&"
+
+storage:
+  # The type of storage to use. You have the following options:
+  # "SQLite"
+  type: "SQLite"
+
+  # This section is only relevant if you use a MySQL database
+  host: "localhost"
+  port: 3306
+  database: "lifestealz"
+  username: "root"
+  password: "password"
 
 #Here you can modify everything about the custom items
 items:
-  heart:
+  defaultheart:
     name: "&cHeart"
     lore:
       - "&7Rightclick to use"
-#     - "This would be a second line"
-#     - "And this possibly a third line"
+    #     - "This would be a second line"
+    #     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
     customModelData: 100
+    # Custom item type for the item ("heart" or "revive")
+    customItemType: "heart"
+    # When customItemType is "heart", this value is used to determine how many hearts the item gives
+    customHeartValue: 1
     recipe:
       #Every item represents one slot in the crafting table
       #The first item in a row is the left most item in the crafting table
@@ -115,6 +125,8 @@ items:
     material: "AMETHYST_SHARD"
     enchanted: true
     customModelData: 101
+    customItemType: "revive"
+    customHeartValue: 0
     recipe:
       rowOne:
         - "AMETHYST_SHARD"
@@ -128,6 +140,8 @@ items:
         - "AMETHYST_SHARD"
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
+
+  # You can add as many custom items as you want
 
 #You can modify all messages here
 messages:
