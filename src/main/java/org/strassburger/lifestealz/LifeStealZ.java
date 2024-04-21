@@ -1,6 +1,9 @@
 package org.strassburger.lifestealz;
 
 import org.bstats.bukkit.Metrics;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.util.CommandManager;
@@ -72,5 +75,13 @@ public final class LifeStealZ extends JavaPlugin {
 
         getLogger().info("Using SQLite storage");
         return new SQLitePlayerDataStorage();
+    }
+
+    public static void setMaxHealth(Player player, double maxHealth) {
+        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attribute != null) {
+            attribute.setBaseValue(maxHealth);
+            player.setHealthScale(maxHealth);
+        }
     }
 }

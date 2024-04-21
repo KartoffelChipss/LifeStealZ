@@ -57,7 +57,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            String helpMessage = "<reset></italic></bold> \n&8----------------------------------------------------\n&c&lLifeStealZ &7help page\n&8----------------------------------------------------";
+            String helpMessage = "<reset><!i><!b> \n&8----------------------------------------------------\n&c&lLifeStealZ &7help page<!b>\n&8----------------------------------------------------";
             helpMessage += "\n&c/lifestealz help &8- &7open this menu";
             if (sender.hasPermission("lifestealz.admin.reload"))
                 helpMessage += "\n&c/lifestealz reload &8- &7reload the config";
@@ -72,7 +72,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("lifestealz.admin.eliminate"))
                 helpMessage += "\n&c/eliminate &8- &7eliminate a player";
             if (sender.hasPermission("lifestealz.withdraw")) helpMessage += "\n&c/withdrawheart &8- &7withdraw a heart";
-            helpMessage += "\n&8----------------------------------------------------\n<reset></italic></bold> ";
+            helpMessage += "\n&8----------------------------------------------------\n<reset><!i><!b> ";
 
             Component helpMessageFormatted = MessageUtils.formatMsg(helpMessage);
 
@@ -164,7 +164,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
                     targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() + (amount * 2));
                     playerDataStorage.save(targetPlayerData);
-                    setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                     finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
                     break;
                 }
@@ -182,7 +182,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
                     targetPlayerData.setMaxhp(amount * 2);
                     playerDataStorage.save(targetPlayerData);
-                    setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                     break;
                 }
                 case "remove": {
@@ -193,7 +193,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
                     targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() - (amount * 2));
                     playerDataStorage.save(targetPlayerData);
-                    setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                     finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
                     break;
                 }
@@ -273,14 +273,6 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     private void throwPermissionError(CommandSender sender) {
         Component msg = MessageUtils.getAndFormatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!");
         sender.sendMessage(msg);
-    }
-
-    private void setMaxHealth(Player player, double maxHealth) {
-        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (attribute != null) {
-            attribute.setBaseValue(maxHealth);
-            player.setHealthScale(maxHealth);
-        }
     }
 
 

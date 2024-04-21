@@ -53,4 +53,12 @@ public class CustomItemManager {
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES)
                 .getItemStack();
     }
+
+    public static boolean isHeartItem(ItemStack item) {
+        return item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
+    }
+
+    public static boolean isReviveItem(ItemStack item) {
+        return item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
+    }
 }
