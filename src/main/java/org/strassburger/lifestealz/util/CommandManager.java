@@ -11,6 +11,9 @@ public class CommandManager {
 
     private CommandManager() {}
 
+    /**
+     * Registers all commands
+     */
     public static void registerCommands() {
         registerCommand("lifestealz", new SettingsCommand(), new SettingsCommand());
         registerCommand("hearts", new HeartCommand(), new HeartCommand());
@@ -19,13 +22,20 @@ public class CommandManager {
         registerCommand("eliminate", new EliminateCommand(), new EliminateCommand());
     }
 
+    /**
+     * Registers a command
+     *
+     * @param name The name of the command
+     * @param executor The executor of the command
+     * @param tabCompleter The tab completer of the command
+     */
     private static void registerCommand(String name, CommandExecutor executor, TabCompleter tabCompleter) {
         PluginCommand command = plugin.getCommand(name);
 
         if (command != null) {
             command.setExecutor(executor);
             command.setTabCompleter(tabCompleter);
-            command.permissionMessage(MessageUtils.formatMsg("<red>You do not have permission to execute this command."));
+            command.permissionMessage(MessageUtils.getAndFormatMsg(false, "messages.noPermsError", "<red>You do not have permission to execute this command!"));
         }
     }
 }

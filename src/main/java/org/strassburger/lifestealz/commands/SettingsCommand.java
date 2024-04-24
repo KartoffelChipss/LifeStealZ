@@ -58,20 +58,20 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             }
 
             String helpMessage = "<reset><!i><!b> \n&8----------------------------------------------------\n&c&lLifeStealZ &7help page<!b>\n&8----------------------------------------------------";
-            helpMessage += "\n&c/lifestealz help &8- &7open this menu";
+            helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz help>/lifestealz help</click> &8- &7open this menu";
             if (sender.hasPermission("lifestealz.admin.reload"))
-                helpMessage += "\n&c/lifestealz reload &8- &7reload the config";
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz reload>/lifestealz reload</click> &8- &7reload the config";
             if (sender.hasPermission("lifestealz.admin.setlife"))
-                helpMessage += "\n&c/lifestealz hearts &8- &7modify how many hearts a player has";
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz hearts>/lifestealz hearts</click> &8- &7modify how many hearts a player has";
             if (sender.hasPermission("lifestealz.admin.giveitem"))
-                helpMessage += "\n&c/lifestealz giveItem &8- &7give other players custom items, such as hearts";
-            if (sender.hasPermission("lifestealz.admin.viewrecipes"))
-                helpMessage += "\n&c/lifestealz recipe &8- &7view all recipes";
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz giveItem>/lifestealz giveItem</click> &8- &7give other players custom items, such as hearts";
+            if (sender.hasPermission("lifestealz.viewrecipes"))
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz recipe>/lifestealz recipe</click> &8- &7view all recipes";
             if (sender.hasPermission("lifestealz.admin.revive"))
-                helpMessage += "\n&c/revive &8- &7revive a player without a revive item";
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/revive>/revive</click> &8- &7revive a player without a revive item";
             if (sender.hasPermission("lifestealz.admin.eliminate"))
-                helpMessage += "\n&c/eliminate &8- &7eliminate a player";
-            if (sender.hasPermission("lifestealz.withdraw")) helpMessage += "\n&c/withdrawheart &8- &7withdraw a heart";
+                helpMessage += "\n&c<click:SUGGEST_COMMAND:/eliminate>/eliminate</click> &8- &7eliminate a player";
+            if (sender.hasPermission("lifestealz.withdraw")) helpMessage += "\n&c<click:SUGGEST_COMMAND:/withdrawheart>/withdrawheart</click> &8- &7withdraw a heart";
             helpMessage += "\n&8----------------------------------------------------\n<reset><!i><!b> ";
 
             Component helpMessageFormatted = MessageUtils.formatMsg(helpMessage);
@@ -96,6 +96,11 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
             if (recipe == null || !RecipeManager.getRecipeIds().contains(recipe)) {
                 throwRecipeUsageError(sender);
+                return false;
+            }
+
+            if (!RecipeManager.isCraftable(recipe)) {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.recipeNotCraftable", "&cThis item is not craftable!"));
                 return false;
             }
 
@@ -266,7 +271,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void throwRecipeUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz recipe <heart | revivecrystal>"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", RecipeManager.getRecipeIds()) + ">"));
         sender.sendMessage(msg);
     }
 
@@ -292,7 +297,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             } else if (args[0].equals("giveItem")) {
                 return null;
             } else if (args[0].equals("recipe")) {
-                return List.of("heart", "revivecrystal");
+                return new ArrayList<String>(RecipeManager.getRecipeIds());
             }
         } else if (args.length == 3) {
             if (args[0].equals("hearts")) {

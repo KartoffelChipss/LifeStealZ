@@ -1,28 +1,35 @@
 package org.strassburger.lifestealz;
 
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.strassburger.lifestealz.util.CommandManager;
-import org.strassburger.lifestealz.util.EventManager;
-import org.strassburger.lifestealz.util.RecipeManager;
-import org.strassburger.lifestealz.util.VersionChecker;
+import org.strassburger.lifestealz.listeners.PlayerDeathListener;
+import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.SQLitePlayerDataStorage;
-
-import java.util.Map;
-import java.util.UUID;
+import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
 public final class LifeStealZ extends JavaPlugin {
 
     static LifeStealZ instance;
     private VersionChecker versionChecker;
     private PlayerDataStorage playerDataStorage;
+    private WorldGuardManager worldGuardManager;
+    private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
+    private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 
-    public static Map<UUID, Inventory> recipeGuiMap;
+    @Override
+    public void onLoad() {
+        getLogger().info("Loading LifeStealZ...");
+        if (hasWorldGuard()) {
+            getLogger().info("WorldGuard found! Enabling WorldGuard support...");
+            worldGuardManager = new WorldGuardManager();
+            getLogger().info("WorldGuard found! Enabled WorldGuard support!");
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -46,12 +53,17 @@ public final class LifeStealZ extends JavaPlugin {
         int pluginId = 18735;
         new Metrics(this, pluginId);
 
-        getLogger().info("TemplatePlugin enabled!");
+        if (hasPlaceholderApi()) {
+            new PapiExpansion().register();
+            getLogger().info("PlaceholderAPI found! Enabled PlaceholderAPI support!");
+        }
+
+        getLogger().info("LifeStealZ enabled!");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("TemplatePlugin disabled!");
+        getLogger().info("LifeStealZ disabled!");
     }
 
     public static LifeStealZ getInstance() {
@@ -64,6 +76,18 @@ public final class LifeStealZ extends JavaPlugin {
 
     public PlayerDataStorage getPlayerDataStorage() {
         return playerDataStorage;
+    }
+
+    public WorldGuardManager getWorldGuardManager() {
+        return worldGuardManager;
+    }
+
+    public boolean hasWorldGuard() {
+        return hasWorldGuard;
+    }
+
+    public boolean hasPlaceholderApi() {
+        return hasPlaceholderApi;
     }
 
     private PlayerDataStorage createPlayerDataStorage() {
@@ -81,7 +105,6 @@ public final class LifeStealZ extends JavaPlugin {
         AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (attribute != null) {
             attribute.setBaseValue(maxHealth);
-            player.setHealthScale(maxHealth);
         }
     }
 }

@@ -38,6 +38,13 @@ public class MessageUtils {
         colorMap.put("&r", "<reset>");
     }
 
+    /**
+     * Formats a message with placeholders
+     *
+     * @param msg The message to format
+     * @param replaceables The placeholders to replace
+     * @return The formatted message
+     */
     public static Component formatMsg(String msg, Replaceable... replaceables) {
         for (Replaceable replaceable : replaceables) {
             msg = msg.replace(replaceable.getPlaceholder(), replaceable.getValue());
@@ -51,6 +58,15 @@ public class MessageUtils {
         return mm.deserialize("<!i>" + msg);
     }
 
+    /**
+     * Gets and formats a message from the config
+     *
+     * @param addPrefix Whether to add the prefix to the message
+     * @param path The path to the message in the config
+     * @param fallback The fallback message
+     * @param replaceables The placeholders to replace
+     * @return The formatted message
+     */
     public static Component getAndFormatMsg(boolean addPrefix, String path, String fallback, Replaceable... replaceables) {
         MiniMessage mm = MiniMessage.miniMessage();
         String msg = "<!i>" + (LifeStealZ.getInstance().getConfig().getString(path) != null ? LifeStealZ.getInstance().getConfig().getString(path) : fallback);

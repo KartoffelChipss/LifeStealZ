@@ -1,6 +1,5 @@
 package org.strassburger.lifestealz.util;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -8,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.Arrays;
@@ -29,8 +27,14 @@ public class RecipeManager {
         }
     }
 
+    public static boolean isCraftable(String itemId) {
+        return LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
+    }
+
     private static void registerRecipe(String itemId) {
-        if (!LifeStealZ.getInstance().getConfig().getBoolean("allowHeartCrafting")) return;
+        boolean craftable = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
+
+        if (!craftable) return;
 
         NamespacedKey heartRecipeKey = new NamespacedKey(LifeStealZ.getInstance(), "recipe" + itemId);
         ItemStack resultItem = CustomItemManager.createCustomItem(itemId);
@@ -82,7 +86,7 @@ public class RecipeManager {
         inventory.setItem(30, new ItemStack(Material.valueOf(rowThree.get(2)), 1));
         inventory.setItem(24, CustomItemManager.createCustomItem(itemId));
 
-        LifeStealZ.recipeGuiMap.put(player.getUniqueId(), inventory);
+        GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
         player.openInventory(inventory);
     }
 }

@@ -30,17 +30,18 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player)) return false;
 
-        String confirmOption = args != null && args.length > 0 ? args[0] : null;
+        int withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
+        String confirmOption = args != null && args.length > 1 ? args[1] : null;
 
         Player player = (Player) sender;
         PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
         boolean withdrawtoDeath = LifeStealZ.getInstance().getConfig().getBoolean("allowDyingFromWithdraw");
 
-        if (playerdata.getMaxhp() <= 2.0) {
+        if (playerdata.getMaxhp() - ((double) withdrawHearts * 2) <= 0.0) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!"));
-                if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"));
+                if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new Replaceable("%amount%", withdrawHearts + "")));
                 return false;
             }
 
@@ -49,7 +50,9 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            player.getInventory().addItem(CustomItemManager.createHeart());
+            for (int i = 0; i < playerdata.getMaxhp() / 2; i++) {
+                player.getInventory().addItem(CustomItemManager.createHeart());
+            }
 
             playerdata.setMaxhp(0.0);
             LifeStealZ.getInstance().getPlayerDataStorage().save(playerdata);
@@ -65,18 +68,21 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        playerdata.setMaxhp(playerdata.getMaxhp() - 2.0);
+        playerdata.setMaxhp(playerdata.getMaxhp() - (double) withdrawHearts * 2);
         LifeStealZ.getInstance().getPlayerDataStorage().save(playerdata);
         LifeStealZ.setMaxHealth(player, playerdata.getMaxhp());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 500.0f, 1.0f);
 
-        player.getInventory().addItem(CustomItemManager.createHeart());
+        for (int i = 0; i < withdrawHearts; i++) {
+            player.getInventory().addItem(CustomItemManager.createHeart());
+        }
 
         return false;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        return null;
+        if (args.length == 1) return List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+        else return null;
     }
 }
