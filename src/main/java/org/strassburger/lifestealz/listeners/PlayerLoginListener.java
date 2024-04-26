@@ -21,8 +21,6 @@ public class PlayerLoginListener implements Listener {
 
         PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
-        applyInvulnerability(player);
-
         List<String> worldWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds");
         if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) return;
 
@@ -39,15 +37,5 @@ public class PlayerLoginListener implements Listener {
             event.kickMessage(kickmsg);
         }
 
-    }
-
-    private void applyInvulnerability(Player player) {
-        player.setInvulnerable(true);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.setInvulnerable(false);
-            }
-        }.runTaskLater(LifeStealZ.getInstance(), 20L);
     }
 }

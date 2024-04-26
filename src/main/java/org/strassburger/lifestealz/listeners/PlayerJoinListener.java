@@ -30,21 +30,10 @@ public class PlayerJoinListener implements Listener {
             playerData = newPlayerData;
         }
 
-        applyInvulnerability(player);
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
 
         if (player.isOp() && LifeStealZ.getInstance().getConfig().getBoolean("checkForUpdates") && LifeStealZ.getInstance().getVersionChecker().NEW_VERSION_AVAILABLE) {
             player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.newVersionAvailable", "&7A new version of LifeStealZ is available!\\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"));
         }
-    }
-
-    private void applyInvulnerability(Player player) {
-        player.setInvulnerable(true);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.setInvulnerable(false);
-            }
-        }.runTaskLater(LifeStealZ.getInstance(), 20L);
     }
 }
