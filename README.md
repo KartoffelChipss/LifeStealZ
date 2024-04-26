@@ -6,6 +6,7 @@
 ![purpur](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/purpur_vector.svg)
 [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/github_vector.svg)](https://github.com/KartoffelChipss/lifestealz)
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/lifestealz)
+[![discord-plural](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/social/discord-plural_vector.svg)](https://strassburger.org/discord)
 
 LifeStealZ is a lifesteal SMP plugin, that allows you to steal hearts from other players, when you kill them. If a player has no more hearts, he is eliminated. You can craft additional hearts or a revive crystal. With this crystal, you can bring back eliminated teammates.
 
@@ -26,7 +27,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Disable crystal pvp
 * ✅ Ingame recipe viewer
 * ✅ PlaceholderAPI placeholders
-* ✅ Custom WorldGuard flags 
+* ✅ Custom WorldGuard flags
 * ✅ Admin commands
 * ✅ HEX colors and gradients support
 
@@ -98,19 +99,14 @@ looseHeartsToPlayer: true
 #Whether it should be announced, when a player got eliminated (has no more hearts)
 announceElimination: true
 
-#Allows to craft hearts
-allowHeartCrafting: true
 #Allows players to withdraw a heart, even if they only have one left
 allowDyingFromWithdraw: true
 #If the totem effect should be played, when you use a heart
 playTotemEffect: false
 #The time you have to wait, before you can use another heart in Milliseconds
 heartCooldown: 0
-
 #How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
-#Allows to craft revive crystal
-allowReviveCrafting: true
 
 #If the use of totems of undying should be prevented
 preventTotems: false
@@ -126,11 +122,14 @@ respawnHP: 10
 # You can use &player& to insert the player name
 # For example: tempban &player& banreason 1d
 eliminationCommands:
-  # - "say &player& got eliminated"
-  # - "niceCommandtwo"
+# - "say &player& got eliminated"
+# - "niceCommandtwo"
 
 heartuseCommands:
-  # - "say &player& used a heart item"
+# - "say &player& used a heart item"
+
+reviveuseCommands:
+# - "say &player& revived &target&"
 
 heartuseSound:
   enabled: true
@@ -138,20 +137,51 @@ heartuseSound:
   volume: 1.0
   pitch: 1.0
 
-reviveuseCommands:
-  # - "say &player& revived &target&"
+antiAlt:
+  # If the anti alt system should be enabled
+  enabled: true
+  # If possible alt kill attempts should be logged
+  logAttempt: true
+  # If possible alt kill attempts should be prevented
+  preventKill: false
+  # If a message should be sent to the player, when an alt kill attempt is detected
+  sendMessage: false
+  # Add custom comamnds, to be executed when a possible alt kill attempt is detected
+  # You can use &player& to insert the player name (commands are executed for both players)
+  commands:
+  # - "say Please don't kill alts"
+  # - "ban &player& 1h"
+
+storage:
+  # The type of storage to use. You have the following options:
+  # "SQLite"
+  type: "SQLite"
+
+  # This section is only relevant if you use a MySQL database
+  host: "localhost"
+  port: 3306
+  database: "lifestealz"
+  username: "root"
+  password: "password"
 
 #Here you can modify everything about the custom items
 items:
-  heart:
+  # DONT DELETE THE defaultheart ITEM!!!
+  defaultheart:
     name: "&cHeart"
     lore:
       - "&7Rightclick to use"
-#     - "This would be a second line"
-#     - "And this possibly a third line"
+    #     - "This would be a second line"
+    #     - "And this possibly a third line"
     material: "NETHER_STAR"
     enchanted: false
     customModelData: 100
+    # Custom item type for the item ("heart" or "revive")
+    customItemType: "heart"
+    # When customItemType is "heart", this value is used to determine how many hearts the item gives
+    customHeartValue: 1
+    # true if this item should be craftable
+    craftable: true
     recipe:
       #Every item represents one slot in the crafting table
       #The first item in a row is the left most item in the crafting table
@@ -176,6 +206,9 @@ items:
     material: "AMETHYST_SHARD"
     enchanted: true
     customModelData: 101
+    customItemType: "revive"
+    customHeartValue: 0
+    craftable: true
     recipe:
       rowOne:
         - "AMETHYST_SHARD"
@@ -190,11 +223,14 @@ items:
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
 
+  # You can add as many custom items as you want
+
 #You can modify all messages here
 messages:
   prefix: "&8[&cLifeStealZ&8]"
   newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
   usageError: "&cUsage: %usage%"
+  noPermsError: "<red>You do not have permission to execute this command!"
   playerNotFound: "&cPlayer not found!"
   worldNotWhitelisted: "&cThis world is not whitelisted for LifeStealZ!"
   specifyPlayerOrBePlayer: "&cYou need to either specify a player or be a player yourself!"
@@ -212,7 +248,7 @@ messages:
   reloadMsg: "&7Successfully reloaded the plugin!"
   versionMsg: "&7You are using version <red>%version%"
   noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
-  withdrawConfirmmsg: "&8&oUse /withdrawheart confirm if you really want to withdraw a heart"
+  withdrawConfirmmsg: "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart"
   maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"
   closeBtn: "&cClose"
   reviveTitle: "&8Revive a player"
@@ -221,6 +257,8 @@ messages:
   viewheartsOther: "&c%player% &7currently has &c%amount% &7hearts!"
   heartconsume: "&7You got &c%amount% &7hearts!"
   heartconsumeCooldown: "&cYou have to wait before using another heart!"
+  recipeNotCraftable: "&cThis item is not craftable!"
+  altKill: "&cPlease don't kill alts! This attempt has been logged!"
 ```
 </details>
 

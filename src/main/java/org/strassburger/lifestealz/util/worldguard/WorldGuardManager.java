@@ -2,7 +2,6 @@ package org.strassburger.lifestealz.util.worldguard;
 
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.StateFlag;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
 

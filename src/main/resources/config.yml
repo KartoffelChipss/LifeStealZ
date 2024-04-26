@@ -43,11 +43,8 @@ allowDyingFromWithdraw: true
 playTotemEffect: false
 #The time you have to wait, before you can use another heart in Milliseconds
 heartCooldown: 0
-
 #How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
-#Allows to craft revive crystal
-allowReviveCrafting: true
 
 #If the use of totems of undying should be prevented
 preventTotems: false
@@ -77,6 +74,21 @@ heartuseSound:
   sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
   volume: 1.0
   pitch: 1.0
+
+antiAlt:
+  # If the anti alt system should be enabled
+  enabled: true
+  # If possible alt kill attempts should be logged
+  logAttempt: true
+  # If possible alt kill attempts should be prevented
+  preventKill: false
+  # If a message should be sent to the player, when an alt kill attempt is detected
+  sendMessage: false
+  # Add custom comamnds, to be executed when a possible alt kill attempt is detected
+  # You can use &player& to insert the player name (commands are executed for both players)
+  commands:
+    # - "say Please don't kill alts"
+    # - "ban &player& 1h"
 
 storage:
   # The type of storage to use. You have the following options:
@@ -184,3 +196,4 @@ messages:
   heartconsume: "&7You got &c%amount% &7hearts!"
   heartconsumeCooldown: "&cYou have to wait before using another heart!"
   recipeNotCraftable: "&cThis item is not craftable!"
+  altKill: "&cPlease don't kill alts! This attempt has been logged!"

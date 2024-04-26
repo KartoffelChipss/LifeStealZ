@@ -14,6 +14,8 @@ import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 public class PlayerDeathListener implements Listener {
@@ -77,6 +79,19 @@ public class PlayerDeathListener implements Listener {
         if (killer != null && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToPlayer")) {
             PlayerData killerPlayerData = LifeStealZ.getInstance().getPlayerDataStorage().load(killer.getUniqueId());
 
+            String victimIP = getPlayerIP(player);
+            String killerIP = getPlayerIP(killer);
+
+            if (victimIP != null && victimIP.equals(killerIP) && LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.enabled")) {
+                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.logAttempt")) LifeStealZ.getInstance().getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill " + player.getName() + " with the same IP address! (Proably an alt account)");
+                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.sendMessage")) {
+                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.altKill", "&cPlease don't kill alts! This attempt has been logged!"));
+                }
+                for (String command : LifeStealZ.getInstance().getConfig().getStringList("antiAlt.commands")) LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", killer.getName()));
+                for (String command : LifeStealZ.getInstance().getConfig().getStringList("antiAlt.commands")) LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.preventKill")) return;
+            }
+
             // Handle killer gaining hearts
             if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
             else {
@@ -127,5 +142,12 @@ public class PlayerDeathListener implements Listener {
                 LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
             }
         }
+    }
+
+    private String getPlayerIP(Player player) {
+        InetSocketAddress inetSocketAddress = player.getAddress();
+        if (inetSocketAddress == null) return null;
+        InetAddress address = inetSocketAddress.getAddress();
+        return address.getHostAddress();
     }
 }
