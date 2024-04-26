@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util.worldguardflags;
+package org.strassburger.lifestealz.util.worldguard;
 
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
