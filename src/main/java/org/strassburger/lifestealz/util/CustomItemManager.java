@@ -36,7 +36,7 @@ public class CustomItemManager {
         CustomItem ci = new CustomItem(Material.valueOf(config.getString("items." + itemId + ".material")))
                 .setName(config.getString("items." + itemId + ".name"))
                 .setLore(config.getStringList("items." + itemId + ".lore"))
-                .setCustomModelID(config.getInt("items." + itemId + ".customModelID"))
+                .setCustomModelID(config.getInt("items." + itemId + ".customModelData"))
                 .setEnchanted(config.getBoolean("items." + itemId + ".enchanted"))
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
