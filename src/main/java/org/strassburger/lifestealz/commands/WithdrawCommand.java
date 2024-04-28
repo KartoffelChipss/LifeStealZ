@@ -30,13 +30,24 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player)) return false;
 
-        int withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
+        int withdrawHearts = 0;
+        try {
+            withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
+        } catch (NumberFormatException e) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
+            return false;
+        }
         String confirmOption = args != null && args.length > 1 ? args[1] : null;
 
         Player player = (Player) sender;
         PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
         boolean withdrawtoDeath = LifeStealZ.getInstance().getConfig().getBoolean("allowDyingFromWithdraw");
+
+        if (withdrawHearts < 1) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawMin", "&cYou can't withdraw less than 1 heart!"));
+            return false;
+        }
 
         if (playerdata.getMaxhp() - ((double) withdrawHearts * 2) <= 0.0) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {

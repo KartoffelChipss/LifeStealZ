@@ -197,3 +197,4 @@ messages:
   heartconsumeCooldown: "&cYou have to wait before using another heart!"
   recipeNotCraftable: "&cThis item is not craftable!"
   altKill: "&cPlease don't kill alts! This attempt has been logged!"
+  withdrawMin: "&cYou can't withdraw less than 1 heart!"
