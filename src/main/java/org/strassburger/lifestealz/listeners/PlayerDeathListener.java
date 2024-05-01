@@ -46,7 +46,7 @@ public class PlayerDeathListener implements Listener {
         if (killer == null && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
             if (playerData.getMaxhp() - 2.0 <= 0.0) {
                 for (String command : elimCommands) {
-                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("%player%", player.getName()));
+                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                 }
 
                 if (disableBanOnElimination) {
@@ -109,7 +109,7 @@ public class PlayerDeathListener implements Listener {
             // Handle victim loosing hearts
             if (playerData.getMaxhp() - 2.0 <= 0.0) {
                 for (String command : elimCommands) {
-                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("%player%", player.getName()));
+                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                 }
 
                 if (disableBanOnElimination) {
