@@ -12,6 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -45,6 +48,11 @@ public class InventoryClickListener implements Listener {
                 case BARRIER:
                     player.closeInventory();
                     break;
+                case ARROW:
+                    event.setCancelled(true);
+                    Integer pageInt = item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.REVIVE_PAGE_KEY, PersistentDataType.INTEGER);
+                    int page = pageInt != null ? pageInt : 1;
+                    GuiManager.openReviveGui(player, page);
                 case PLAYER_HEAD:
                     if (!player.hasPermission("lifestealz.revive")) {
                         throwPermissionError(player);

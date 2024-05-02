@@ -78,33 +78,8 @@ public class InteractionListener implements Listener {
             }
 
             if (CustomItemManager.isReviveItem(event.getItem())) {
-                List<UUID> eliminatedPlayers = LifeStealZ.getInstance().getPlayerDataStorage().getEliminatedPlayers();
-
-                Inventory inventory = Bukkit.createInventory(null, 6 * 9, MessageUtils.getAndFormatMsg(false, "messages.reviveTitle", "&8Revive a player"));
-
-                addNavbar(inventory);
-
-                for (UUID eliminatedPlayerUUID : eliminatedPlayers) {
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
-                    inventory.addItem(CustomItemManager.getPlayerHead(offlinePlayer));
-                }
-
-                player.openInventory(inventory);
-                GuiManager.REVIVE_GUI_MAP.put(player.getUniqueId(), inventory);
+                GuiManager.openReviveGui(player, 1);
             }
-        }
-    }
-
-    private void addNavbar(Inventory inventory) {
-        inventory.setItem(49, CustomItemManager.createCloseItem());
-
-        ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1);
-        ItemMeta glassMeta = glass.getItemMeta();
-        glassMeta.displayName(Component.text("§r "));
-        glass.setItemMeta(glassMeta);
-        int[] glassSlots = {45, 46, 47, 48, 50, 51, 52, 53};
-        for (int slot : glassSlots) {
-            inventory.setItem(slot, glass);
         }
     }
 }

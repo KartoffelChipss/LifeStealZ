@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 public class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");
+    public static final NamespacedKey REVIVE_PAGE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "revivepage");
 
     public static Map<UUID, Long> lastHeartUse = new HashMap<>();
 
@@ -72,6 +73,32 @@ public class CustomItemManager {
                 .getItemStack();
     }
 
+    public static ItemStack createBackItem(int page) {
+        CustomItem ci = new CustomItem(Material.ARROW)
+                .setName("&cBack")
+                .setCustomModelID(998)
+                .addFlag(ItemFlag.HIDE_ATTRIBUTES);
+
+        ItemMeta itemMeta = ci.getItemStack().getItemMeta();
+        itemMeta.getPersistentDataContainer().set(REVIVE_PAGE_KEY, PersistentDataType.INTEGER, page);
+        ci.getItemStack().setItemMeta(itemMeta);
+
+        return ci.getItemStack();
+    }
+
+    public static ItemStack createNextItem(int page) {
+        CustomItem ci = new CustomItem(Material.ARROW)
+                .setName("&cNext")
+                .setCustomModelID(997)
+                .addFlag(ItemFlag.HIDE_ATTRIBUTES);
+
+        ItemMeta itemMeta = ci.getItemStack().getItemMeta();
+        itemMeta.getPersistentDataContainer().set(REVIVE_PAGE_KEY, PersistentDataType.INTEGER, page);
+        ci.getItemStack().setItemMeta(itemMeta);
+
+        return ci.getItemStack();
+    }
+
     public static boolean isHeartItem(ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
     }
@@ -81,6 +108,8 @@ public class CustomItemManager {
     }
 
     public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
+        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID().toString()))).getItemStack();
+
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
 
