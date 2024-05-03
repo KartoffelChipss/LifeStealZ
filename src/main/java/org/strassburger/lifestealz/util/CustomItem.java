@@ -65,6 +65,8 @@ public class CustomItem {
     }
 
     public CustomItem setEnchanted(boolean enchanted) {
+		if (!enchanted) return this;
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemMeta.addEnchant(Enchantment.DURABILITY, 1, true);
