@@ -149,8 +149,8 @@ antiAlt:
   # Add custom comamnds, to be executed when a possible alt kill attempt is detected
   # You can use &player& to insert the player name (commands are executed for both players)
   commands:
-  # - "say Please don't kill alts"
-  # - "ban &player& 1h"
+    # - "say Please don't kill alts"
+    # - "ban &player& 1h"
 
 storage:
   # The type of storage to use. You have the following options:
@@ -259,6 +259,8 @@ messages:
   heartconsumeCooldown: "&cYou have to wait before using another heart!"
   recipeNotCraftable: "&cThis item is not craftable!"
   altKill: "&cPlease don't kill alts! This attempt has been logged!"
+  withdrawMin: "&cYou can't withdraw less than 1 heart!"
+  giveItem: "&7You received %amount%x &c%item%&7!"
 ```
 </details>
 
