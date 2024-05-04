@@ -17,8 +17,9 @@ import java.util.List;
 public class InteractionListener implements Listener {
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
-        if (event.getItem() == null) return;
-        if (!CustomItemManager.isHeartItem(event.getItem()) && !CustomItemManager.isReviveItem(event.getItem())) return;
+        ItemStack item = event.getItem();
+        if (item == null) return;
+        if (!CustomItemManager.isHeartItem(item) && !CustomItemManager.isReviveItem(item)) return;
 
         Player player = event.getPlayer();
 
@@ -39,9 +40,9 @@ public class InteractionListener implements Listener {
 
                 PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
-                ItemStack item = event.getItem().clone();
+                ItemStack itemClone = item.clone();
 
-                int savedHeartAmount = item.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
+                int savedHeartAmount = itemClone.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? itemClone.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
                 double heartsToAdd = savedHeartAmount * 2;
                 double newHearts = playerData.getMaxhp() + heartsToAdd;
 
