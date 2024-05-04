@@ -22,13 +22,13 @@ public class InteractionListener implements Listener {
 
         boolean worldIsWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
 
-        if (event.getAction().isRightClick() && event.getItem() != null) {
-            if (!worldIsWhitelisted && (CustomItemManager.isHeartItem(event.getItem()) || CustomItemManager.isReviveItem(event.getItem()))) {
+        if (event.getAction().isRightClick() && item != null) {
+            if (!worldIsWhitelisted && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))) {
                 player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
                 return;
             }
 
-            if (CustomItemManager.isHeartItem(event.getItem())) {
+            if (CustomItemManager.isHeartItem(item)) {
                 long heartCooldown = LifeStealZ.getInstance().getConfig().getLong("heartCooldown");
                 if (CustomItemManager.lastHeartUse.get(player.getUniqueId()) != null && CustomItemManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"));
@@ -37,7 +37,7 @@ public class InteractionListener implements Listener {
 
                 PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
-                ItemStack itemClone = event.getItem().clone();
+                ItemStack itemClone = item.clone();
 
                 Integer savedHeartAmountInteger = itemClone.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? itemClone.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
                 int savedHeartAmount = savedHeartAmountInteger != null ? savedHeartAmountInteger : 1;
@@ -51,7 +51,7 @@ public class InteractionListener implements Listener {
                     return;
                 }
 
-                event.getItem().setAmount(event.getItem().getAmount() - 1);
+                item.setAmount(item.getAmount() - 1);
 
                 playerData.setMaxhp(newHearts);
                 LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
@@ -76,7 +76,7 @@ public class InteractionListener implements Listener {
                 CustomItemManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
             }
 
-            if (CustomItemManager.isReviveItem(event.getItem())) {
+            if (CustomItemManager.isReviveItem(item)) {
                 GuiManager.openReviveGui(player, 1);
             }
         }
