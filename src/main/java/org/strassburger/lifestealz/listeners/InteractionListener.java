@@ -17,12 +17,13 @@ import java.util.List;
 public class InteractionListener implements Listener {
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
+        ItemStack item = event.getItem();
         Player player = event.getPlayer();
 
         boolean worldIsWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
 
         if (event.getAction().isRightClick() && event.getItem() != null) {
-            if (!worldIsWhitelisted) {
+            if (!worldIsWhitelisted && (CustomItemManager.isHeartItem(event.getItem()) || CustomItemManager.isReviveItem(event.getItem()))) {
                 player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
                 return;
             }
@@ -36,9 +37,10 @@ public class InteractionListener implements Listener {
 
                 PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
-                ItemStack item = event.getItem().clone();
+                ItemStack itemClone = event.getItem().clone();
 
-                int savedHeartAmount = item.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
+                Integer savedHeartAmountInteger = itemClone.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? itemClone.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
+                int savedHeartAmount = savedHeartAmountInteger != null ? savedHeartAmountInteger : 1;
                 double heartsToAdd = savedHeartAmount * 2;
                 double newHearts = playerData.getMaxhp() + heartsToAdd;
 
