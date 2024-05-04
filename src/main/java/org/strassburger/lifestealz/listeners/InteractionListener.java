@@ -17,6 +17,9 @@ import java.util.List;
 public class InteractionListener implements Listener {
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
+        if (event.getItem() == null) return;
+        if (!CustomItemManager.isHeartItem(event.getItem()) && !CustomItemManager.isReviveItem(event.getItem())) return;
+
         Player player = event.getPlayer();
 
         boolean worldIsWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
