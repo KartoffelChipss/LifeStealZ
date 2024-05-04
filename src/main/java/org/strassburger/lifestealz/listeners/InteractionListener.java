@@ -1,21 +1,18 @@
 package org.strassburger.lifestealz.listeners;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
-import java.util.UUID;
 
 public class InteractionListener implements Listener {
     @EventHandler
@@ -73,7 +70,7 @@ public class InteractionListener implements Listener {
 
                 if (LifeStealZ.getInstance().getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
 
-                player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Cansumed a heart and got &c%amount% &7hearts!", new Replaceable("%amount%", "1")));
+                player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Cansumed a heart and got &c%amount% &7hearts!", new Replaceable("%amount%", savedHeartAmount + "")));
                 CustomItemManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
             }
 

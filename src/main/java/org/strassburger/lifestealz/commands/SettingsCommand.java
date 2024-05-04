@@ -1,19 +1,16 @@
 package org.strassburger.lifestealz.commands;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.CustomItemManager;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.RecipeManager;
 import org.strassburger.lifestealz.util.Replaceable;
@@ -22,7 +19,6 @@ import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
@@ -254,7 +250,10 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
+            boolean silent = args.length > 4 && args[4].equals("silent");
+
             targetPlayer.getInventory().addItem(CustomItemManager.createCustomItem(item, amount));
+            if (!silent) targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!", new Replaceable("%amount%", amount + ""), new Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
         }
 
         return false;
@@ -309,8 +308,11 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             if (args[0].equals("hearts") || args[0].equals("giveItem")) {
                 return List.of("1", "32", "64");
             }
+        } else if (args.length == 5) {
+            if (args[0].equals("giveItem")) {
+                return List.of("silent");
+            }
         }
-
         return null;
     }
 }

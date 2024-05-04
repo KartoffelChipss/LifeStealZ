@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import java.util.HashMap;
 import java.util.List;

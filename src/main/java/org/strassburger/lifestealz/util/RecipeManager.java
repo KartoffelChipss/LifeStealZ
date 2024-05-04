@@ -8,6 +8,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.customitems.CustomItem;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import java.util.Arrays;
 import java.util.List;

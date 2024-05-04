@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util;
+package org.strassburger.lifestealz.util.customitems;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -11,10 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.MessageUtils;
 
-import javax.swing.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
@@ -124,5 +123,11 @@ public class CustomItemManager {
 
         head.setItemMeta(skullMeta);
         return head;
+    }
+
+    public static CustomItemData getCustomItemData(String itemId) {
+        FileConfiguration config = LifeStealZ.getInstance().getConfig();
+
+        return new CustomItemData(itemId);
     }
 }

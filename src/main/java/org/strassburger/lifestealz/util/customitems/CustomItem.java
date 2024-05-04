@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util;
+package org.strassburger.lifestealz.util.customitems;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.strassburger.lifestealz.util.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
