@@ -11,17 +11,22 @@
 # https://docs.advntr.dev/minimessage/format.html
 # With these, you can also add HEX colors, gradients, hover and click events, etc
 
+# If set to true, LifeStealZ will check for updates and let you know if there's a newer version
 checkForUpdates: true
 
-#A list of worlds, where the plugin should take effect
+# Set the language to any code found in the "lang" folder (don't add the .yml extension)
+# You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en_US.yml as a template
+lang: "en_US"
+
+# A list of worlds, where the plugin should take effect
 worlds:
   - "world"
   - "world_nether"
   - "world_the_end"
 
-#The amount of hearts a player has, when joining for the first time
+# The amount of hearts a player has, when joining for the first time
 startHearts: 10
-#The maximal amount of hearts, a player can have
+# The maximal amount of hearts, a player can have
 maxHearts: 20
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
@@ -29,32 +34,32 @@ minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
 
-#If hearts should be dropped instead of directly added to the killer
+# If hearts should be dropped instead of directly added to the killer
 dropHearts: false
-#If a heart should be dropped, when the killer already has the max amount of hearts
+# If a heart should be dropped, when the killer already has the max amount of hearts
 dropHeartsIfMax: true
-#If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
+# If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
 looseHeartsToNature: true
-#If a player should lose a heart, when being killed by another player
+# If a player should lose a heart, when being killed by another player
 looseHeartsToPlayer: true
-#Whether it should be announced, when a player got eliminated (has no more hearts)
+# Whether it should be announced, when a player got eliminated (has no more hearts)
 announceElimination: true
 
-#Allows players to withdraw a heart, even if they only have one left
+# Allows players to withdraw a heart, even if they only have one left
 allowDyingFromWithdraw: true
-#If the totem effect should be played, when you use a heart
+# If the totem effect should be played, when you use a heart
 playTotemEffect: false
-#The time you have to wait, before you can use another heart in Milliseconds
+# The time you have to wait, before you can use another heart in Milliseconds
 heartCooldown: 0
-#How many times a player can be revived. Set to -1 to make it infinite
+# How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
 
-#If the use of totems of undying should be prevented
+# If the use of totems of undying should be prevented
 preventTotems: false
-#If crystalpvp should be disabled
+# If crystalpvp should be disabled
 preventCrystalPVP: false
 
-#Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
+# Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
 disablePlayerBanOnElimination: false
 # The amount of hp a player should have after getting eliminated
 respawnHP: 10
@@ -99,7 +104,7 @@ storage:
   username: "root"
   password: "password"
 
-#Here you can modify everything about the custom items
+# Here you can modify everything about the custom items
 items:
   # DONT DELETE THE defaultheart ITEM!!!
   defaultheart:
@@ -118,9 +123,9 @@ items:
     # true if this item should be craftable
     craftable: true
     recipe:
-      #Every item represents one slot in the crafting table
-      #The first item in a row is the left most item in the crafting table
-      #If you want a slot to be blant, use 'AIR'
+      # Every item represents one slot in the crafting table
+      # The first item in a row is the left most item in the crafting table
+      # If you want a slot to be blank, use 'AIR'
       rowOne:
         - "GOLD_BLOCK"
         - "GOLD_BLOCK"
@@ -164,45 +169,8 @@ items:
         - "AMETHYST_SHARD"
     sound:
       enabled: false
-      sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+      sound: ENTITY_PLAYER_LEVELUP
       volume: 1.0
       pitch: 1.0
 
   # You can add as many custom items as you want
-
-#You can modify all messages here
-messages:
-  prefix: "&8[&cLifeStealZ&8]"
-  newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
-  usageError: "&cUsage: %usage%"
-  noPermsError: "<red>You do not have permission to execute this command!"
-  playerNotFound: "&cPlayer not found!"
-  worldNotWhitelisted: "&cThis world is not whitelisted for LifeStealZ!"
-  specifyPlayerOrBePlayer: "&cYou need to either specify a player or be a player yourself!"
-  noPermissionError: "&cYou don't have permission to use this!"
-  noPlayerData: "&cThis player has not played on this server yet!"
-  eliminateSuccess: "&7You successfully eliminated &c%player%&7!"
-  reviveSuccess: "&7You successfully revived &c%player%!"
-  reviveMaxReached: "&cThis player has already been revived %amount% times!"
-  onlyReviveElimPlayers: "&cYou can only revive eliminated players!"
-  eliminatedJoin: "&cYou don't have any hearts left!"
-  eliminationAnnouncement: "&c%player% &7has been eliminated by &c%killer%&7!"
-  eliminateionAnnouncementNature: "&c%player% &7has been eliminated!"
-  setHeartsConfirm: "&7Successfully set &c%player%&7's hearts to &c%amount%"
-  getHearts: "&c%player% &7currently has &c%amount% &7hearts!"
-  reloadMsg: "&7Successfully reloaded the plugin!"
-  versionMsg: "&7You are using version <red>%version%"
-  noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
-  withdrawConfirmmsg: "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart"
-  maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"
-  closeBtn: "&cClose"
-  reviveTitle: "&8Revive a player"
-  revivePlayerDesc: "&7Click to revive this player"
-  viewheartsYou: "&7You currently have &c%amount% &7hearts!"
-  viewheartsOther: "&c%player% &7currently has &c%amount% &7hearts!"
-  heartconsume: "&7You got &c%amount% &7hearts!"
-  heartconsumeCooldown: "&cYou have to wait before using another heart!"
-  recipeNotCraftable: "&cThis item is not craftable!"
-  altKill: "&cPlease don't kill alts! This attempt has been logged!"
-  withdrawMin: "&cYou can't withdraw less than 1 heart!"
-  giveItem: "&7You received %amount%x &c%item%&7!"

@@ -49,6 +49,14 @@ public class CustomItem {
         return this;
     }
 
+    public CustomItem setName(Component name) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.displayName(name);
+        itemStack.setItemMeta(itemMeta);
+
+        return this;
+    }
+
     public CustomItem setCustomModelID(int customModelID) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setCustomModelData(customModelID);

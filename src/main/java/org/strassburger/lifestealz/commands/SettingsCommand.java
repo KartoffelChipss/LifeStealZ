@@ -43,6 +43,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
             LifeStealZ.getInstance().reloadConfig();
             config = LifeStealZ.getInstance().getConfig();
+            LifeStealZ.getInstance().getLanguageManager().reload();
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"));
             return true;
         }
