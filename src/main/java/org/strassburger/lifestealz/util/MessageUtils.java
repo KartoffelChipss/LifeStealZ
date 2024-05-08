@@ -68,9 +68,11 @@ public class MessageUtils {
      * @return The formatted message
      */
     public static Component getAndFormatMsg(boolean addPrefix, String path, String fallback, Replaceable... replaceables) {
+        if (path.startsWith("messages.")) path = path.substring("messages.".length());
+
         MiniMessage mm = MiniMessage.miniMessage();
-        String msg = "<!i>" + (LifeStealZ.getInstance().getConfig().getString(path) != null ? LifeStealZ.getInstance().getConfig().getString(path) : fallback);
-        String prefix = LifeStealZ.getInstance().getConfig().getString("messages.prefix") != null ? LifeStealZ.getInstance().getConfig().getString("messages.prefix") : "&8[&cLifeStealZ&8]";
+        String msg = "<!i>" + LifeStealZ.getInstance().getLanguageManager().getString(path, fallback);
+        String prefix = LifeStealZ.getInstance().getLanguageManager().getString("prefix", "&8[&cLifeStealZ&8]");
         if (addPrefix) {
             msg = prefix + " " + msg;
         }
