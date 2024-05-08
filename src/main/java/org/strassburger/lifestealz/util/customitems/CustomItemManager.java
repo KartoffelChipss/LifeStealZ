@@ -16,6 +16,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import java.util.*;
 
 public class CustomItemManager {
+    public static final NamespacedKey CUSTOM_ITEM_ID_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemid");
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");
     public static final NamespacedKey REVIVE_PAGE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "revivepage");
@@ -41,6 +42,8 @@ public class CustomItemManager {
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
         ItemMeta itemMeta = ci.getItemStack().getItemMeta();
+
+        itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING, itemId);
 
         String customItemType = config.getString("items." + itemId + ".customItemType") != null ? Objects.requireNonNull(config.getString("items." + itemId + ".customItemType")) : "heart";
         itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING, customItemType);
@@ -106,6 +109,11 @@ public class CustomItemManager {
         return item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
     }
 
+    public static String getCustomItemId(ItemStack item) {
+        if (!item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING)) return null;
+        else return item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING);
+    }
+
     public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID().toString()))).getItemStack();
 
@@ -126,8 +134,6 @@ public class CustomItemManager {
     }
 
     public static CustomItemData getCustomItemData(String itemId) {
-        FileConfiguration config = LifeStealZ.getInstance().getConfig();
-
         return new CustomItemData(itemId);
     }
 }

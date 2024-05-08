@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.util.customitems;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.List;
@@ -40,6 +41,10 @@ public class CustomItemData {
         this.craftable = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
     }
 
+    public CustomItemSoundData getSound() {
+        return new CustomItemSoundData(itemId);
+    }
+
     public String getItemId() {
         return itemId;
     }
@@ -74,5 +79,35 @@ public class CustomItemData {
 
     public boolean isCraftable() {
         return craftable;
+    }
+
+    public static class CustomItemSoundData {
+        private final boolean enabled;
+        private final Sound sound;
+        private final double volume;
+        private final double pitch;
+
+        private CustomItemSoundData(String itemId) {
+            enabled = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".sound.enabled");
+            sound = Sound.valueOf(LifeStealZ.getInstance().getConfig().getString("items." + itemId + ".sound.sound"));
+            volume = LifeStealZ.getInstance().getConfig().getDouble("items." + itemId + ".sound.volume");
+            pitch = LifeStealZ.getInstance().getConfig().getDouble("items." + itemId + ".sound.pitch");
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public Sound getSound() {
+            return sound;
+        }
+
+        public double getVolume() {
+            return volume;
+        }
+
+        public double getPitch() {
+            return pitch;
+        }
     }
 }

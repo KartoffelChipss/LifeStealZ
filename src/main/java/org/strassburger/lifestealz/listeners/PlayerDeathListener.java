@@ -34,6 +34,7 @@ public class PlayerDeathListener implements Listener {
         boolean dropHeartsOnDeath = LifeStealZ.getInstance().getConfig().getBoolean("dropHearts");
         boolean dropHeartsIfMax = LifeStealZ.getInstance().getConfig().getBoolean("dropHeartsIfMax");
         double maxHearts = LifeStealZ.getInstance().getConfig().getInt("maxHearts") * 2;
+        double minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts") * 2;
 
         if (!LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getWorld().getName())) return;
 
@@ -44,7 +45,7 @@ public class PlayerDeathListener implements Listener {
 
         // Player died a natural death (e.g. fall damage)
         if (killer == null && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
-            if (playerData.getMaxhp() - 2.0 <= 0.0) {
+            if (playerData.getMaxhp() - 2.0 <= minHearts) {
                 for (String command : elimCommands) {
                     LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                 }
@@ -107,7 +108,7 @@ public class PlayerDeathListener implements Listener {
             }
 
             // Handle victim loosing hearts
-            if (playerData.getMaxhp() - 2.0 <= 0.0) {
+            if (playerData.getMaxhp() - 2.0 <= minHearts) {
                 for (String command : elimCommands) {
                     LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                 }
@@ -134,7 +135,7 @@ public class PlayerDeathListener implements Listener {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new Replaceable("%player%", player.getName()), new Replaceable("%killer%", killer.getName())));
                 }
 
-                playerData.setMaxhp(0.0);
+                playerData.setMaxhp(minHearts);
                 LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
             } else {
                 playerData.setMaxhp(playerData.getMaxhp() - 2.0);

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.customitems.CustomItemData;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
@@ -58,11 +59,10 @@ public class InteractionListener implements Listener {
                 LifeStealZ.setMaxHealth(player, newHearts);
                 player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 
-                if (LifeStealZ.getInstance().getConfig().getBoolean("heartuseSound.enabled")) {
-                    Sound sound = Sound.valueOf(LifeStealZ.getInstance().getConfig().getString("heartuseSound.sound"));
-                    float volume = (float) LifeStealZ.getInstance().getConfig().getDouble("heartuseSound.volume");
-                    float pitch = (float) LifeStealZ.getInstance().getConfig().getDouble("heartuseSound.pitch");
-                    player.playSound(player.getLocation(), sound, volume, pitch);
+                String customItemID = CustomItemManager.getCustomItemId(item);
+                if (customItemID != null) {
+                    CustomItemData.CustomItemSoundData sound = CustomItemManager.getCustomItemData(customItemID).getSound();
+                    if (sound.isEnabled()) player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
                 }
 
                 List<String> heartuseCommands = LifeStealZ.getInstance().getConfig().getStringList("heartuseCommands");
