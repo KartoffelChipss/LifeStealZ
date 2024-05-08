@@ -86,6 +86,9 @@ worlds:
 startHearts: 10
 #The maximal amount of hearts, a player can have
 maxHearts: 20
+# The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
+# PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
+minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
 
@@ -131,12 +134,6 @@ heartuseCommands:
 
 reviveuseCommands:
 # - "say &player& revived &target&"
-
-heartuseSound:
-  enabled: true
-  sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-  volume: 1.0
-  pitch: 1.0
 
 antiAlt:
   # If the anti alt system should be enabled
@@ -199,6 +196,11 @@ items:
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
+    sound:
+      enabled: true
+      sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+      volume: 1.0
+      pitch: 1.0
 
   revive:
     name: "&dRevive Crystal"
@@ -223,6 +225,11 @@ items:
         - "AMETHYST_SHARD"
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
+    sound:
+      enabled: false
+      sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+      volume: 1.0
+      pitch: 1.0
 
   # You can add as many custom items as you want
 
