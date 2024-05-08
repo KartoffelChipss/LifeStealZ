@@ -69,7 +69,7 @@ public class CustomItemManager {
 
     public static ItemStack createCloseItem() {
         return new CustomItem(Material.BARRIER)
-                .setName("&cClose")
+                .setName(MessageUtils.getAndFormatMsg(false, "closeBtn", "&cClose"))
                 .setCustomModelID(999)
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES)
                 .getItemStack();
@@ -77,7 +77,7 @@ public class CustomItemManager {
 
     public static ItemStack createBackItem(int page) {
         CustomItem ci = new CustomItem(Material.ARROW)
-                .setName("&cBack")
+                .setName(MessageUtils.getAndFormatMsg(false, "backBtn", "&cBack"))
                 .setCustomModelID(998)
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
@@ -90,7 +90,7 @@ public class CustomItemManager {
 
     public static ItemStack createNextItem(int page) {
         CustomItem ci = new CustomItem(Material.ARROW)
-                .setName("&cNext")
+                .setName(MessageUtils.getAndFormatMsg(false, "nextBtn", "&cNext"))
                 .setCustomModelID(997)
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 

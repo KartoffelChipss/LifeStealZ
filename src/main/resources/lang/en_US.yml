@@ -1,3 +1,6 @@
+# LifeStealZ language file
+# en_US - by Kartoffelchipss
+
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: "&7A new version of LifeStealZ is available!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
 usageError: "&cUsage: %usage%"
@@ -22,6 +25,8 @@ noWithdraw: "&cYou would be eliminated, if you withdraw a heart!"
 withdrawConfirmmsg: "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart"
 maxHeartLimitReached: "&cYou already reached the limit of %limit% hearts!"
 closeBtn: "&cClose"
+backBtn: "&cBack"
+nextBtn: "&cNext"
 reviveTitle: "&8Revive a player"
 revivePlayerDesc: "&7Click to revive this player"
 viewheartsYou: "&7You currently have &c%amount% &7hearts!"

@@ -34,7 +34,7 @@ public class PlayerLoginListener implements Listener {
         double minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts") * 2;
         if (playerData.getMaxhp() <= minHearts && !disabledBanOnDeath) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-            Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+            Component kickmsg = MessageUtils.getAndFormatMsg(false, "eliminatedJoin", "&cYou don't have any hearts left!");
             event.kickMessage(kickmsg);
         }
 

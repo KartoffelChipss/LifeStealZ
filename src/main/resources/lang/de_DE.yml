@@ -1,3 +1,6 @@
+# LifeStealZ language file
+# de_DE - by Kartoffelchipss
+
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: "&7Eine neue Version von LifeStealZ ist verfügbar!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
 usageError: "&cVerwendung: %usage%"
@@ -18,10 +21,12 @@ setHeartsConfirm: "&7Die Herzen von &c%player%&7 wurden erfolgreich auf &c%amoun
 getHearts: "&c%player% &7hat derzeit &c%amount% &7Herzen!"
 reloadMsg: "&7Das Plugin wurde erfolgreich neu geladen!"
 versionMsg: "&7Du benutzt Version <red>%version%"
-noWithdraw: "&cDu würdest eliminiert werden, wenn du ein Herz auszahlst!"
-withdrawConfirmmsg: "&8&oVerwende <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined>, wenn du wirklich ein Herz auszahlen möchtest."
+noWithdraw: "&cDu würdest eliminiert werden, wenn du so viele Herzen auszahlst!"
+withdrawConfirmmsg: "&8&oVerwende <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined>, wenn du wirklich Herzen auszahlen möchtest."
 maxHeartLimitReached: "&cDu hast bereits das Limit von %limit% Herzen erreicht!"
 closeBtn: "&cSchließen"
+backBtn: "&cZurück"
+nextBtn: "&cNächste Seite"
 reviveTitle: "&8Spieler wiederbeleben"
 revivePlayerDesc: "&7Klicke hier, um diesen Spieler wiederzubeleben"
 viewheartsYou: "&7Du hast derzeit &c%amount% &7Herzen!"
