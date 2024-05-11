@@ -29,6 +29,7 @@ public class PlayerDeathListener implements Listener {
         PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
         List<String> elimCommands = LifeStealZ.getInstance().getConfig().getStringList("eliminationCommands");
+        boolean heartRewardOnElimination = LifeStealZ.getInstance().getConfig().getBoolean("heartRewardOnElimination");
         boolean disableBanOnElimination = LifeStealZ.getInstance().getConfig().getBoolean("disablePlayerBanOnElimination");
         boolean announceElimination = LifeStealZ.getInstance().getConfig().getBoolean("announceElimination");
         boolean dropHeartsOnDeath = LifeStealZ.getInstance().getConfig().getBoolean("dropHearts");
@@ -83,6 +84,7 @@ public class PlayerDeathListener implements Listener {
             String victimIP = getPlayerIP(player);
             String killerIP = getPlayerIP(killer);
 
+            // Anti alt logic (If killer and victim are on same IP)
             if (victimIP != null && victimIP.equals(killerIP) && LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.enabled")) {
                 if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.logAttempt")) LifeStealZ.getInstance().getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill " + player.getName() + " with the same IP address! (Proably an alt account)");
                 if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.sendMessage")) {
@@ -96,14 +98,16 @@ public class PlayerDeathListener implements Listener {
             // Handle killer gaining hearts
             if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
             else {
-                if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
-                    if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
-                    else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", (int) maxHearts / 2 + "")));
-                } else {
-                    killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
-                    LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
-                    LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
-                    killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+                if (playerData.getMaxhp() - 2.0 > minHearts || playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination) {
+                    if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
+                        if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
+                        else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", (int) maxHearts / 2 + "")));
+                    } else {
+                        killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
+                        LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
+                        LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
+                        killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+                    }
                 }
             }
 

@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,14 +38,20 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        Player target = Bukkit.getPlayer(targetName);
+        OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
-        if (target == null) {
+        if (target.getName() == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
             return false;
         }
 
         PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(target.getUniqueId());
+
+        if (playerdata == null) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+            return false;
+        }
+
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!", new Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2))), new Replaceable("%player%", target.getName())));
         return false;
     }

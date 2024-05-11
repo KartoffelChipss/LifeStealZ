@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.commands;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -132,14 +133,19 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            Player targetPlayer = LifeStealZ.getInstance().getServer().getPlayer(targetPlayerName);
+            OfflinePlayer targetPlayer = LifeStealZ.getInstance().getServer().getOfflinePlayer(targetPlayerName);
 
-            if (targetPlayer == null) {
+            if (targetPlayer.getName() == null) {
                 throwUsageError(sender);
                 return false;
             }
 
             PlayerData targetPlayerData = playerDataStorage.load(targetPlayer.getUniqueId());
+
+            if (targetPlayerData == null) {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+                return false;
+            }
 
             if (optionTwo.equals("get")) {
                 int hearts = (int) (targetPlayerData.getMaxhp() / 2);

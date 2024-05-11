@@ -28,6 +28,8 @@ worlds:
 startHearts: 10
 # The maximal amount of hearts, a player can have
 maxHearts: 20
+# The amount of hp a player should have after getting eliminated
+respawnHP: 1
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0
@@ -61,8 +63,8 @@ preventCrystalPVP: false
 
 # Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
 disablePlayerBanOnElimination: false
-# The amount of hp a player should have after getting eliminated
-respawnHP: 10
+# If the killer should gain a heart on elimination
+heartRewardOnElimination: true
 
 # Execute custom commands on events:
 # You can use &player& to insert the player name

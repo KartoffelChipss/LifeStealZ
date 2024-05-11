@@ -2,6 +2,7 @@ package org.strassburger.lifestealz;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -108,7 +109,10 @@ public final class LifeStealZ extends JavaPlugin {
         return new SQLitePlayerDataStorage();
     }
 
-    public static void setMaxHealth(Player player, double maxHealth) {
+    public static void setMaxHealth(OfflinePlayer offlinePlayer, double maxHealth) {
+        if (!(offlinePlayer instanceof Player)) return;
+
+        Player player = (Player) offlinePlayer;
         AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (attribute != null) {
             attribute.setBaseValue(maxHealth);
