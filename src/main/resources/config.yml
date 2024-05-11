@@ -16,7 +16,7 @@ checkForUpdates: true
 
 # Set the language to any code found in the "lang" folder (don't add the .yml extension)
 # You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en_US.yml as a template
-lang: "en_US"
+lang: "en-US"
 
 # A list of worlds, where the plugin should take effect
 worlds:

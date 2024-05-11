@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LanguageManager {
     private final JavaPlugin plugin = LifeStealZ.getInstance();
-    public static final List<String> defaultLangs = List.of("en_US", "de_DE");
+    public static final List<String> defaultLangs = List.of("en-US", "de-DE");
 
     private HashMap<String, String> translationMap;
     private FileConfiguration langConfig;
@@ -36,12 +36,12 @@ public class LanguageManager {
             }
         }
 
-        String langOption = plugin.getConfig().getString("lang") != null ? plugin.getConfig().getString("lang") : "en_US";
+        String langOption = plugin.getConfig().getString("lang") != null ? plugin.getConfig().getString("lang") : "en-US";
         File selectedLangFile = new File(languageDirectory, langOption + ".yml");
 
         if (!selectedLangFile.exists()) {
-            selectedLangFile = new File(languageDirectory, "en_US.yml");
-            plugin.getLogger().warning("Language file " + langOption + ".yml (" + selectedLangFile.getPath() + ") not found! Using fallback en_US.yml.");
+            selectedLangFile = new File(languageDirectory, "en-US.yml");
+            plugin.getLogger().warning("Language file " + langOption + ".yml (" + selectedLangFile.getPath() + ") not found! Using fallback en-US.yml.");
         }
 
         plugin.getLogger().info("Using language file: " + selectedLangFile.getPath());
