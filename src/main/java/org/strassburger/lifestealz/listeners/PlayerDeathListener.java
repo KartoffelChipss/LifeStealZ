@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.CooldownManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.Replaceable;
@@ -36,6 +37,10 @@ public class PlayerDeathListener implements Listener {
         boolean dropHeartsIfMax = LifeStealZ.getInstance().getConfig().getBoolean("dropHeartsIfMax");
         double maxHearts = LifeStealZ.getInstance().getConfig().getInt("maxHearts") * 2;
         double minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts") * 2;
+
+        boolean heartGainCooldownEnabled = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.enabled");
+        long heartGainCooldown = LifeStealZ.getInstance().getConfig().getLong("heartGainCooldown.cooldown");
+        boolean heartGainCooldowndropOnCooldown = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
 
         if (!LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getWorld().getName())) return;
 
@@ -95,18 +100,25 @@ public class PlayerDeathListener implements Listener {
                 if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.preventKill")) return;
             }
 
-            // Handle killer gaining hearts
-            if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-            else {
-                if (playerData.getMaxhp() - 2.0 > minHearts || playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination) {
-                    if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
-                        if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
-                        else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", (int) maxHearts / 2 + "")));
-                    } else {
-                        killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
-                        LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
-                        LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
-                        killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+            if (heartGainCooldownEnabled && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
+                // Heart Gain is on cooldown
+                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
+                if (heartGainCooldowndropOnCooldown) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+            } else {
+                // Handle killer gaining hearts
+                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+                else {
+                    if (playerData.getMaxhp() - 2.0 > minHearts || playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination) {
+                        if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
+                            if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
+                            else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", (int) maxHearts / 2 + "")));
+                        } else {
+                            killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
+                            LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
+                            LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
+                            killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+                            CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
+                        }
                     }
                 }
             }

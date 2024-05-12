@@ -22,6 +22,7 @@ public class EventManager {
         registerListener(new InventoryClickListener());
         registerListener(new PlayerDeathListener());
         registerListener(new WorldSwitchListener());
+        registerListener(new PlayerItemPickupListener());
     }
 
     /**

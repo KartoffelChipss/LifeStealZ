@@ -31,7 +31,7 @@ public class InteractionListener implements Listener {
 
             if (CustomItemManager.isHeartItem(item)) {
                 long heartCooldown = LifeStealZ.getInstance().getConfig().getLong("heartCooldown");
-                if (CustomItemManager.lastHeartUse.get(player.getUniqueId()) != null && CustomItemManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
+                if (CooldownManager.lastHeartUse.get(player.getUniqueId()) != null && CooldownManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"));
                     return;
                 }
@@ -73,7 +73,7 @@ public class InteractionListener implements Listener {
                 if (LifeStealZ.getInstance().getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
 
                 player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Cansumed a heart and got &c%amount% &7hearts!", new Replaceable("%amount%", savedHeartAmount + "")));
-                CustomItemManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
+                CooldownManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
             }
 
             if (CustomItemManager.isReviveItem(item)) {

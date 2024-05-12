@@ -21,8 +21,6 @@ public class CustomItemManager {
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");
     public static final NamespacedKey REVIVE_PAGE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "revivepage");
 
-    public static Map<UUID, Long> lastHeartUse = new HashMap<>();
-
     private CustomItemManager() {}
 
     /**

@@ -15,7 +15,8 @@
 checkForUpdates: true
 
 # Set the language to any code found in the "lang" folder (don't add the .yml extension)
-# You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en_US.yml as a template
+# You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en-US.yml as a template
+# If you want to help translating the plugin, please refer to this article: https://lsz.strassburger.dev/contributing/localization
 lang: "en-US"
 
 # A list of worlds, where the plugin should take effect
@@ -78,6 +79,16 @@ heartuseCommands:
 
 reviveuseCommands:
 # - "say &player& revived &target&"
+
+heartGainCooldown:
+  # A cooldown for how often people can gain a heart.
+  enabled: false
+  # How long the cooldown should be in Milliseconds
+  cooldown: 120000
+  # Drops the heart on the ground if a player kills someone, while still on cooldown
+  dropOnCooldown: true
+  # Prevents picking up hearts from the groun while on cooldown
+  preventPickup: true
 
 antiAlt:
   # If the anti alt system should be enabled
