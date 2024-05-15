@@ -49,8 +49,10 @@ public class PlayerDeathListener implements Listener {
             if (!WorldGuardManager.checkHeartLossFlag(player)) return;
         }
 
+        boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
+
         // Player died a natural death (e.g. fall damage)
-        if (killer == null && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
+        if (!isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
             if (playerData.getMaxhp() - 2.0 <= minHearts) {
                 for (String command : elimCommands) {
                     LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
@@ -83,7 +85,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         // Player was killed by another player
-        if (killer != null && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToPlayer")) {
+        if (isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToPlayer")) {
             PlayerData killerPlayerData = LifeStealZ.getInstance().getPlayerDataStorage().load(killer.getUniqueId());
 
             String victimIP = getPlayerIP(player);
