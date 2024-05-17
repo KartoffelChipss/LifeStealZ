@@ -24,6 +24,8 @@ public class PapiExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String identifier) {
+        if (player.getPlayer() == null) return null;
+
         switch (identifier) {
             case "name": {
                 return player.getName();
@@ -35,6 +37,9 @@ public class PapiExpansion extends PlaceholderExpansion {
             case "revived": {
                 PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getHasbeenRevived());
+            }
+            case "health": {
+                return String.valueOf((int) (player.getPlayer().getHealth() / 2));
             }
             case "maxhearts": {
                 return String.valueOf(LifeStealZ.getInstance().getConfig().getInt("maxHearts"));
