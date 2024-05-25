@@ -22,10 +22,10 @@ import java.util.List;
 public class PlayerDeathListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        Player killer = player.getKiller();
+        final Player player = event.getEntity();
+        final Player killer = player.getKiller();
 
-        World world = player.getWorld();
+        final World world = player.getWorld();
 
         PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
 
@@ -54,9 +54,14 @@ public class PlayerDeathListener implements Listener {
         // Player died a natural death (e.g. fall damage)
         if (!isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
             if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                for (String command : elimCommands) {
-                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        for (String command : elimCommands) {
+                            LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+                        }
+                    }
+                }, 1L);
 
                 if (disableBanOnElimination) {
                     double respawnHP = LifeStealZ.getInstance().getConfig().getInt("respawnHP") * 2;
@@ -66,8 +71,13 @@ public class PlayerDeathListener implements Listener {
                     return;
                 }
 
-                Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                player.kick(kickMessage);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+                        player.kick(kickMessage);
+                    }
+                }, 1L);
 
                 if (announceElimination) {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", player.getName())));
@@ -127,9 +137,14 @@ public class PlayerDeathListener implements Listener {
 
             // Handle victim loosing hearts
             if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                for (String command : elimCommands) {
-                    LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        for (String command : elimCommands) {
+                            LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+                        }
+                    }
+                }, 1L);
 
                 if (disableBanOnElimination) {
                     double respawnHP = LifeStealZ.getInstance().getConfig().getInt("respawnHP") * 2;
@@ -139,15 +154,13 @@ public class PlayerDeathListener implements Listener {
                     return;
                 }
 
-                // Simulate the player dying before getting banned
-                //boolean keepInventory = Boolean.TRUE.equals(world.getGameRuleValue(GameRule.KEEP_INVENTORY));
-                //if (!keepInventory) {
-                //    for (ItemStack item : player.getInventory().getContents()) if (item != null) player.getWorld().dropItemNaturally(player.getLocation(), item);
-                //    player.getInventory().clear();
-                //}
-
-                Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                player.kick(kickMessage);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+                        player.kick(kickMessage);
+                    }
+                }, 1L);
 
                 if (announceElimination) {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new Replaceable("%player%", player.getName()), new Replaceable("%killer%", killer.getName())));
