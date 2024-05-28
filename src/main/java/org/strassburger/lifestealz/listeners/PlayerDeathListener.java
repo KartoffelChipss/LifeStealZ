@@ -54,12 +54,9 @@ public class PlayerDeathListener implements Listener {
         // Player died a natural death (e.g. fall damage)
         if (!isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
             if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        for (String command : elimCommands) {
-                            LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                        }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
+                    for (String command : elimCommands) {
+                        LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                     }
                 }, 1L);
 
@@ -71,12 +68,9 @@ public class PlayerDeathListener implements Listener {
                     return;
                 }
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                        player.kick(kickMessage);
-                    }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
+                    Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+                    player.kick(kickMessage);
                 }, 1L);
 
                 if (announceElimination) {
@@ -137,12 +131,9 @@ public class PlayerDeathListener implements Listener {
 
             // Handle victim loosing hearts
             if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        for (String command : elimCommands) {
-                            LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                        }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
+                    for (String command : elimCommands) {
+                        LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
                     }
                 }, 1L);
 
@@ -154,12 +145,9 @@ public class PlayerDeathListener implements Listener {
                     return;
                 }
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                        player.kick(kickMessage);
-                    }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
+                    Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+                    player.kick(kickMessage);
                 }, 1L);
 
                 if (announceElimination) {
