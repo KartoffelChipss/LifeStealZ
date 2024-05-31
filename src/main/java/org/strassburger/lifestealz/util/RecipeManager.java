@@ -47,15 +47,15 @@ public class RecipeManager {
         List<String> rowTwo = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
         List<String> rowThree = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowThree");
 
-        recipe.setIngredient('A', Material.valueOf(rowOne.get(0)));
-        recipe.setIngredient('B', Material.valueOf(rowOne.get(1)));
-        recipe.setIngredient('C', Material.valueOf(rowOne.get(2)));
-        recipe.setIngredient('D', Material.valueOf(rowTwo.get(0)));
-        recipe.setIngredient('E', Material.valueOf(rowTwo.get(1)));
-        recipe.setIngredient('F', Material.valueOf(rowTwo.get(2)));
-        recipe.setIngredient('G', Material.valueOf(rowThree.get(0)));
-        recipe.setIngredient('H', Material.valueOf(rowThree.get(1)));
-        recipe.setIngredient('I', Material.valueOf(rowThree.get(2)));
+        setIngredient(recipe, "A", rowOne.get(0));
+        setIngredient(recipe, "B", rowOne.get(1));
+        setIngredient(recipe, "C", rowOne.get(2));
+        setIngredient(recipe, "D", rowTwo.get(0));
+        setIngredient(recipe, "E", rowTwo.get(1));
+        setIngredient(recipe, "F", rowTwo.get(2));
+        setIngredient(recipe, "G", rowThree.get(0));
+        setIngredient(recipe, "H", rowThree.get(1));
+        setIngredient(recipe, "I", rowThree.get(2));
 
         Bukkit.addRecipe(recipe);
     }
@@ -90,5 +90,12 @@ public class RecipeManager {
 
         GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
         player.openInventory(inventory);
+    }
+
+    private static void setIngredient(ShapedRecipe recipe, String key, String material) {
+        if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
+        if (getRecipeIds().contains(material.toLowerCase())) recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
+        else if (Material.getMaterial(material) != null) recipe.setIngredient(key.charAt(0), Material.valueOf(material));
+        else throw new IllegalArgumentException("Invalid material: " + material);
     }
 }
