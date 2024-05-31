@@ -78,8 +78,9 @@ Here is an example of the configuration file:
 checkForUpdates: true
 
 # Set the language to any code found in the "lang" folder (don't add the .yml extension)
-# You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en_US.yml as a template
-lang: "en_US"
+# You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en-US.yml as a template
+# If you want to help translating the plugin, please refer to this article: https://lsz.strassburger.dev/contributing/localization
+lang: "en-US"
 
 # A list of worlds, where the plugin should take effect
 worlds:
@@ -91,6 +92,8 @@ worlds:
 startHearts: 10
 # The maximal amount of hearts, a player can have
 maxHearts: 20
+# The amount of hp a player should have after getting eliminated
+respawnHP: 1
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0
@@ -124,8 +127,8 @@ preventCrystalPVP: false
 
 # Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
 disablePlayerBanOnElimination: false
-# The amount of hp a player should have after getting eliminated
-respawnHP: 10
+# If the killer should gain a heart on elimination
+heartRewardOnElimination: true
 
 # Execute custom commands on events:
 # You can use &player& to insert the player name
@@ -139,6 +142,16 @@ heartuseCommands:
 
 reviveuseCommands:
 # - "say &player& revived &target&"
+
+heartGainCooldown:
+  # A cooldown for how often people can gain a heart.
+  enabled: false
+  # How long the cooldown should be in Milliseconds
+  cooldown: 120000
+  # Drops the heart on the ground if a player kills someone, while still on cooldown
+  dropOnCooldown: true
+  # Prevents picking up hearts from the groun while on cooldown
+  preventPickup: true
 
 antiAlt:
   # If the anti alt system should be enabled
@@ -188,7 +201,8 @@ items:
     recipe:
       # Every item represents one slot in the crafting table
       # The first item in a row is the left most item in the crafting table
-      # If you want a slot to be blank, use 'AIR'
+      # If you want a slot to be blank, use 'AIR' or 'empty'
+      # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
       rowOne:
         - "GOLD_BLOCK"
         - "GOLD_BLOCK"
