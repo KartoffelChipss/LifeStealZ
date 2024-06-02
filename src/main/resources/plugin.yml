@@ -34,6 +34,9 @@ commands:
         permission-message: §cYou don't have permission to use this command!
 
 permissions:
+    lifestealz.managedata:
+        description: permission to manage data
+        default: op
     lifestealz.admin.reload:
         description: permission to reload plugin
         default: op

@@ -15,7 +15,9 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
     @Override

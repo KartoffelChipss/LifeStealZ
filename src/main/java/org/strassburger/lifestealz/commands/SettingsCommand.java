@@ -18,6 +18,7 @@ import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -263,11 +264,42 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             if (!silent) targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!", new Replaceable("%amount%", amount + ""), new Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
         }
 
+        if (optionOne.equals("data")) {
+            if (!sender.hasPermission("lifestealz.managedata")) {
+                throwPermissionError(sender);
+                return false;
+            }
+
+            if (args.length < 3) {
+                throwDataUsageError(sender);
+                return false;
+            }
+
+            optionTwo = args[1];
+
+            String fileName = args[2];
+
+            if (optionTwo.equals("export")) {
+                playerDataStorage.export(fileName);
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv", new Replaceable("%file%", fileName)));
+            } else if (optionTwo.equals("import")) {
+                playerDataStorage.importData(fileName);
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!", new Replaceable("%file%", fileName)));
+            } else {
+                throwUsageError(sender);
+            }
+        }
+
         return false;
     }
 
     private void throwUsageError(CommandSender sender) {
         Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
+        sender.sendMessage(msg);
+    }
+
+    private void throwDataUsageError(CommandSender sender) {
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
         sender.sendMessage(msg);
     }
 
@@ -296,6 +328,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("lifestealz.admin.giveitem")) availableoptions.add("giveItem");
             if (sender.hasPermission("lifestealz.viewrecipes")) availableoptions.add("recipe");
             if (sender.hasPermission("lifestealz.help")) availableoptions.add("help");
+            if (sender.hasPermission("lifestealz.managedata")) availableoptions.add("data");
             return availableoptions;
         } else if (args.length == 2) {
             if (args[0].equals("hearts")) {
@@ -304,12 +337,16 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return null;
             } else if (args[0].equals("recipe")) {
                 return new ArrayList<String>(RecipeManager.getRecipeIds());
+            } else if (args[0].equals("data") && sender.hasPermission("lifestealz.managedata")) {
+                return List.of("export", "import");
             }
         } else if (args.length == 3) {
             if (args[0].equals("hearts")) {
                 return null;
             } else if (args[0].equals("giveItem")) {
                 return new ArrayList<String>(RecipeManager.getRecipeIds());
+            } else if (args[0].equals("data") && args[1].equals("import") && sender.hasPermission("lifestealz.managedata")) {
+                return getCSVFiles();
             }
         } else if (args.length == 4) {
             if (args[0].equals("hearts") || args[0].equals("giveItem")) {
@@ -321,5 +358,17 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             }
         }
         return null;
+    }
+
+    private List<String> getCSVFiles() {
+        List<String> csvFiles = new ArrayList<>();
+        File pluginFolder = LifeStealZ.getInstance().getDataFolder();
+        File[] files = pluginFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
+        if (files != null) {
+            for (File file : files) {
+                csvFiles.add(file.getName());
+            }
+        }
+        return csvFiles;
     }
 }
