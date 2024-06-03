@@ -31,6 +31,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Custom WorldGuard flags
 * ✅ Admin commands
 * ✅ HEX colors and gradients support
+* ✅ SQLite and MySQL support
 
 <br>
 
@@ -165,12 +166,12 @@ antiAlt:
   # Add custom comamnds, to be executed when a possible alt kill attempt is detected
   # You can use &player& to insert the player name (commands are executed for both players)
   commands:
-    # - "say Please don't kill alts"
-    # - "ban &player& 1h"
+  # - "say Please don't kill alts"
+  # - "ban &player& 1h"
 
 storage:
   # The type of storage to use. You have the following options:
-  # "SQLite"
+  # "SQLite", "MySQL"
   type: "SQLite"
 
   # This section is only relevant if you use a MySQL database
@@ -273,6 +274,7 @@ If you are using [Placeholderapi](https://www.spigotmc.org/resources/placeholder
 
 - **%lifestealz_hearts%** - The amount of hearts a user has
 - **%lifestealz_maxhearts%** - The maximum amount of hearts a user can have
+- **%lifestealz_health%** - The current health, that the player has (half hearts rounded up)
 - **%lifestealz_revived%** - The amount of times a player has been revived
 - **%lifestealz_craftedhearts%** - The amount of times a player has crafted a heart
 - **%lifestealz_craftedrevives%** - The amount of times a player has crafted a revive crystal
