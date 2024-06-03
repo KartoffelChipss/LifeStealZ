@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.listeners.PlayerDeathListener;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.storage.MySQLPlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.SQLitePlayerDataStorage;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
@@ -58,8 +59,11 @@ public final class LifeStealZ extends JavaPlugin {
         new Metrics(this, pluginId);
 
         if (hasPlaceholderApi()) {
-            new PapiExpansion().register();
-            getLogger().info("PlaceholderAPI found! Enabled PlaceholderAPI support!");
+            PapiExpansion papiExpansion = new PapiExpansion();
+            if (papiExpansion.canRegister()) {
+                papiExpansion.register();
+                getLogger().info("PlaceholderAPI found! Enabled PlaceholderAPI support!");
+            }
         }
 
         getLogger().info("LifeStealZ enabled!");
@@ -102,7 +106,8 @@ public final class LifeStealZ extends JavaPlugin {
         String option = getConfig().getString("storage.type");
 
         if (option.equalsIgnoreCase("mysql")) {
-            // Todo("Implement MySQL storage");
+            getLogger().info("Using MySQL storage");
+            return new MySQLPlayerDataStorage();
         }
 
         getLogger().info("Using SQLite storage");

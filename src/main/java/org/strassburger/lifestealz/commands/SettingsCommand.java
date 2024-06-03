@@ -284,7 +284,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv", new Replaceable("%file%", fileName)));
             } else if (optionTwo.equals("import")) {
                 playerDataStorage.importData(fileName);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!", new Replaceable("%file%", fileName)));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!", new Replaceable("%file%", fileName)));
             } else {
                 throwUsageError(sender);
             }
