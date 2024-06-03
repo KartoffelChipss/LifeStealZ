@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -20,6 +21,7 @@ public class InteractionListener implements Listener {
     public void onPlayerInteraction(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
+        EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
         boolean worldIsWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
 
@@ -50,16 +52,11 @@ public class InteractionListener implements Listener {
                     return;
                 }
 
-                // Clone the ItemStack and modify the clone
-                ItemStack updatedItem = item.clone();
-                updatedItem.setAmount(item.getAmount() - 1);
-
-                // If the stack size is greater than 1, update the item meta for the remaining items
-                if (updatedItem.getAmount() > 0) {
-                    updatedItem.setItemMeta(item.getItemMeta());
+                if (hand == EquipmentSlot.HAND) {
+                    updateItemInHand(player, item, player.getInventory().getHeldItemSlot());
+                } else if (hand == EquipmentSlot.OFF_HAND) {
+                    updateItemInHand(player, item, 40);
                 }
-
-                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), updatedItem);
 
                 playerData.setMaxhp(newHearts);
                 LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
@@ -88,5 +85,14 @@ public class InteractionListener implements Listener {
                 GuiManager.openReviveGui(player, 1);
             }
         }
+    }
+
+    private void updateItemInHand(Player player, ItemStack item, int slot) {
+        ItemStack updatedItem = item.clone();
+        updatedItem.setAmount(item.getAmount() - 1);
+
+        if (updatedItem.getAmount() > 0) updatedItem.setItemMeta(item.getItemMeta());
+
+        player.getInventory().setItem(slot, updatedItem);
     }
 }
