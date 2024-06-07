@@ -77,15 +77,15 @@ public class RecipeManager {
         List<String> rowOne = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowOne");
         List<String> rowTwo = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
         List<String> rowThree = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowThree");
-        inventory.setItem(10, new ItemStack(Material.valueOf(rowOne.get(0)), 1));
-        inventory.setItem(11, new ItemStack(Material.valueOf(rowOne.get(1)), 1));
-        inventory.setItem(12, new ItemStack(Material.valueOf(rowOne.get(2)), 1));
-        inventory.setItem(19, new ItemStack(Material.valueOf(rowTwo.get(0)), 1));
-        inventory.setItem(20, new ItemStack(Material.valueOf(rowTwo.get(1)), 1));
-        inventory.setItem(21, new ItemStack(Material.valueOf(rowTwo.get(2)), 1));
-        inventory.setItem(28, new ItemStack(Material.valueOf(rowThree.get(0)), 1));
-        inventory.setItem(29, new ItemStack(Material.valueOf(rowThree.get(1)), 1));
-        inventory.setItem(30, new ItemStack(Material.valueOf(rowThree.get(2)), 1));
+        renderIngredient(inventory, 10, rowOne.get(0));
+        renderIngredient(inventory, 11, rowOne.get(1));
+        renderIngredient(inventory, 12, rowOne.get(2));
+        renderIngredient(inventory, 19, rowTwo.get(0));
+        renderIngredient(inventory, 20, rowTwo.get(1));
+        renderIngredient(inventory, 21, rowTwo.get(2));
+        renderIngredient(inventory, 28, rowThree.get(0));
+        renderIngredient(inventory, 29, rowThree.get(1));
+        renderIngredient(inventory, 30, rowThree.get(2));
         inventory.setItem(24, CustomItemManager.createCustomItem(itemId));
 
         GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
@@ -96,6 +96,13 @@ public class RecipeManager {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
         if (getRecipeIds().contains(material.toLowerCase())) recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
         else if (Material.getMaterial(material) != null) recipe.setIngredient(key.charAt(0), Material.valueOf(material));
+        else throw new IllegalArgumentException("Invalid material: " + material);
+    }
+
+    private static void renderIngredient(Inventory inventory, int slot, String material) {
+        if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
+        if (getRecipeIds().contains(material.toLowerCase())) inventory.setItem(slot, CustomItemManager.createCustomItem(material));
+        else if (Material.getMaterial(material) != null) inventory.setItem(slot, new ItemStack(Material.valueOf(material), 1));
         else throw new IllegalArgumentException("Invalid material: " + material);
     }
 }
