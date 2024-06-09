@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -49,15 +50,35 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
+        // Check for available inventory space including existing heart stacks
+        int heartsToWithdraw = withdrawHearts;
+        int availableSpace = 0;
+        ItemStack[] contents = player.getInventory().getStorageContents();
+        for (ItemStack item : contents) {
+            if (item == null) {
+                availableSpace += 64;
+            } else if (CustomItemManager.isHeartItem(item)) {
+                availableSpace += (64 - item.getAmount());
+            }
+            if (availableSpace >= heartsToWithdraw) {
+                break;
+            }
+        }
+
+        if (availableSpace < heartsToWithdraw) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noInventorySpace", "&cYou don't have enough inventory space to withdraw that many hearts!"));
+            return false;
+        }
+
         if (playerdata.getMaxhp() - ((double) withdrawHearts * 2) <= 0.0) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
                 if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new Replaceable("%amount%", withdrawHearts + "")));
                 return false;
             }
 
             if (!withdrawtoDeath) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated, if you withdraw a heart!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
                 return false;
             }
 

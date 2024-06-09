@@ -36,6 +36,7 @@ heartconsumeCooldown: "&cDu musst warten, bevor du ein weiteres Herz benutzen ka
 recipeNotCraftable: "&cDieser Gegenstand kann nicht hergestellt werden!"
 altKill: "&cBitte töte keine Alts! Dieser Versuch wurde protokolliert!"
 withdrawMin: "&cDu kannst nicht weniger als 1 Herz auszahlen!"
+noInventorySpace: "&cDu hast nicht genug Inventarplatz, um so viele Herzen abzuheben!"
 giveItem: "&7Du hast %amount%x &c%item%&7 erhalten!"
 heartGainCooldown: "&cDu musst warten, bevor du ein weiteres Herz erhalten kannst!"
 exportData: "&7Erfolgreich Daten nach &c%file%.csv &7exportiert!"
