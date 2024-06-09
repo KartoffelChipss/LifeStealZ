@@ -77,9 +77,12 @@ public class PlayerDeathListener implements Listener {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", player.getName())));
                 }
 
+                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+
                 playerData.setMaxhp(0.0);
                 LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
             } else {
+                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
                 playerData.setMaxhp(playerData.getMaxhp() - 2.0);
                 LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
                 LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
