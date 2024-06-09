@@ -38,6 +38,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
             return false;
         }
+
         String confirmOption = args != null && args.length > 1 ? args[1] : null;
 
         Player player = (Player) sender;
