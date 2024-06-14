@@ -71,7 +71,10 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (playerdata.getMaxhp() - ((double) withdrawHearts * 2) <= 0.0) {
+        double resultingHealth = playerdata.getMaxhp() - ((double) withdrawHearts * 2);
+        double minHealth = LifeStealZ.getInstance().getConfig().getDouble("minHearts", 2.0) * 2; // Default to 2.0 if not set
+
+        if (resultingHealth < minHealth) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
                 if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new Replaceable("%amount%", withdrawHearts + "")));
@@ -100,6 +103,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
             return false;
         }
+
 
         playerdata.setMaxhp(playerdata.getMaxhp() - (double) withdrawHearts * 2);
         LifeStealZ.getInstance().getPlayerDataStorage().save(playerdata);
