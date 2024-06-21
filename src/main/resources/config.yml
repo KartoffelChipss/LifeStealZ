@@ -5,11 +5,13 @@
 #    | |____| | ||  __/  ____) | ||  __/ (_| | |  / /__
 #    |______|_|_| \___| |_____/ \__\___|\__,_|_| /_____|
 
-# !!! COLOR CODES !!!
-# This plugin supports old color codes like: &c, &l, &o, etc
-# It also supports minimessage, which is a more advanced way to format messages:
+# === COLOR CODES ===
+# This plugin supports old color codes like: &c, &l, &o, etc.
+# It also supports MiniMessage, a more advanced way to format messages:
 # https://docs.advntr.dev/minimessage/format.html
-# With these, you can also add HEX colors, gradients, hover and click events, etc
+# With MiniMessage, you can add HEX colors, gradients, hover and click events, etc.
+
+# === GENERAL SETTINGS ===
 
 # If set to true, LifeStealZ will check for updates and let you know if there's a newer version
 checkForUpdates: true
@@ -17,13 +19,23 @@ checkForUpdates: true
 # Set the language to any code found in the "lang" folder (don't add the .yml extension)
 # You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en-US.yml as a template
 # If you want to help translating the plugin, please refer to this article: https://lsz.strassburger.dev/contributing/localization
+#  | en-US | de-DE | cs-CZ |
 lang: "en-US"
 
-# A list of worlds, where the plugin should take effect
+# === WORLD SETTINGS ===
+
+# A list of worlds, where the plugin should take effect.
+# Depending on how your server is arranged, these settings may need to change.
+# Ensure the default world on your server is named "world", otherwise rename here!
 worlds:
   - "world"
   - "world_nether"
   - "world_the_end"
+
+# Enable to remove the warning message when a world is not whitelisted.
+supressWhitelistMessage: false
+
+# === HEART SETTINGS ===
 
 # The amount of hearts a player has, when joining for the first time
 startHearts: 10
@@ -36,6 +48,8 @@ respawnHP: 1
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
+
+# === HEART BEHAVIOR SETTINGS ===
 
 # If hearts should be dropped instead of directly added to the killer
 dropHearts: false
