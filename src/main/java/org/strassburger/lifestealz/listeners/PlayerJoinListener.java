@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
@@ -20,7 +21,19 @@ public class PlayerJoinListener implements Listener {
         PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
 
         List<String> worldWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds");
-        if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) return;
+
+        if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) {
+            if ((player.hasPermission("lifestealz.admin.*") || player.isOp()) && !LifeStealZ.getInstance().getConfig().getBoolean("suppressWhitelistMessage", false)) {
+                player.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "unwhitelistedWorld",
+                        "\n<red><b><grey>></grey> World Whitelist</b></red>\n\n<gray>You are currently playing on world <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red>.\nThis world is not whitelisted. LSZ won't activate here.\n</gray>\n<red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentation</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u></red>   <u><hover:show_text:'<gray>To ignore: \nSet 'supressWhitelistMessage' to <b>true</b> in the config file.</gray>'><red>Hide Message</red></hover></u>\n",
+                        new Replaceable("&world&", player.getLocation().getWorld().getName())
+                ));
+            }
+
+            return;
+        }
 
         PlayerData playerData = playerDataStorage.load(player.getUniqueId());
 
