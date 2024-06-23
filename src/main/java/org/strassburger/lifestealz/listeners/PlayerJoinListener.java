@@ -21,7 +21,19 @@ public class PlayerJoinListener implements Listener {
         PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
 
         List<String> worldWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds");
-        if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) return;
+
+        if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) {
+            if ((player.hasPermission("lifestealz.admin.*") || player.isOp()) && !LifeStealZ.getInstance().getConfig().getBoolean("suppressWhitelistMessage", false)) {
+                player.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "unwhitelistedWorld",
+                        "\n<red><b><grey>></grey> World Whitelist</b></red>\n\n<gray>You are currently playing on world <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red>.\nThis world is not whitelisted. LSZ won't activate here.\n</gray>\n<red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentation</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u></red>   <u><hover:show_text:'<gray>To ignore: \nSet 'supressWhitelistMessage' to <b>true</b> in the config file.</gray>'><red>Hide Message</red></hover></u>\n",
+                        new Replaceable("&world&", player.getLocation().getWorld().getName())
+                ));
+            }
+
+            return;
+        }
 
         PlayerData playerData = playerDataStorage.load(player.getUniqueId());
 
@@ -35,14 +47,6 @@ public class PlayerJoinListener implements Listener {
 
         if (player.isOp() && LifeStealZ.getInstance().getConfig().getBoolean("checkForUpdates") && LifeStealZ.getInstance().getVersionChecker().NEW_VERSION_AVAILABLE) {
             player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.newVersionAvailable", "&7A new version of LifeStealZ is available!\\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"));
-        }
-        if (player.hasPermission("lifestealz.admin.*")) {
-            if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) {
-                if (!LifeStealZ.getInstance().getConfig().getBoolean("suppressWhitelistMessage", false)) {
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.unwhitedlistWorld", "<dark_gray><b>World Whitelist</b></dark_gray>\n<i><gray>You are currently playing on: &world&.\nThis world is not a whitelisted world, LSZ won't activate here.\n</gray></i>\n<red><u><b><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentation</click></b></u></red>   <b><u><hover:show_text:'<i><gray>To ignore: \nSet 'supressWhitelistMessage' to <b>true</b></gray></i>'><red>Hide Message</red></hover></b>", new Replaceable("&world&", player.getLocation().getWorld().getName())));
-                }
-                return;
-            }
         }
     }
 }
