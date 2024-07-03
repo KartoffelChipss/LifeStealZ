@@ -1,0 +1,56 @@
+---
+prefix: "&8[&cLifeStealZ&8]"
+newVersionAvailable: |-
+  &7Đã có phiên bản mới của LifeStealZ!
+  &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
+usageError: "&cCách sử dụng: %usage%"
+noPermsError: "<red>bạn không có quyền thực hiện lệnh này!"
+playerNotFound: "&cKhông tìm thấy người chơi!"
+worldNotWhitelisted: "&cThế giới này không nằm trong danh sách trắng của LifeStealZ!"
+specifyPlayerOrBePlayer: "&cBạn cần chỉ định một người chơi hoặc tự mình trở thành
+  người chơi!"
+noPermissionError: "&cBạn không có quyền sử dụng cái này!"
+noPlayerData: "&cNgười chơi này chưa chơi trên máy chủ này!"
+eliminateSuccess: "&7Bạn đã loại bỏ thành công người chơi &c%player%&7!"
+reviveSuccess: "&7Bạn đã hồi sinh thành công &c%player%!"
+reviveMaxReached: "&cNgười chơi này đã được hồi sinh %amount% lần!"
+onlyReviveElimPlayers: "&cBạn chỉ có thể hồi sinh những người chơi bị loại!"
+eliminatedJoin: "&cBạn không còn trái tim nào nữa!"
+eliminationAnnouncement: "&c%player% &7đã bị loại bỏ bởi &c%killer%&7!"
+eliminateionAnnouncementNature: "&c%player% &7đã bị loại bỏ!"
+setHeartsConfirm: "&7Đã đặt thành công trái tim của &c%player%&7 thành &c%amount%"
+getHearts: "&c%player% &7hiện có &c%amount% &7trái tim!"
+reloadMsg: "&7Đã tải lại plugin thành công!"
+versionMsg: "&7Bạn đang sử dụng phiên bản <red>%version%"
+noWithdraw: "&cBạn sẽ bị loại nếu rút lại một trái tim!"
+withdrawConfirmmsg: "&8&oSử dụng <underline><click:SUGGEST_COMMAND:/withdrawheart
+  %amount% confirm>/withdrawheart %amount% xác nhận</click></underline> nếu bạn thực
+  sự muốn rút trái tim"
+maxHeartLimitReached: "&cBạn đã đạt đến giới hạn %limit% trái tim!"
+closeBtn: "&cĐóng"
+backBtn: "&cQuay lại"
+nextBtn: "&cTiếp theo"
+reviveTitle: "&8Hồi sinh người chơi"
+revivePlayerDesc: "&7Nhấn Vào Nút để hồi sinh người chơi này"
+viewheartsYou: "&7Bạn hiện có &c%amount% &7trái tim!"
+viewheartsOther: "&c%player% &7hiện có &c%amount% &7trái tim!"
+heartconsume: "&7Bạn đã nhận được &c%amount% &7trái tim!"
+heartconsumeCooldown: "&cBạn phải đợi trước khi sử dụng trái tim khác!"
+recipeNotCraftable: "&cVật phẩm này không thể chế tạo được!"
+altKill: "&cXin đừng giết người! Nỗ lực này đã được ghi lại!"
+withdrawMin: "&cBạn không thể rút ít hơn 1 trái tim!"
+noInventorySpace: "&cBạn không có đủ chỗ chứa đồ để rút nhiều trái tim như vậy!"
+giveItem: "&7Bạn đã nhận được %amount%x &c%item%&7!"
+heartGainCooldown: "&cBạn phải đợi trước khi có được trái tim khác!"
+exportData: "&7Đã xuất thành công dữ liệu người chơi sang &c%file%.csv"
+importData: |-
+  &7Đã nhập data thành công &c%file%.csv&7!
+  &cVui lòng khởi động lại máy chủ để đảm bảo quá trình di chuyển hoàn hảo!
+unwhitelistedWorld: |2
+
+  <red><b><grey>></grey> Danh sách trắng thế giới</b></red>
+
+  <gray>Bạn hiện đang chơi trên thế giới <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red>.
+  Thế giới này không nằm trong danh sách trắng. LSZ sẽ không kích hoạt ở đây.</gray>
+
+  <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Tài liệu</click></u></red> <red><u><click:open_url :'https://strassburger.org/discord'>Hỗ trợ Discord</click></u></red> <u><hover:show_text:'<gray>Để bỏ qua: Đặt 'supressWhitelistMessage' thành <b> true</b> trong tệp cấu hình.</gray>'><red>Ẩn tin nhắn</red></hover></u>
