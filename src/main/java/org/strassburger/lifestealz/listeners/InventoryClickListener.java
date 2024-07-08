@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -24,9 +25,11 @@ import java.util.UUID;
 public class InventoryClickListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null) return;
+        Player player = (Player) event.getWhoClicked();
 
-        if (event.getClickedInventory().equals(GuiManager.RECIPE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
+        Inventory openInventory = player.getOpenInventory().getTopInventory();
+
+        if (openInventory.equals(GuiManager.RECIPE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
             event.setCancelled(true);
 
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.BARRIER) {
@@ -34,14 +37,12 @@ public class InventoryClickListener implements Listener {
             }
         }
 
-        if (event.getClickedInventory().equals(GuiManager.REVIVE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
+        if (openInventory.equals(GuiManager.REVIVE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
             event.setCancelled(true);
 
             ItemStack item = event.getCurrentItem();
 
             if (item == null || item.getType() == Material.AIR || !(event.getWhoClicked() instanceof Player)) return;
-
-            Player player = (Player) event.getWhoClicked();
 
             switch (item.getType()) {
                 case BARRIER:
