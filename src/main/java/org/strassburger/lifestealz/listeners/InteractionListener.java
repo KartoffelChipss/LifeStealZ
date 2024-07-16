@@ -32,6 +32,8 @@ public class InteractionListener implements Listener {
             }
 
             if (CustomItemManager.isHeartItem(item)) {
+                event.setCancelled(true);
+
                 long heartCooldown = LifeStealZ.getInstance().getConfig().getLong("heartCooldown");
                 if (CooldownManager.lastHeartUse.get(player.getUniqueId()) != null && CooldownManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"));
@@ -82,6 +84,7 @@ public class InteractionListener implements Listener {
             }
 
             if (CustomItemManager.isReviveItem(item)) {
+                event.setCancelled(true);
                 GuiManager.openReviveGui(player, 1);
             }
         }

@@ -71,10 +71,17 @@ heartCooldown: 0
 # How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
 
+# === Disabling Features ===
+
 # If the use of totems of undying should be prevented
 preventTotems: false
 # If crystalpvp should be disabled
 preventCrystalPVP: false
+# If the use of custom items in item frames should be prevented
+# It is recommended to leave this enabled, as people can dupe items otherwise
+preventCustomItemsInItemFrames: true
+
+# === Extensive Customization ===
 
 # Only disable this option if you want to add custom commands on elimination and don't want the player to get banned
 disablePlayerBanOnElimination: false
@@ -119,6 +126,9 @@ antiAlt:
     # - "say Please don't kill alts"
     # - "ban &player& 1h"
 
+
+# === Storage ===
+
 storage:
   # The type of storage to use. You have the following options:
   # "SQLite", "MySQL"
@@ -130,6 +140,9 @@ storage:
   database: "lifestealz"
   username: "root"
   password: "password"
+
+
+# === Custom Items ===
 
 # Here you can modify everything about the custom items
 items:

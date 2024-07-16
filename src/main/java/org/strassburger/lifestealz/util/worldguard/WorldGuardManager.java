@@ -23,6 +23,10 @@ public class WorldGuardManager {
     }
 
     public static boolean checkHeartLossFlag(Player player) {
+        WorldGuardManager worldGuardManager = LifeStealZ.getInstance().getWorldGuardManager();
+
+        if (worldGuardManager == null) return false;
+
         com.sk89q.worldguard.LocalPlayer localPlayer = com.sk89q.worldguard.bukkit.WorldGuardPlugin.inst().wrapPlayer(player);
         com.sk89q.worldedit.util.Location loc = com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(player.getLocation());
         com.sk89q.worldguard.protection.regions.RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -30,6 +34,6 @@ public class WorldGuardManager {
 
         com.sk89q.worldguard.protection.ApplicableRegionSet set = query.getApplicableRegions(loc);
 
-        return set.testState(localPlayer, LifeStealZ.getInstance().getWorldGuardManager().getHeartLossFlag());
+        return set.testState(localPlayer, worldGuardManager.getHeartLossFlag());
     }
 }

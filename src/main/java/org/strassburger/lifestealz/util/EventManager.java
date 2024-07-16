@@ -23,6 +23,7 @@ public class EventManager {
         registerListener(new PlayerDeathListener());
         registerListener(new WorldSwitchListener());
         registerListener(new PlayerItemPickupListener());
+        registerListener(new InteractionEntityEventListener());
     }
 
     /**
