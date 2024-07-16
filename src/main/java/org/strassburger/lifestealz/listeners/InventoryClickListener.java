@@ -70,6 +70,11 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
 
+                    if (!hasReviveCrystal(player)) {
+                        LifeStealZ.getInstance().getLogger().warning("Player " + player.getName() + " tried to revive " + targetPlayer.getName() + " without a revive crystal!");
+                        return;
+                    }
+
                     PlayerData targetPlayerData = LifeStealZ.getInstance().getPlayerDataStorage().load(playerUUID);
 
                     int reviveMaximum = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
@@ -98,8 +103,7 @@ public class InventoryClickListener implements Listener {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()).replace("&target&", targetPlayer.getName()));
                     }
 
-                    if (CustomItemManager.isReviveItem(player.getInventory().getItemInMainHand())) player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
-                    else if (CustomItemManager.isReviveItem(player.getInventory().getItemInOffHand())) player.getInventory().getItemInOffHand().setAmount(player.getInventory().getItemInOffHand().getAmount() - 1);
+                    removeReviveCrystal(player);
                     break;
             }
         }
@@ -116,5 +120,21 @@ public class InventoryClickListener implements Listener {
         if (lore == null) return null;
         Component lastLore = lore.get(lore.size() - 1);
         return plainSerializer.serialize(lastLore);
+    }
+
+    private boolean hasReviveCrystal(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && CustomItemManager.isReviveItem(item)) return true;
+        }
+        return false;
+    }
+
+    private void removeReviveCrystal(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && CustomItemManager.isReviveItem(item)) {
+                item.setAmount(item.getAmount() - 1);
+                return;
+            }
+        }
     }
 }

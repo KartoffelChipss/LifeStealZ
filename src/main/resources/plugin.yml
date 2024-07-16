@@ -1,7 +1,7 @@
 name: LifeStealZ
 version: '${project.version}'
 main: org.strassburger.lifestealz.LifeStealZ
-api-version: '1.21'
+api-version: '1.19'
 author: Kartoffelchips
 website: https://lsz.strassburger.dev/
 description: A LifeSteal SMP plugin providing you all the features you need!
