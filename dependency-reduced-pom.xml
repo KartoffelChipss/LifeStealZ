@@ -4,7 +4,7 @@
   <groupId>org.strassburger</groupId>
   <artifactId>LifeStealZ</artifactId>
   <name>LifeStealZ</name>
-  <version>1.1.25</version>
+  <version>1.1.26</version>
   <description>A LifeSteal SMP plugin providing you all the features you need!</description>
   <build>
     <resources>

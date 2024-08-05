@@ -52,7 +52,9 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (playerData.getMaxhp() > 0.0) {
+        int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+
+        if (playerData.getMaxhp() > minHearts * 2) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
             return false;
         }

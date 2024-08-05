@@ -123,13 +123,15 @@ public class MySQLPlayerDataStorage implements PlayerDataStorage {
     public List<UUID> getEliminatedPlayers() {
         List<UUID> eliminatedPlayers = new ArrayList<>();
 
+        int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+
         try (Connection connection = createConnection()) {
             if (connection == null) return eliminatedPlayers;
 
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(30);
 
-                ResultSet resultSet = statement.executeQuery("SELECT uuid FROM hearts WHERE maxhp <= 0.0");
+                ResultSet resultSet = statement.executeQuery("SELECT uuid FROM hearts WHERE maxhp <= " + minHearts * 2 + ".0");
 
                 while (resultSet.next()) {
                     eliminatedPlayers.add(UUID.fromString(resultSet.getString("uuid")));

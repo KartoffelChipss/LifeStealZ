@@ -83,7 +83,8 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
 
-                    if (targetPlayerData.getMaxhp() > 0.0) {
+                    int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+                    if (targetPlayerData.getMaxhp() > minHearts * 2) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
                     }
