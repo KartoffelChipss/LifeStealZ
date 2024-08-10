@@ -75,6 +75,7 @@ public class PlayerDeathListener implements Listener {
 
                 if (announceElimination) {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", player.getName())));
+                    event.setDeathMessage(null); // Cancel the default death message
                 }
 
                 if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
@@ -155,6 +156,7 @@ public class PlayerDeathListener implements Listener {
 
                 if (announceElimination) {
                     Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new Replaceable("%player%", player.getName()), new Replaceable("%killer%", killer.getName())));
+                    event.setDeathMessage(null); // Cancel the default death message
                 }
 
                 playerData.setMaxhp(minHearts);
