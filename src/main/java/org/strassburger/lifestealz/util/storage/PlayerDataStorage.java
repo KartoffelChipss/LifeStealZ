@@ -51,4 +51,9 @@ public interface PlayerDataStorage {
      * @param fileName The name of the file to import from.
      */
     void importData(String fileName);
+
+    /**
+     * Get all player names
+     */
+    List<String> getPlayerNames();
 }

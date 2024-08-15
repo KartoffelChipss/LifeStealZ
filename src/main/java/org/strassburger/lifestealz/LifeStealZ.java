@@ -1,13 +1,11 @@
 package org.strassburger.lifestealz;
 
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.strassburger.lifestealz.listeners.PlayerDeathListener;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.storage.MySQLPlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
