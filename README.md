@@ -19,6 +19,9 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 ---
 
 ![FeaturesBanner](https://strassburger.org/img/lifestealz/banner_features.png)
+
+**Main Features**
+
 * ✅ Stealing hearts
 * ✅ Withdraw hearts
 * ✅ Customizable heart items
@@ -33,6 +36,15 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Admin commands
 * ✅ HEX colors and gradients support
 * ✅ SQLite and MySQL support
+
+**Languages**
+
+* English (`en-US`)
+* German (`de-DE`)
+* Spanish (`es-ES`)
+* Czech (`cs-CZ`)
+* Vietnamese (`vi-VN`)
+* Chinese (Simplified) (`zh-CN`)
 
 <br>
 
