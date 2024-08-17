@@ -79,7 +79,7 @@ public class InventoryClickListener implements Listener {
 
                     int reviveMaximum = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
                     if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
                         return;
                     }
 
@@ -93,7 +93,7 @@ public class InventoryClickListener implements Listener {
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
                     LifeStealZ.getInstance().getPlayerDataStorage().save(targetPlayerData);
 
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new Replaceable("%player%", targetPlayer.getName())));
+                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
 

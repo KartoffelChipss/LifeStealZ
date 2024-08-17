@@ -12,12 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
     @Override
@@ -48,7 +45,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         int maxRevives = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
 
         if (maxRevives != -1 && playerData.getHasbeenRevived() >= maxRevives && (bypassOption == null || !bypassOption.equals("bypass") || !sender.hasPermission("lifestealz.bypassrevivelimit"))) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
             return false;
         }
 
@@ -63,13 +60,13 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
         LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new Replaceable("%player%", targetPlayerName)));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayerName)));
 
         return false;
     }
 
     public void throwUsageError(CommandSender sender) {
-        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/revive <player>"));
+        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/revive <player>"));
         sender.sendMessage(usageMessage);
     }
 

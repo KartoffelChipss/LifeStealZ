@@ -14,7 +14,6 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.RecipeManager;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
@@ -31,7 +30,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
 
         if (args.length == 0) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", new Replaceable("%version%", LifeStealZ.getInstance().getDescription().getVersion())));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", new MessageUtils.Replaceable("%version%", LifeStealZ.getInstance().getDescription().getVersion())));
             return false;
         }
 
@@ -150,7 +149,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
             if (optionTwo.equals("get")) {
                 int hearts = (int) (targetPlayerData.getMaxhp() / 2);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!", new Replaceable("%player%", targetPlayer.getName()), new Replaceable("%amount%", hearts + "")));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!", new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
                 return true;
             }
 
@@ -166,7 +165,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             switch (optionTwo) {
                 case "add": {
                     if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxhp() + (amount * 2) > config.getInt("maxHearts") * 2) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", config.getInt("maxHearts") + ""));
+                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
                         sender.sendMessage(maxHeartsMsg);
                         return false;
                     }
@@ -184,7 +183,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                     }
 
                     if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", config.getInt("maxHearts") + ""));
+                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
                         sender.sendMessage(maxHeartsMsg);
                         return false;
                     }
@@ -208,7 +207,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 }
             }
 
-            Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!", new Replaceable("%option%", optionTwo), new Replaceable("%player%", targetPlayer.getName()), new Replaceable("%amount%", finalAmount + ""));
+            Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!", new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
             sender.sendMessage(setHeartsConfirmMessage);
         }
 
@@ -261,7 +260,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             boolean silent = args.length > 4 && args[4].equals("silent");
 
             targetPlayer.getInventory().addItem(CustomItemManager.createCustomItem(item, amount));
-            if (!silent) targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!", new Replaceable("%amount%", amount + ""), new Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
+            if (!silent) targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!", new MessageUtils.Replaceable("%amount%", amount + ""), new MessageUtils.Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
         }
 
         if (optionOne.equals("data")) {
@@ -281,10 +280,10 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
             if (optionTwo.equals("export")) {
                 playerDataStorage.export(fileName);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv", new Replaceable("%file%", fileName)));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv", new MessageUtils.Replaceable("%file%", fileName)));
             } else if (optionTwo.equals("import")) {
                 playerDataStorage.importData(fileName);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!", new Replaceable("%file%", fileName)));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!", new MessageUtils.Replaceable("%file%", fileName)));
             } else {
                 throwUsageError(sender);
             }
@@ -294,22 +293,22 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void throwUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
         sender.sendMessage(msg);
     }
 
     private void throwDataUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
         sender.sendMessage(msg);
     }
 
     private void throwGiveItemUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"));
         sender.sendMessage(msg);
     }
 
     private void throwRecipeUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", RecipeManager.getRecipeIds()) + ">"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", RecipeManager.getRecipeIds()) + ">"));
         sender.sendMessage(msg);
     }
 

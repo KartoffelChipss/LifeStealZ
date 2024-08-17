@@ -11,7 +11,6 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.CooldownManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
@@ -74,7 +73,7 @@ public class PlayerDeathListener implements Listener {
                 }, 1L);
 
                 if (announceElimination) {
-                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", player.getName())));
+                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName())));
                     event.setDeathMessage(null); // Cancel the default death message
                 }
 
@@ -121,7 +120,7 @@ public class PlayerDeathListener implements Listener {
                     if (playerData.getMaxhp() - 2.0 > minHearts || playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination) {
                         if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
                             if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
-                            else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", (int) maxHearts / 2 + "")));
+                            else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                         } else {
                             killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
                             LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
@@ -155,7 +154,7 @@ public class PlayerDeathListener implements Listener {
                 }, 1L);
 
                 if (announceElimination) {
-                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new Replaceable("%player%", player.getName()), new Replaceable("%killer%", killer.getName())));
+                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new MessageUtils.Replaceable("%player%", player.getName()), new MessageUtils.Replaceable("%killer%", killer.getName())));
                     event.setDeathMessage(null); // Cancel the default death message
                 }
 

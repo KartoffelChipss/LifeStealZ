@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         try {
             withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
         } catch (NumberFormatException e) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
             return false;
         }
 
@@ -77,7 +76,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         if (resultingHealth < minHealth) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
-                if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new Replaceable("%amount%", withdrawHearts + "")));
+                if (withdrawtoDeath) sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new MessageUtils.Replaceable("%amount%", withdrawHearts + "")));
                 return false;
             }
 
@@ -97,7 +96,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             player.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
             if (LifeStealZ.getInstance().getConfig().getBoolean("announceElimination")) {
-                Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", player.getName()));
+                Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName()));
                 Bukkit.broadcast(elimAnnouncementMsg);
             }
 

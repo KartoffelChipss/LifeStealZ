@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             }
             Player player = (Player) sender;
             PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!", new Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2)))));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2)))));
             return false;
         }
 
@@ -52,7 +51,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!", new Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2))), new Replaceable("%player%", target.getName())));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2))), new MessageUtils.Replaceable("%player%", target.getName())));
         return false;
     }
 

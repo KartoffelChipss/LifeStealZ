@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.Replaceable;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
@@ -53,17 +52,17 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
         Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
         targetPlayer.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!", new Replaceable("%player%", targetPlayer.getName())));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
         if (LifeStealZ.getInstance().getConfig().getBoolean("announceElimination")) {
-            Component elimAannouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new Replaceable("%player%", targetPlayer.getName()));
+            Component elimAannouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
             Bukkit.broadcast(elimAannouncementMsg);
         }
         return false;
     }
 
     private void throwUsageError(CommandSender sender) {
-        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new Replaceable("%usage%", "/eliminate <player>"));
+        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/eliminate <player>"));
         sender.sendMessage(usageMessage);
     }
 

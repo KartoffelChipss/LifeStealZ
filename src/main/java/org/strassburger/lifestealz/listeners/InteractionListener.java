@@ -50,7 +50,7 @@ public class InteractionListener implements Listener {
                 double maxHearts = LifeStealZ.getInstance().getConfig().getInt("maxHearts") * 2;
 
                 if (newHearts > maxHearts) {
-                    player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));
+                    player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));
                     return;
                 }
 
@@ -79,7 +79,7 @@ public class InteractionListener implements Listener {
 
                 if (LifeStealZ.getInstance().getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
 
-                player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new Replaceable("%amount%", savedHeartAmount + "")));
+                player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", savedHeartAmount + "")));
                 CooldownManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
             }
 
