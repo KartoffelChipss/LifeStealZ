@@ -20,11 +20,7 @@ import java.util.List;
 
 public class PlayerDeathListener implements Listener {
 
-    private final LifeStealZ plugin;
-
-    public PlayerDeathListener(LifeStealZ plugin) {
-        this.plugin = plugin;
-    }
+    private final LifeStealZ plugin = LifeStealZ.getInstance();
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -64,7 +60,7 @@ public class PlayerDeathListener implements Listener {
             handleKillerHeartGain(player, killer, world);
         }
 
-        // Reduce victim's hearts
+        // Reduce the victim's hearts
         playerData.setMaxhp(playerData.getMaxhp() - 2.0);
         plugin.getPlayerDataStorage().save(playerData);
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
@@ -78,8 +74,10 @@ public class PlayerDeathListener implements Listener {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             for (String command : elimCommands) {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
-                        command.replace("&player&", player.getName()));
+                plugin.getServer().dispatchCommand(
+                        plugin.getServer().getConsoleSender(),
+                        command.replace("&player&", player.getName())
+                );
             }
         }, 1L);
 
@@ -93,7 +91,9 @@ public class PlayerDeathListener implements Listener {
         }
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin",
+            Component kickMessage = MessageUtils.getAndFormatMsg(
+                    false,
+                    "messages.eliminatedjoin",
                     "&cYou don't have any hearts left!");
             player.kick(kickMessage);
         }, 1L);
@@ -107,7 +107,7 @@ public class PlayerDeathListener implements Listener {
             event.setDeathMessage(null);
         }
 
-        // I suppose this is where webhook support should go. here eventually.
+        // I suppose this is where webhook support should go here eventually.
 
         if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
             world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
@@ -136,8 +136,7 @@ public class PlayerDeathListener implements Listener {
         if (heartGainCooldownEnabled
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown",
-                    "&cYou have to wait before gaining another heart!"));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
             if (heartGainCooldownDropOnCooldown) {
                 world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
             }
