@@ -11,14 +11,20 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 public class PlayerItemPickupListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public PlayerItemPickupListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onItemPickup(PlayerAttemptPickupItemEvent event) {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem().getItemStack();
 
-        boolean heartGainCooldownEnabled = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.enabled");
-        long heartGainCooldown = LifeStealZ.getInstance().getConfig().getLong("heartGainCooldown.cooldown");
-        boolean heartGainCooldownPreventPickup = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.preventPickup");
+        boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
+        long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
+        boolean heartGainCooldownPreventPickup = plugin.getConfig().getBoolean("heartGainCooldown.preventPickup");
 
         if (!CustomItemManager.isHeartItem(itemStack)) return;
 

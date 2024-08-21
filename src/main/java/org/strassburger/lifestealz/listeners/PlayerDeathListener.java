@@ -20,7 +20,11 @@ import java.util.List;
 
 public class PlayerDeathListener implements Listener {
 
-    private final LifeStealZ plugin = LifeStealZ.getInstance();
+    private final LifeStealZ plugin;
+
+    public PlayerDeathListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {

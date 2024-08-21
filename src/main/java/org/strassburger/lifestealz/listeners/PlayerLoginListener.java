@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -14,14 +13,20 @@ import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 import java.util.List;
 
 public class PlayerLoginListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public PlayerLoginListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
+        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
 
-        PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
 
-        List<String> worldWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelisted = plugin.getConfig().getStringList("worlds");
         if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) return;
 
         if (playerData == null) {
@@ -30,8 +35,8 @@ public class PlayerLoginListener implements Listener {
             playerData = newPlayerData;
         }
 
-        boolean disabledBanOnDeath = LifeStealZ.getInstance().getConfig().getBoolean("disablePlayerBanOnElimination");
-        double minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts") * 2;
+        boolean disabledBanOnDeath = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
+        double minHearts = plugin.getConfig().getInt("minHearts") * 2;
         if (playerData.getMaxhp() <= minHearts && !disabledBanOnDeath) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
             Component kickmsg = MessageUtils.getAndFormatMsg(false, "eliminatedJoin", "&cYou don't have any hearts left!");

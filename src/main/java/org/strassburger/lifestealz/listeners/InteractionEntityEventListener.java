@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz.listeners;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +11,12 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 public class InteractionEntityEventListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public InteractionEntityEventListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onInteractionEntityEvent(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
@@ -19,7 +24,7 @@ public class InteractionEntityEventListener implements Listener {
         if (item.getType() == Material.AIR) item = event.getPlayer().getInventory().getItemInOffHand();
         if (item.getType() == Material.AIR) return;
 
-        boolean preventItemFrames = LifeStealZ.getInstance().getConfig().getBoolean("preventCustomItemsInItemFrames");
+        boolean preventItemFrames = plugin.getConfig().getBoolean("preventCustomItemsInItemFrames");
 
         if (preventItemFrames && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))) {
             event.setCancelled(true);

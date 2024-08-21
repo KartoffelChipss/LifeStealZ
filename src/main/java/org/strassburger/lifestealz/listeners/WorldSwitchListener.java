@@ -12,16 +12,22 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class WorldSwitchListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public WorldSwitchListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onWorldSwitch(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         World fromWorld = event.getFrom();
         World toWorld = player.getLocation().getWorld();
 
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
 
         if (worldWhitelist.contains(toWorld.getName())) {
-            PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+            PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
             LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
 
             if (!worldWhitelist.contains(fromWorld.getName())) player.setHealth(playerData.getMaxhp());
