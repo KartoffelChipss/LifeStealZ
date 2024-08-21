@@ -23,14 +23,20 @@ import java.util.List;
 import java.util.Set;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
+    private LifeStealZ plugin;
+
+    public SettingsCommand(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        FileConfiguration config = LifeStealZ.getInstance().getConfig();
-        PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
+        FileConfiguration config = plugin.getConfig();
+        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
+        RecipeManager recipeManager = plugin.getRecipeManager();
 
         if (args.length == 0) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", new MessageUtils.Replaceable("%version%", LifeStealZ.getInstance().getDescription().getVersion())));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", new MessageUtils.Replaceable("%version%", plugin.getDescription().getVersion())));
             return false;
         }
 
@@ -42,9 +48,9 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            LifeStealZ.getInstance().reloadConfig();
-            config = LifeStealZ.getInstance().getConfig();
-            LifeStealZ.getInstance().getLanguageManager().reload();
+            plugin.reloadConfig();
+            config = plugin.getConfig();
+            plugin.getLanguageManager().reload();
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"));
             return true;
         }
@@ -92,17 +98,17 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
             String recipe = args[1];
 
-            if (recipe == null || !RecipeManager.getRecipeIds().contains(recipe)) {
+            if (recipe == null || !recipeManager.getRecipeIds().contains(recipe)) {
                 throwRecipeUsageError(sender);
                 return false;
             }
 
-            if (!RecipeManager.isCraftable(recipe)) {
+            if (!recipeManager.isCraftable(recipe)) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.recipeNotCraftable", "&cThis item is not craftable!"));
                 return false;
             }
 
-            RecipeManager.renderRecipe((Player) sender, recipe);
+            recipeManager.renderRecipe((Player) sender, recipe);
         }
 
         String optionTwo = null;
@@ -133,7 +139,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            OfflinePlayer targetPlayer = LifeStealZ.getInstance().getServer().getOfflinePlayer(targetPlayerName);
+            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
 
             if (targetPlayer.getName() == null) {
                 throwUsageError(sender);
@@ -229,7 +235,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            Player targetPlayer = LifeStealZ.getInstance().getServer().getPlayer(targetPlayerName);
+            Player targetPlayer = plugin.getServer().getPlayer(targetPlayerName);
 
             if (targetPlayer == null) {
                 throwUsageError(sender);
@@ -243,7 +249,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            Set<String> possibleItems = RecipeManager.getRecipeIds();
+            Set<String> possibleItems = recipeManager.getRecipeIds();
 
             if (!possibleItems.contains(item)) {
                 throwGiveItemUsageError(sender);
@@ -308,7 +314,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void throwRecipeUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", RecipeManager.getRecipeIds()) + ">"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">"));
         sender.sendMessage(msg);
     }
 
@@ -335,7 +341,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             } else if (args[0].equals("giveItem")) {
                 return null;
             } else if (args[0].equals("recipe")) {
-                return new ArrayList<String>(RecipeManager.getRecipeIds());
+                return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             } else if (args[0].equals("data") && sender.hasPermission("lifestealz.managedata")) {
                 return List.of("export", "import");
             }
@@ -343,7 +349,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             if (args[0].equals("hearts")) {
                 return null;
             } else if (args[0].equals("giveItem")) {
-                return new ArrayList<String>(RecipeManager.getRecipeIds());
+                return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             } else if (args[0].equals("data") && args[1].equals("import") && sender.hasPermission("lifestealz.managedata")) {
                 return getCSVFiles();
             }
@@ -361,7 +367,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
     private List<String> getCSVFiles() {
         List<String> csvFiles = new ArrayList<>();
-        File pluginFolder = LifeStealZ.getInstance().getDataFolder();
+        File pluginFolder = plugin.getDataFolder();
         File[] files = pluginFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
         if (files != null) {
             for (File file : files) {

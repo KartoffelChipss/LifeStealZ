@@ -20,9 +20,15 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class WithdrawCommand implements CommandExecutor, TabCompleter {
+    private LifeStealZ plugin;
+
+    public WithdrawCommand(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
         if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
             return false;
@@ -41,9 +47,9 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         String confirmOption = args != null && args.length > 1 ? args[1] : null;
 
         Player player = (Player) sender;
-        PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerdata = plugin.getPlayerDataStorage().load(player.getUniqueId());
 
-        boolean withdrawtoDeath = LifeStealZ.getInstance().getConfig().getBoolean("allowDyingFromWithdraw");
+        boolean withdrawtoDeath = plugin.getConfig().getBoolean("allowDyingFromWithdraw");
 
         if (withdrawHearts < 1) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawMin", "&cYou can't withdraw less than 1 heart!"));
@@ -71,7 +77,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         }
 
         double resultingHealth = playerdata.getMaxhp() - ((double) withdrawHearts * 2);
-        double minHealth = LifeStealZ.getInstance().getConfig().getDouble("minHearts", 2.0) * 2; // Default to 2.0 if not set
+        double minHealth = plugin.getConfig().getDouble("minHearts", 2.0) * 2; // Default to 2.0 if not set
 
         if (resultingHealth < minHealth) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
@@ -90,12 +96,12 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             }
 
             playerdata.setMaxhp(0.0);
-            LifeStealZ.getInstance().getPlayerDataStorage().save(playerdata);
+            plugin.getPlayerDataStorage().save(playerdata);
 
             Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
             player.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
-            if (LifeStealZ.getInstance().getConfig().getBoolean("announceElimination")) {
+            if (plugin.getConfig().getBoolean("announceElimination")) {
                 Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName()));
                 Bukkit.broadcast(elimAnnouncementMsg);
             }
@@ -105,7 +111,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
 
         playerdata.setMaxhp(playerdata.getMaxhp() - (double) withdrawHearts * 2);
-        LifeStealZ.getInstance().getPlayerDataStorage().save(playerdata);
+        plugin.getPlayerDataStorage().save(playerdata);
         LifeStealZ.setMaxHealth(player, playerdata.getMaxhp());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 500.0f, 1.0f);
 

@@ -18,9 +18,15 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class EliminateCommand implements CommandExecutor, TabCompleter {
+    private LifeStealZ plugin;
+
+    public EliminateCommand(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
         if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
             return false;
@@ -40,9 +46,9 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
         playerData.setMaxhp(0.0);
-        LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
+        plugin.getPlayerDataStorage().save(playerData);
 
         for (ItemStack item : targetPlayer.getInventory().getContents()) {
             if (item != null) targetPlayer.getWorld().dropItem(targetPlayer.getLocation(), item);
@@ -54,7 +60,7 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
-        if (LifeStealZ.getInstance().getConfig().getBoolean("announceElimination")) {
+        if (plugin.getConfig().getBoolean("announceElimination")) {
             Component elimAannouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
             Bukkit.broadcast(elimAannouncementMsg);
         }

@@ -10,13 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LanguageManager {
-    private final JavaPlugin plugin = LifeStealZ.getInstance();
+    private final LifeStealZ plugin;
     public static final List<String> defaultLangs = List.of("en-US", "de-DE", "cs-CZ", "es-ES", "vi-VN", "zh-CN");
 
     private HashMap<String, String> translationMap;
     private FileConfiguration langConfig;
 
-    public LanguageManager() {
+    public LanguageManager(LifeStealZ plugin) {
+        this.plugin = plugin;
         loadLanguageConfig();
     }
 
