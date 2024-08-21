@@ -23,6 +23,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class InventoryClickListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public InventoryClickListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -71,27 +77,27 @@ public class InventoryClickListener implements Listener {
                     }
 
                     if (!hasReviveCrystal(player)) {
-                        LifeStealZ.getInstance().getLogger().warning("Player " + player.getName() + " tried to revive " + targetPlayer.getName() + " without a revive crystal!");
+                        plugin.getLogger().warning("Player " + player.getName() + " tried to revive " + targetPlayer.getName() + " without a revive crystal!");
                         return;
                     }
 
-                    PlayerData targetPlayerData = LifeStealZ.getInstance().getPlayerDataStorage().load(playerUUID);
+                    PlayerData targetPlayerData = plugin.getPlayerDataStorage().load(playerUUID);
 
-                    int reviveMaximum = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
+                    int reviveMaximum = plugin.getConfig().getInt("maxRevives");
                     if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
                         return;
                     }
 
-                    int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+                    int minHearts = plugin.getConfig().getInt("minHearts");
                     if (targetPlayerData.getMaxhp() > minHearts * 2) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
                     }
 
-                    targetPlayerData.setMaxhp(LifeStealZ.getInstance().getConfig().getInt("respawnHP") * 2);
+                    targetPlayerData.setMaxhp(plugin.getConfig().getInt("respawnHP") * 2);
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
-                    LifeStealZ.getInstance().getPlayerDataStorage().save(targetPlayerData);
+                    plugin.getPlayerDataStorage().save(targetPlayerData);
 
                     player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
@@ -99,7 +105,7 @@ public class InventoryClickListener implements Listener {
 
                     event.getInventory().close();
 
-                    List<String> reviveCommands = LifeStealZ.getInstance().getConfig().getStringList("reviveuseCommands");
+                    List<String> reviveCommands = plugin.getConfig().getStringList("reviveuseCommands");
                     for (String command : reviveCommands) {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()).replace("&target&", targetPlayer.getName()));
                     }

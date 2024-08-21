@@ -13,15 +13,21 @@ import java.util.List;
 
 public class PlayerJoinListener implements Listener {
 
+    private final LifeStealZ plugin;
+
+    public PlayerJoinListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerDataStorage playerDataStorage = LifeStealZ.getInstance().getPlayerDataStorage();
+        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
 
-        List<String> worldWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelisted = plugin.getConfig().getStringList("worlds");
 
         if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) {
-            if ((player.hasPermission("lifestealz.admin.*") || player.isOp()) && !LifeStealZ.getInstance().getConfig().getBoolean("suppressWhitelistMessage", false)) {
+            if ((player.hasPermission("lifestealz.admin.*") || player.isOp()) && !plugin.getConfig().getBoolean("suppressWhitelistMessage", false)) {
                 player.sendMessage(MessageUtils.getAndFormatMsg(
                         false,
                         "unwhitelistedWorld",
@@ -43,7 +49,7 @@ public class PlayerJoinListener implements Listener {
 
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
 
-        if (player.isOp() && LifeStealZ.getInstance().getConfig().getBoolean("checkForUpdates") && LifeStealZ.getInstance().getVersionChecker().NEW_VERSION_AVAILABLE) {
+        if (player.isOp() && plugin.getConfig().getBoolean("checkForUpdates") && plugin.getVersionChecker().NEW_VERSION_AVAILABLE) {
             player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.newVersionAvailable", "&7A new version of LifeStealZ is available!\\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"));
         }
     }

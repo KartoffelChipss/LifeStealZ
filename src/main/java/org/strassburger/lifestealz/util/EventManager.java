@@ -5,25 +5,27 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.listeners.*;
 
 public class EventManager {
-    private static final LifeStealZ plugin = LifeStealZ.getInstance();
+    private final LifeStealZ plugin;
 
-    private EventManager() {}
+    public EventManager(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Registers all listeners
      */
-    public static void registerListeners() {
-        registerListener(new PlayerJoinListener());
-        registerListener(new PlayerLoginListener());
-        registerListener(new EntityDamageByEntityListener());
-        registerListener(new EntityResurrectListener());
-        registerListener(new InteractionListener());
+    public void registerListeners() {
+        registerListener(new PlayerJoinListener(plugin));
+        registerListener(new PlayerLoginListener(plugin));
+        registerListener(new EntityDamageByEntityListener(plugin));
+        registerListener(new EntityResurrectListener(plugin));
+        registerListener(new InteractionListener(plugin));
         registerListener(new InventoryCloseListener());
-        registerListener(new InventoryClickListener());
-        registerListener(new PlayerDeathListener());
-        registerListener(new WorldSwitchListener());
-        registerListener(new PlayerItemPickupListener());
-        registerListener(new InteractionEntityEventListener());
+        registerListener(new InventoryClickListener(plugin));
+        registerListener(new PlayerDeathListener(plugin));
+        registerListener(new WorldSwitchListener(plugin));
+        registerListener(new PlayerItemPickupListener(plugin));
+        registerListener(new InteractionEntityEventListener(plugin));
     }
 
     /**
@@ -31,7 +33,7 @@ public class EventManager {
      *
      * @param listener The listener to register
      */
-    private static void registerListener(Listener listener) {
+    private void registerListener(Listener listener) {
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
     }
 }

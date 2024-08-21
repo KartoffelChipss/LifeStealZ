@@ -43,7 +43,7 @@ public final class LifeStealZ extends JavaPlugin {
 
         CommandManager.registerCommands();
 
-        EventManager.registerListeners();
+        new EventManager(this).registerListeners();
 
         RecipeManager.registerRecipes();
 

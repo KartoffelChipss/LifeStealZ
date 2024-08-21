@@ -17,13 +17,19 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class InteractionListener implements Listener {
+    private final LifeStealZ plugin;
+
+    public InteractionListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
-        boolean worldIsWhitelisted = LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
+        boolean worldIsWhitelisted = plugin.getConfig().getStringList("worlds").contains(player.getLocation().getWorld().getName());
 
         if (event.getAction().isRightClick() && item != null) {
             if (!worldIsWhitelisted && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))) {
@@ -34,20 +40,20 @@ public class InteractionListener implements Listener {
             if (CustomItemManager.isHeartItem(item)) {
                 event.setCancelled(true);
 
-                long heartCooldown = LifeStealZ.getInstance().getConfig().getLong("heartCooldown");
+                long heartCooldown = plugin.getConfig().getLong("heartCooldown");
                 if (CooldownManager.lastHeartUse.get(player.getUniqueId()) != null && CooldownManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"));
                     return;
                 }
 
-                PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
 
                 Integer savedHeartAmountInteger = item.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
                 int savedHeartAmount = savedHeartAmountInteger != null ? savedHeartAmountInteger : 1;
                 double heartsToAdd = savedHeartAmount * 2;
                 double newHearts = playerData.getMaxhp() + heartsToAdd;
 
-                double maxHearts = LifeStealZ.getInstance().getConfig().getInt("maxHearts") * 2;
+                double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
 
                 if (newHearts > maxHearts) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));
@@ -61,7 +67,7 @@ public class InteractionListener implements Listener {
                 }
 
                 playerData.setMaxhp(newHearts);
-                LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
+                plugin.getPlayerDataStorage().save(playerData);
                 LifeStealZ.setMaxHealth(player, newHearts);
                 player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 
@@ -72,12 +78,12 @@ public class InteractionListener implements Listener {
                     if (sound.isEnabled()) player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
                 }
 
-                List<String> heartuseCommands = LifeStealZ.getInstance().getConfig().getStringList("heartuseCommands");
+                List<String> heartuseCommands = plugin.getConfig().getStringList("heartuseCommands");
                 for (String command : heartuseCommands) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()));
                 }
 
-                if (LifeStealZ.getInstance().getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
+                if (plugin.getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
 
                 player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", savedHeartAmount + "")));
                 CooldownManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());

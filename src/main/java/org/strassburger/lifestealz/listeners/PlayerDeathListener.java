@@ -19,153 +19,172 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 public class PlayerDeathListener implements Listener {
+
+    private final LifeStealZ plugin;
+
+    public PlayerDeathListener(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         final Player player = event.getEntity();
         final Player killer = player.getKiller();
 
-        final World world = player.getWorld();
+        if (!plugin.getConfig().getStringList("worlds").contains(player.getWorld().getName())) return;
 
-        PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+        // WorldGuard check
+        if (plugin.hasWorldGuard() && !WorldGuardManager.checkHeartLossFlag(player)) return;
 
-        List<String> elimCommands = LifeStealZ.getInstance().getConfig().getStringList("eliminationCommands");
-        boolean heartRewardOnElimination = LifeStealZ.getInstance().getConfig().getBoolean("heartRewardOnElimination");
-        boolean disableBanOnElimination = LifeStealZ.getInstance().getConfig().getBoolean("disablePlayerBanOnElimination");
-        boolean announceElimination = LifeStealZ.getInstance().getConfig().getBoolean("announceElimination");
-        boolean dropHeartsOnDeath = LifeStealZ.getInstance().getConfig().getBoolean("dropHearts");
-        boolean dropHeartsIfMax = LifeStealZ.getInstance().getConfig().getBoolean("dropHeartsIfMax");
-        double maxHearts = LifeStealZ.getInstance().getConfig().getInt("maxHearts") * 2;
-        double minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts") * 2;
+        final PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
 
-        boolean heartGainCooldownEnabled = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.enabled");
-        long heartGainCooldown = LifeStealZ.getInstance().getConfig().getLong("heartGainCooldown.cooldown");
-        boolean heartGainCooldowndropOnCooldown = LifeStealZ.getInstance().getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
+        final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
 
-        if (!LifeStealZ.getInstance().getConfig().getStringList("worlds").contains(player.getWorld().getName())) return;
-
-        // if player is in a region where the heartloss flag is set to deny, return
-        if (LifeStealZ.getInstance().hasWorldGuard()) {
-            if (!WorldGuardManager.checkHeartLossFlag(player)) return;
+        // Natural death or death by player
+        if ((!isDeathByPlayer && plugin.getConfig().getBoolean("looseHeartsToNature"))
+                || (isDeathByPlayer && plugin.getConfig().getBoolean("looseHeartsToPlayer"))) {
+            handleHeartLoss(event, player, killer, playerData, isDeathByPlayer);
         }
+    }
 
-        boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
+    private void handleHeartLoss(PlayerDeathEvent event, Player player, Player killer, PlayerData playerData, boolean isDeathByPlayer) {
+        final World world = player.getWorld();
+        final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
-        // Player died a natural death (e.g. fall damage)
-        if (!isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToNature")) {
-            if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
-                    for (String command : elimCommands) {
-                        LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                    }
-                }, 1L);
-
-                if (disableBanOnElimination) {
-                    double respawnHP = LifeStealZ.getInstance().getConfig().getInt("respawnHP") * 2;
-                    playerData.setMaxhp(respawnHP);
-                    LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
-                    LifeStealZ.setMaxHealth(player, respawnHP);
-                    return;
-                }
-
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
-                    Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                    player.kick(kickMessage);
-                }, 1L);
-
-                if (announceElimination) {
-                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName())));
-                    event.setDeathMessage(null); // Cancel the default death message
-                }
-
-                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-
-                playerData.setMaxhp(0.0);
-                LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
-            } else {
-                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-                playerData.setMaxhp(playerData.getMaxhp() - 2.0);
-                LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
-                LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
-            }
-
+        // Check for elimination
+        if (playerData.getMaxhp() - 2.0 <= minHearts) {
+            handleElimination(event, player, killer, isDeathByPlayer);
             return;
         }
 
-        // Player was killed by another player
-        if (isDeathByPlayer && LifeStealZ.getInstance().getConfig().getBoolean("looseHeartsToPlayer")) {
-            PlayerData killerPlayerData = LifeStealZ.getInstance().getPlayerDataStorage().load(killer.getUniqueId());
+        // Drop hearts or handle heart gain for the killer (if applicable)
+        if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
+            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+        } else if (isDeathByPlayer) {
+            handleKillerHeartGain(player, killer, world);
+        }
 
-            String victimIP = getPlayerIP(player);
-            String killerIP = getPlayerIP(killer);
+        // Reduce the victim's hearts
+        playerData.setMaxhp(playerData.getMaxhp() - 2.0);
+        plugin.getPlayerDataStorage().save(playerData);
+        LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
+    }
 
-            // Anti alt logic (If killer and victim are on same IP)
-            if (victimIP != null && victimIP.equals(killerIP) && LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.enabled")) {
-                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.logAttempt")) LifeStealZ.getInstance().getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill " + player.getName() + " with the same IP address! (Proably an alt account)");
-                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.sendMessage")) {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.altKill", "&cPlease don't kill alts! This attempt has been logged!"));
-                }
-                for (String command : LifeStealZ.getInstance().getConfig().getStringList("antiAlt.commands")) LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", killer.getName()));
-                for (String command : LifeStealZ.getInstance().getConfig().getStringList("antiAlt.commands")) LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                if (LifeStealZ.getInstance().getConfig().getBoolean("antiAlt.preventKill")) return;
+    private void handleElimination(PlayerDeathEvent event, Player player, Player killer, boolean isDeathByPlayer) {
+        final List<String> elimCommands = plugin.getConfig().getStringList("eliminationCommands");
+        final boolean disableBanOnElimination = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
+        final boolean announceElimination = plugin.getConfig().getBoolean("announceElimination");
+        final World world = player.getWorld();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            for (String command : elimCommands) {
+                plugin.getServer().dispatchCommand(
+                        plugin.getServer().getConsoleSender(),
+                        command.replace("&player&", player.getName())
+                );
             }
+        }, 1L);
 
-            if (heartGainCooldownEnabled && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
-                // Heart Gain is on cooldown
-                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
-                if (heartGainCooldowndropOnCooldown) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-            } else {
-                // Handle killer gaining hearts
-                if (dropHeartsOnDeath) world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-                else {
-                    if (playerData.getMaxhp() - 2.0 > minHearts || playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination) {
-                        if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
-                            if (dropHeartsIfMax) world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
-                            else killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
-                        } else {
-                            killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
-                            LifeStealZ.getInstance().getPlayerDataStorage().save(killerPlayerData);
-                            LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
-                            killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
-                            CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
-                        }
-                    }
-                }
+        if (disableBanOnElimination) {
+            double respawnHP = plugin.getConfig().getInt("respawnHP") * 2;
+            PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+            playerData.setMaxhp(respawnHP);
+            plugin.getPlayerDataStorage().save(playerData);
+            LifeStealZ.setMaxHealth(player, respawnHP);
+            return;
+        }
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            Component kickMessage = MessageUtils.getAndFormatMsg(
+                    false,
+                    "messages.eliminatedjoin",
+                    "&cYou don't have any hearts left!");
+            player.kick(kickMessage);
+        }, 1L);
+
+        if (announceElimination) {
+            String messageKey = isDeathByPlayer ? "messages.eliminationAnnouncement" : "messages.eliminateionAnnouncementNature";
+            Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, messageKey,
+                    isDeathByPlayer ? "&c%player% &7has been eliminated by &c%killer%&7!" : "&c%player% &7has been eliminated!",
+                    new MessageUtils.Replaceable("%player%", player.getName()),
+                    new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")));
+            event.setDeathMessage(null);
+        }
+
+        // I suppose this is where webhook support should go here eventually.
+
+        if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
+            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+        }
+
+        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        playerData.setMaxhp(0.0);
+        plugin.getPlayerDataStorage().save(playerData);
+    }
+
+    private void handleKillerHeartGain(Player player, Player killer, World world) {
+        final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
+        final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
+        final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
+        final double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
+        final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
+        final boolean heartRewardOnElimination = plugin.getConfig().getBoolean("heartRewardOnElimination");
+        final boolean dropHeartsIfMax = plugin.getConfig().getBoolean("dropHeartsIfMax");
+
+        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData killerPlayerData = plugin.getPlayerDataStorage().load(killer.getUniqueId());
+
+        // Anti-alt logic
+        if (handleAntiAltLogic(player, killer)) return;
+
+        if (heartGainCooldownEnabled
+                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
+                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
+            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
+            if (heartGainCooldownDropOnCooldown) {
+                world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
             }
-
-            // Handle victim loosing hearts
-            if (playerData.getMaxhp() - 2.0 <= minHearts) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
-                    for (String command : elimCommands) {
-                        LifeStealZ.getInstance().getServer().dispatchCommand(LifeStealZ.getInstance().getServer().getConsoleSender(), command.replace("&player&", player.getName()));
-                    }
-                }, 1L);
-
-                if (disableBanOnElimination) {
-                    double respawnHP = LifeStealZ.getInstance().getConfig().getInt("respawnHP") * 2;
-                    playerData.setMaxhp(respawnHP);
-                    LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
-                    LifeStealZ.setMaxHealth(player, respawnHP);
-                    return;
+        } else if (playerData.getMaxhp() - 2.0 > minHearts || (playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination)) {
+            if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
+                if (dropHeartsIfMax) {
+                    world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
+                } else {
+                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached",
+                            "&cYou already reached the limit of %limit% hearts!",
+                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                 }
-
-                Bukkit.getScheduler().scheduleSyncDelayedTask(LifeStealZ.getInstance(), () -> {
-                    Component kickMessage = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
-                    player.kick(kickMessage);
-                }, 1L);
-
-                if (announceElimination) {
-                    Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, "messages.eliminationAnnouncement", "&c%player% &7has been eliminated by &c%killer%&7!", new MessageUtils.Replaceable("%player%", player.getName()), new MessageUtils.Replaceable("%killer%", killer.getName())));
-                    event.setDeathMessage(null); // Cancel the default death message
-                }
-
-                playerData.setMaxhp(minHearts);
-                LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
             } else {
-                playerData.setMaxhp(playerData.getMaxhp() - 2.0);
-                LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
-                LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
+                killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
+                plugin.getPlayerDataStorage().save(killerPlayerData);
+                LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
+                killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+                CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
             }
         }
+    }
+
+    private boolean handleAntiAltLogic(Player player, Player killer) {
+        final String victimIP = getPlayerIP(player);
+        final String killerIP = getPlayerIP(killer);
+
+        if (victimIP != null && victimIP.equals(killerIP) && plugin.getConfig().getBoolean("antiAlt.enabled")) {
+            if (plugin.getConfig().getBoolean("antiAlt.logAttempt")) {
+                plugin.getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill "
+                        + player.getName() + " with the same IP address! (Probably an alt account)");
+            }
+            if (plugin.getConfig().getBoolean("antiAlt.sendMessage")) {
+                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.altKill",
+                        "&cPlease don't kill alts! This attempt has been logged!"));
+            }
+            for (String command : plugin.getConfig().getStringList("antiAlt.commands")) {
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                        command.replace("&player&", killer.getName()));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                        command.replace("&player&", player.getName()));
+            }
+            return plugin.getConfig().getBoolean("antiAlt.preventKill");
+        }
+        return false;
     }
 
     private String getPlayerIP(Player player) {
@@ -174,4 +193,6 @@ public class PlayerDeathListener implements Listener {
         InetAddress address = inetSocketAddress.getAddress();
         return address.getHostAddress();
     }
+
 }
+
