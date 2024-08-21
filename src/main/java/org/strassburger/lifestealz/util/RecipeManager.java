@@ -17,35 +17,55 @@ import java.util.Objects;
 import java.util.Set;
 
 public class RecipeManager {
-    public RecipeManager() {}
+    private final LifeStealZ plugin;
 
-    public static Set<String> getRecipeIds() {
-        return Objects.requireNonNull(LifeStealZ.getInstance().getConfig().getConfigurationSection("items")).getKeys(false);
+    public RecipeManager(LifeStealZ plugin) {
+        this.plugin = plugin;
     }
 
-    public static void registerRecipes() {
-        for (String itemId : Objects.requireNonNull(LifeStealZ.getInstance().getConfig().getConfigurationSection("items")).getKeys(false)) {
+    /**
+     * Returns all recipe ids
+     * @return All recipe ids
+     */
+    public Set<String> getRecipeIds() {
+        return Objects.requireNonNull(plugin.getConfig().getConfigurationSection("items")).getKeys(false);
+    }
+
+    /**
+     * Registers all recipes
+     */
+    public void registerRecipes() {
+        for (String itemId : Objects.requireNonNull(plugin.getConfig().getConfigurationSection("items")).getKeys(false)) {
             registerRecipe(itemId);
         }
     }
 
-    public static boolean isCraftable(String itemId) {
-        return LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
+    /**
+     * Checks if an item is craftable
+     * @param itemId The item id
+     * @return If the item is craftable
+     */
+    public boolean isCraftable(String itemId) {
+        return plugin.getConfig().getBoolean("items." + itemId + ".craftable");
     }
 
-    private static void registerRecipe(String itemId) {
-        boolean craftable = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
+    /**
+     * Registers a recipe
+     * @param itemId The item id to register
+     */
+    private void registerRecipe(String itemId) {
+        boolean craftable = plugin.getConfig().getBoolean("items." + itemId + ".craftable");
 
         if (!craftable) return;
 
-        NamespacedKey heartRecipeKey = new NamespacedKey(LifeStealZ.getInstance(), "recipe" + itemId);
+        NamespacedKey heartRecipeKey = new NamespacedKey(plugin, "recipe" + itemId);
         ItemStack resultItem = CustomItemManager.createCustomItem(itemId);
         ShapedRecipe recipe = new ShapedRecipe(heartRecipeKey, resultItem);
 
         recipe.shape("ABC", "DEF", "GHI");
-        List<String> rowOne = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowOne");
+        List<String> rowTwo = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
+        List<String> rowThree = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowThree");
 
         setIngredient(recipe, "A", rowOne.get(0));
         setIngredient(recipe, "B", rowOne.get(1));
@@ -60,7 +80,12 @@ public class RecipeManager {
         Bukkit.addRecipe(recipe);
     }
 
-    public static void renderRecipe(Player player, String itemId) {
+    /**
+     * Renders a recipe in an inventory gui
+     * @param player The player to render the recipe for
+     * @param itemId The item id to render
+     */
+    public void renderRecipe(Player player, String itemId) {
         Inventory inventory = Bukkit.createInventory(null, 5 * 9, MessageUtils.formatMsg("&8Crafting recipe"));
 
         inventory.setItem(40, CustomItemManager.createCloseItem());
@@ -74,9 +99,9 @@ public class RecipeManager {
             inventory.setItem(slot, glass);
         }
 
-        List<String> rowOne = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowOne");
+        List<String> rowTwo = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
+        List<String> rowThree = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowThree");
         renderIngredient(inventory, 10, rowOne.get(0));
         renderIngredient(inventory, 11, rowOne.get(1));
         renderIngredient(inventory, 12, rowOne.get(2));
@@ -92,14 +117,26 @@ public class RecipeManager {
         player.openInventory(inventory);
     }
 
-    private static void setIngredient(ShapedRecipe recipe, String key, String material) {
+    /**
+     * Sets an ingredient for a recipe
+     * @param recipe The recipe to set the ingredient for
+     * @param key The key of the ingredient
+     * @param material The material of the ingredient
+     */
+    private void setIngredient(ShapedRecipe recipe, String key, String material) {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
         if (getRecipeIds().contains(material.toLowerCase())) recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
         else if (Material.getMaterial(material) != null) recipe.setIngredient(key.charAt(0), Material.valueOf(material));
         else throw new IllegalArgumentException("Invalid material: " + material);
     }
 
-    private static void renderIngredient(Inventory inventory, int slot, String material) {
+    /**
+     * Renders an ingredient in an inventory gui
+     * @param inventory The inventory to render the ingredient in
+     * @param slot The slot to render the ingredient in
+     * @param material The material of the ingredient
+     */
+    private void renderIngredient(Inventory inventory, int slot, String material) {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
         if (getRecipeIds().contains(material.toLowerCase())) inventory.setItem(slot, CustomItemManager.createCustomItem(material));
         else if (Material.getMaterial(material) != null) inventory.setItem(slot, new ItemStack(Material.valueOf(material), 1));

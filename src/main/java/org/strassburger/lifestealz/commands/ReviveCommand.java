@@ -17,9 +17,15 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
+    private LifeStealZ plugin;
+
+    public ReviveCommand(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
         if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
             return false;
@@ -35,30 +41,30 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
 
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
 
-        PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
 
         if (playerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
             return false;
         }
 
-        int maxRevives = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
+        int maxRevives = plugin.getConfig().getInt("maxRevives");
 
         if (maxRevives != -1 && playerData.getHasbeenRevived() >= maxRevives && (bypassOption == null || !bypassOption.equals("bypass") || !sender.hasPermission("lifestealz.bypassrevivelimit"))) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
             return false;
         }
 
-        int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+        int minHearts = plugin.getConfig().getInt("minHearts");
 
         if (playerData.getMaxhp() > minHearts * 2) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
             return false;
         }
 
-        playerData.setMaxhp(LifeStealZ.getInstance().getConfig().getDouble("respawnHP") * 2);
+        playerData.setMaxhp(plugin.getConfig().getDouble("respawnHP") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
-        LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
+        plugin.getPlayerDataStorage().save(playerData);
 
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayerName)));
 

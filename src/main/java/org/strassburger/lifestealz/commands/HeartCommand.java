@@ -16,9 +16,15 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class HeartCommand implements CommandExecutor, TabCompleter {
+    private LifeStealZ plugin;
+
+    public HeartCommand(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
+        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
         if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
             return false;
@@ -32,7 +38,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
             Player player = (Player) sender;
-            PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+            PlayerData playerdata = plugin.getPlayerDataStorage().load(player.getUniqueId());
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2)))));
             return false;
         }
@@ -44,7 +50,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(target.getUniqueId());
+        PlayerData playerdata = plugin.getPlayerDataStorage().load(target.getUniqueId());
 
         if (playerdata == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));

@@ -19,6 +19,7 @@ public final class LifeStealZ extends JavaPlugin {
     private PlayerDataStorage playerDataStorage;
     private WorldGuardManager worldGuardManager;
     private LanguageManager languageManager;
+    private RecipeManager recipeManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 
@@ -39,13 +40,14 @@ public final class LifeStealZ extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
-        languageManager = new LanguageManager();
+        languageManager = new LanguageManager(this);
 
-        CommandManager.registerCommands();
+        new CommandManager(this).registerCommands();
 
         new EventManager(this).registerListeners();
 
-        RecipeManager.registerRecipes();
+        recipeManager = new RecipeManager(this);
+        recipeManager.registerRecipes();
 
         playerDataStorage = createPlayerDataStorage();
         playerDataStorage.init();
@@ -86,6 +88,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public WorldGuardManager getWorldGuardManager() {
         return worldGuardManager;
+    }
+
+    public RecipeManager getRecipeManager() {
+        return recipeManager;
     }
 
     public boolean hasWorldGuard() {
