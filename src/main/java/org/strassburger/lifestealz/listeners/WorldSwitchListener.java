@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz.listeners;
 
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

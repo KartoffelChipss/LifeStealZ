@@ -2,7 +2,9 @@ package org.strassburger.lifestealz.util.storage;
 
 import org.strassburger.lifestealz.LifeStealZ;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class SQLitePlayerDataStorage extends SQLPlayerDataStorage implements PlayerDataStorage {
     Connection createConnection() {
