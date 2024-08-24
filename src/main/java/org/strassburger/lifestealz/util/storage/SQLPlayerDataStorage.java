@@ -49,7 +49,7 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
             if (connection == null) return null;
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(30);
-                try (ResultSet resultSet = statement.executeQuery("SELECT * FROM hearts WHERE uuid = '" + uuid + "'");) {
+                try (ResultSet resultSet = statement.executeQuery("SELECT * FROM hearts WHERE uuid = '" + uuid + "'")) {
 
                     if (!resultSet.next()) {
                         Player player = Bukkit.getPlayer(uuid);
@@ -126,15 +126,14 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
                     while (resultSet.next()) {
-                        StringBuilder line = new StringBuilder();
-                        line.append(resultSet.getString("uuid")).append(CSV_SEPARATOR)
-                                .append(resultSet.getString("name")).append(CSV_SEPARATOR)
-                                .append(resultSet.getDouble("maxhp")).append(CSV_SEPARATOR)
-                                .append(resultSet.getInt("hasbeenRevived")).append(CSV_SEPARATOR)
-                                .append(resultSet.getInt("craftedHearts")).append(CSV_SEPARATOR)
-                                .append(resultSet.getInt("craftedRevives")).append(CSV_SEPARATOR)
-                                .append(resultSet.getInt("killedOtherPlayers"));
-                        writer.write(line.toString());
+                        String line = resultSet.getString("uuid") + CSV_SEPARATOR +
+                                resultSet.getString("name") + CSV_SEPARATOR +
+                                resultSet.getDouble("maxhp") + CSV_SEPARATOR +
+                                resultSet.getInt("hasbeenRevived") + CSV_SEPARATOR +
+                                resultSet.getInt("craftedHearts") + CSV_SEPARATOR +
+                                resultSet.getInt("craftedRevives") + CSV_SEPARATOR +
+                                resultSet.getInt("killedOtherPlayers");
+                        writer.write(line);
                         writer.newLine();
                     }
                 }

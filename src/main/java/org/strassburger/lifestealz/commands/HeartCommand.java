@@ -11,32 +11,43 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
 
 public class HeartCommand implements CommandExecutor, TabCompleter {
+
+    private final LifeStealZ plugin = LifeStealZ.getInstance();
+    WhitelistManager wm = new WhitelistManager();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = LifeStealZ.getInstance().getConfig().getStringList("worlds");
-        if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
-            return false;
-        }
+        if (!wm.isWorldWhitelisted(sender)) return false;
 
-        String targetName = args != null && args.length > 0 ? args[0] : null;
+        String targetName = (args != null && args.length > 0) ? args[0] : null;
 
         if (targetName == null) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.specifyPlayerOrBePlayer", "&cYou need to either specify a player or be a player yourself!"));
-                return false;
-            }
-            Player player = (Player) sender;
-            PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2)))));
+            return handleSelfHeartCheck(sender);
+        } else {
+            return handleOtherHeartCheck(sender, targetName);
+        }
+    }
+
+    private boolean handleSelfHeartCheck(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.specifyPlayerOrBePlayer", "&cYou need to either specify a player or be a player yourself!"));
             return false;
         }
 
+        Player player = (Player) sender;
+        PlayerData playerdata = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        int heartCount = (int) Math.floor(playerdata.getMaxhp() / 2);
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!",
+                new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount))));
+        return true;
+    }
+
+    private boolean handleOtherHeartCheck(CommandSender sender, String targetName) {
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
         if (target.getName() == null) {
@@ -44,15 +55,18 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData playerdata = LifeStealZ.getInstance().getPlayerDataStorage().load(target.getUniqueId());
+        PlayerData playerdata = plugin.getPlayerDataStorage().load(target.getUniqueId());
 
         if (playerdata == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
             return false;
         }
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString((int) Math.floor(playerdata.getMaxhp() / 2))), new MessageUtils.Replaceable("%player%", target.getName())));
-        return false;
+        int heartCount = (int) Math.floor(playerdata.getMaxhp() / 2);
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!",
+                new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount)),
+                new MessageUtils.Replaceable("%player%", target.getName())));
+        return true;
     }
 
     @Override
