@@ -15,7 +15,7 @@ public class CommandManager {
      * Registers all commands
      */
     public static void registerCommands() {
-        registerCommand("lifestealz", new SettingsCommand(), new SettingsCommand());
+        registerCommand("lifestealz", new SettingsCommand(plugin), new SettingsCommand(plugin));
         registerCommand("hearts", new HeartCommand(), new HeartCommand());
         registerCommand("withdrawheart", new WithdrawCommand(), new WithdrawCommand());
         registerCommand("revive", new ReviveCommand(), new ReviveCommand());
