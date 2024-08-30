@@ -1,0 +1,56 @@
+---
+prefix: "&8[&cLifeStealZ&8]"
+newVersionAvailable: |-
+  &7A new version of LifeStealZ is available!
+  &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
+usageError: "&cUsage: %usage%"
+noPermsError: "<red>You do not have permission to execute this command!"
+playerNotFound: "&cNie znaleziono gracza"
+worldNotWhitelisted: "&cTen świat nie znajduje się na whitelist LifeStealZ"
+specifyPlayerOrBePlayer: "&cMusisz albo określić gracza, albo sam być graczem!"
+noPermissionError: "&cNie masz do tego permisji!"
+noPlayerData: "&cTen gracz nie grał jeszcze na tym serwerze!"
+eliminateSuccess: "&7Pomyślnie wyeliminowałeś gracza &c%player%&7!"
+reviveSuccess: "&7Pomyślnie ożywiłeś gracza &c%player%!"
+reviveMaxReached: "&cTen gracz został już ożywiony %amount% times!"
+onlyReviveElimPlayers: "&cMożesz wskrzesić jedynie wyeliminowanych graczy!"
+eliminatedJoin: "&cNie masz już żadnych serc!"
+eliminationAnnouncement: "&c%player% &7został wyeliminowany przez &c%killer%&7!"
+eliminateionAnnouncementNature: "&c%player% &7został wyeliminowany!"
+setHeartsConfirm: "&7Pomyślnie ustawiono graczowi &7%player% c%amount% &7serc"
+getHearts: "&c%player% &7aktualnie ma &c%amount% &7serc!"
+reloadMsg: "&7Pomyślnie przeładowałeś plugin!"
+versionMsg: "&7Używasz wersji <red>%version%"
+noWithdraw: "&cJeśli wypłacisz serce, zostaniesz wyeliminowany!"
+withdrawConfirmmsg: "&8&oUżyj <podkreślone><kliknij:SUGGEST_COMMAND:/withdrawheart
+  %amount% potwierdź>/withdrawheart %amount% potwierdź</kliknij></podkreślone> jeśli
+  naprawdę chcesz wypłacić serce"
+maxHeartLimitReached: "&cOsiągnąłeś limit serc &7(&f%limit%&7)"
+closeBtn: "&cZamknij"
+backBtn: "&cCofnij"
+nextBtn: "&cNastępne"
+reviveTitle: "&8Odrodź gracza"
+revivePlayerDesc: "&7Kliknij, aby ożywić tego gracza"
+viewheartsYou: "&7Aktualnie posiadasz &c%amount% &7serc!"
+viewheartsOther: "&c%player% &7ma aktualnie &c%amount% &7serc!"
+heartconsume: "&7Masz &c%amount% &7serc!"
+heartconsumeCooldown: "&cMusisz poczekać zanim użyjesz kolejnego serca!"
+recipeNotCraftable: "&cThis item is not craftable!"
+altKill: "&cProszę nie zabijać altów! Ta próba została zarejestrowana!"
+withdrawMin: "&cNie możesz wypłacić mniej niż 1 serce!"
+noInventorySpace: "&cNie masz tyle miejsca w ekwipunku by wypłacić tyle serc!"
+giveItem: "&7Otrzymałeś %amount%x &c%item%&7!"
+heartGainCooldown: "&cMusisz poczekać, zanim zdobędziesz kolejne serce!"
+exportData: "&7Pomyślnie wyeksportowano dane gracza do &c%file%.csv"
+importData: |-
+  &7Pomyślnie zaimportowano &c%file%.csv&7!
+  &cZrestartuj serwer, aby zapewnić bezproblemową migrację!
+unwhitelistedWorld: |2
+
+  <red><b><grey>></grey> Whitelista świata</b></red>
+
+  <gray>Obecnie grasz na świecie <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Kopiuj do schowka'>&world&</hover></click></red>.
+  Ten świat nie znajduje się na białej liście. LSZ nie zostanie tutaj aktywowany.</gray>
+
+  <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Dokumentacja</click></u></red> <red><u><click:open_url:'https://strassburger.org/discord'>Wsparcie Discord</click></u></red> <u><hover:show_text:'<gray>Aby zignorować: Ustaw 'supressWhitelistMessage' na <b>true</b> w pliku konfiguracyjnym.</gray>'><red>Ukryj wiadomość</red></hover></u>
+itemFramesDisabled: "&cYou cannot put custom items in itemframes!"
