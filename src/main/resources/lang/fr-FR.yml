@@ -1,0 +1,7 @@
+---
+prefix: "&8[&cLifeStealZ&8]"
+newVersionAvailable: |-
+  &7Une nouvelle version de LifeStealZ est disponible !
+  &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
+usageError: "&cUtilisation : %utilisation%"
+noPermsError: "<red>Vous n'avez pas la permission d'exécuter cette commande !"
