@@ -43,6 +43,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * German (`de-DE`)
 * Spanish (`es-ES`)
 * Czech (`cs-CZ`)
+* Polnish (`pl-PL`)
 * Vietnamese (`vi-VN`)
 * Chinese (Simplified) (`zh-CN`)
 

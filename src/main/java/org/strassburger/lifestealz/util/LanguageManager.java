@@ -11,9 +11,8 @@ import java.util.List;
 
 public class LanguageManager {
     private final JavaPlugin plugin = LifeStealZ.getInstance();
-    public static final List<String> defaultLangs = List.of("en-US", "de-DE", "cs-CZ", "es-ES", "vi-VN", "zh-CN");
+    public static final List<String> defaultLangs = List.of("cs-CZ", "de-DE", "en-US", "es-ES", "fr-FR", "pl-PL", "vi-VN", "zh-CN");
 
-    private HashMap<String, String> translationMap;
     private FileConfiguration langConfig;
 
     public LanguageManager() {
@@ -24,6 +23,9 @@ public class LanguageManager {
         loadLanguageConfig();
     }
 
+    /**
+     * Load the language file from the plugin data folder
+     */
     private void loadLanguageConfig() {
         File languageDirectory = new File(plugin.getDataFolder(), "lang/");
         if (!languageDirectory.exists() || !languageDirectory.isDirectory()) languageDirectory.mkdir();

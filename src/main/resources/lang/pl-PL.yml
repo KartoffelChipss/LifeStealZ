@@ -1,10 +1,12 @@
----
+# LifeStealZ language file
+# pl-PL - by Ernestozilla
+
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: |-
-  &7A new version of LifeStealZ is available!
+  &7Nowa wersja LifeStealZ jest już dostępna!
   &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
-usageError: "&cUsage: %usage%"
-noPermsError: "<red>You do not have permission to execute this command!"
+usageError: "&cUżycie: %usage%"
+noPermsError: "<red>Nie masz uprawnień do wykonania tego polecenia!"
 playerNotFound: "&cNie znaleziono gracza"
 worldNotWhitelisted: "&cTen świat nie znajduje się na whitelist LifeStealZ"
 specifyPlayerOrBePlayer: "&cMusisz albo określić gracza, albo sam być graczem!"
@@ -22,8 +24,8 @@ getHearts: "&c%player% &7aktualnie ma &c%amount% &7serc!"
 reloadMsg: "&7Pomyślnie przeładowałeś plugin!"
 versionMsg: "&7Używasz wersji <red>%version%"
 noWithdraw: "&cJeśli wypłacisz serce, zostaniesz wyeliminowany!"
-withdrawConfirmmsg: "&8&oUżyj <podkreślone><kliknij:SUGGEST_COMMAND:/withdrawheart
-  %amount% potwierdź>/withdrawheart %amount% potwierdź</kliknij></podkreślone> jeśli
+withdrawConfirmmsg: "&8&oUżyj <underlined><click:SUGGEST_COMMAND:/withdrawheart
+  %amount% potwierdź>/withdrawheart %amount% potwierdź</click></underlined> jeśli
   naprawdę chcesz wypłacić serce"
 maxHeartLimitReached: "&cOsiągnąłeś limit serc &7(&f%limit%&7)"
 closeBtn: "&cZamknij"
