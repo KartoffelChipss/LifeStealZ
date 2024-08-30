@@ -20,10 +20,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER)");
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQLite database: " + e.getMessage());
+                LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQLite database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
         }
     }
 
@@ -36,10 +36,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxhp() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQLite database: " + e.getMessage());
+                LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQLite database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
         }
     }
 
@@ -68,15 +68,15 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
 
                     return playerData;
                 } catch (SQLException e) {
-                    LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+                    LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
                     return null;
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
                 return null;
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             return null;
         }
     }
@@ -104,10 +104,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                     eliminatedPlayers.add(UUID.fromString(resultSet.getString("uuid")));
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
         }
 
         return eliminatedPlayers;
@@ -195,10 +195,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                     playerNames.add(resultSet.getString("name"));
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQLite database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
         }
 
         return playerNames;

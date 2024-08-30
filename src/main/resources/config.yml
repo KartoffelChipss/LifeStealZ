@@ -11,6 +11,7 @@
 # https://docs.advntr.dev/minimessage/format.html
 # With MiniMessage, you can add HEX colors, gradients, hover and click events, etc.
 
+
 # === GENERAL SETTINGS ===
 
 # If set to true, LifeStealZ will check for updates and let you know if there's a newer version
@@ -21,6 +22,7 @@ checkForUpdates: true
 # If you want to help translating the plugin, please refer to this article: https://lsz.strassburger.dev/contributing/localization
 #  | en-US | de-DE | es-ES | fr-FR | cs-CZ | vi-VN | zh-CN | pl-PL
 lang: "en-US"
+
 
 # === WORLD SETTINGS ===
 
@@ -35,6 +37,7 @@ worlds:
 # Enable to remove the warning message when a world is not whitelisted.
 supressWhitelistMessage: false
 
+
 # === HEART SETTINGS ===
 
 # The amount of hearts a player has, when joining for the first time
@@ -48,6 +51,7 @@ respawnHP: 1
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
+
 
 # === HEART BEHAVIOR SETTINGS ===
 
@@ -71,6 +75,7 @@ heartCooldown: 0
 # How many times a player can be revived. Set to -1 to make it infinite
 maxRevives: -1
 
+
 # === Disabling Features ===
 
 # If the use of totems of undying should be prevented
@@ -80,6 +85,7 @@ preventCrystalPVP: false
 # If the use of custom items in item frames should be prevented
 # It is recommended to leave this enabled, as people can dupe items otherwise
 preventCustomItemsInItemFrames: true
+
 
 # === Extensive Customization ===
 
