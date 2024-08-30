@@ -3,10 +3,10 @@
 
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: |-
-  &7Nowa wersja LifeStealZ jest już dostępna!
+  &7Dostępna jest nowa wersja pluginu LifeStealZ!
   &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
 usageError: "&cUżycie: %usage%"
-noPermsError: "<red>Nie masz uprawnień do wykonania tego polecenia!"
+noPermsError: "<red>Nie masz permisji do tej komendy!"
 playerNotFound: "&cNie znaleziono gracza"
 worldNotWhitelisted: "&cTen świat nie znajduje się na whitelist LifeStealZ"
 specifyPlayerOrBePlayer: "&cMusisz albo określić gracza, albo sam być graczem!"
