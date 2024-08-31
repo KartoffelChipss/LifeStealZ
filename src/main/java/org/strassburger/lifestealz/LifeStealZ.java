@@ -55,9 +55,7 @@ public final class LifeStealZ extends JavaPlugin {
 
         new EventManager(this).registerListeners();
 
-        // Register bstats
-        int pluginId = 18735;
-        new Metrics(this, pluginId);
+        initializeBStats();
 
         if (hasPlaceholderApi()) {
             PapiExpansion papiExpansion = new PapiExpansion();
@@ -132,5 +130,13 @@ public final class LifeStealZ extends JavaPlugin {
         if (attribute != null) {
             attribute.setBaseValue(maxHealth);
         }
+    }
+
+    private void initializeBStats() {
+        int pluginId = 18735;
+        Metrics metrics = new Metrics(this, pluginId);
+
+        metrics.addCustomChart(new Metrics.SimplePie("storage_type", () -> getConfig().getString("storage.type")));
+        metrics.addCustomChart(new Metrics.SimplePie("language", () -> getConfig().getString("lang")));
     }
 }
