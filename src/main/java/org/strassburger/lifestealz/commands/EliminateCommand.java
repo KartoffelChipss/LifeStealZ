@@ -19,7 +19,7 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class EliminateCommand implements CommandExecutor, TabCompleter {
-    private LifeStealZ plugin;
+    private final LifeStealZ plugin;
 
     public EliminateCommand(LifeStealZ plugin) {
         this.plugin = plugin;

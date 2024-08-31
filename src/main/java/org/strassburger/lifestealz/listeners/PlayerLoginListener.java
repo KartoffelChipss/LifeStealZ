@@ -11,8 +11,6 @@ import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
-import java.util.List;
-
 public class PlayerLoginListener implements Listener {
     private final LifeStealZ plugin;
 
@@ -33,8 +31,6 @@ public class PlayerLoginListener implements Listener {
             kickPlayer(event);
         }
     }
-
-
 
     private PlayerData loadOrCreatePlayerData(Player player, PlayerDataStorage playerDataStorage) {
         PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());

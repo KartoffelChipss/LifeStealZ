@@ -17,7 +17,7 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class HeartCommand implements CommandExecutor, TabCompleter {
-    private LifeStealZ plugin;
+    private final LifeStealZ plugin;
 
     public HeartCommand(LifeStealZ plugin) {
         this.plugin = plugin;
@@ -37,6 +37,11 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+    /**
+     * Handles the heart check for the player who executed the command
+     * @param sender The command sender
+     * @return Whether the command was executed successfully
+     */
     private boolean handleSelfHeartCheck(CommandSender sender) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.specifyPlayerOrBePlayer", "&cYou need to either specify a player or be a player yourself!"));
@@ -51,6 +56,12 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    /**
+     * Handles the heart check for another player
+     * @param sender The command sender
+     * @param targetName The name of the player to check
+     * @return Whether the command was executed successfully
+     */
     private boolean handleOtherHeartCheck(CommandSender sender, String targetName) {
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 

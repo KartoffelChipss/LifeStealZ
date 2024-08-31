@@ -43,17 +43,17 @@ public final class LifeStealZ extends JavaPlugin {
 
         languageManager = new LanguageManager(this);
 
-        new CommandManager(this).registerCommands();
-
-        new EventManager(this).registerListeners();
+        playerDataStorage = createPlayerDataStorage();
+        playerDataStorage.init();
 
         recipeManager = new RecipeManager(this);
         recipeManager.registerRecipes();
 
-        playerDataStorage = createPlayerDataStorage();
-        playerDataStorage.init();
-
         versionChecker = new VersionChecker();
+
+        new CommandManager(this).registerCommands();
+
+        new EventManager(this).registerListeners();
 
         // Register bstats
         int pluginId = 18735;

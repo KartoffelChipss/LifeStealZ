@@ -17,12 +17,11 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import java.util.List;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
-    private LifeStealZ plugin;
+    private final LifeStealZ plugin;
 
     public ReviveCommand(LifeStealZ plugin) {
         this.plugin = plugin;
     }
-
 
     private static final String BYPASS_OPTION = "bypass";
     WhitelistManager wm = new WhitelistManager();
@@ -39,17 +38,19 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         }
 
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
-        PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
 
         if (playerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
             return false;
         }
 
+        // Check if the player has reached the revive limit or has the bypass permission
         if (!canRevive(sender, playerData, bypassOption)) {
             return false;
         }
 
+        // Check if the player is eliminated
         if (!isEligibleForRevive(sender, playerData)) {
             return false;
         }
@@ -59,10 +60,15 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         return false;
     }
 
-
-
+    /**
+     * Checks if the player can be revived
+     * @param sender The command sender
+     * @param playerData The player data of the player to be revived
+     * @param bypassOption The bypass option
+     * @return True if the player can be revived, false otherwise
+     */
     private boolean canRevive(CommandSender sender, PlayerData playerData, String bypassOption) {
-        int maxRevives = LifeStealZ.getInstance().getConfig().getInt("maxRevives");
+        int maxRevives = plugin.getConfig().getInt("maxRevives");
         boolean hasBypassPermission = sender.hasPermission("lifestealz.bypassrevivelimit");
 
         if (maxRevives != -1 && playerData.getHasbeenRevived() >= maxRevives &&
@@ -76,8 +82,14 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    /**
+     * Checks if the player is eligible for a revive (e.g. has been eliminated)
+     * @param sender The command sender
+     * @param playerData The player data of the player to be revived
+     * @return True if the player is eligible for a revive, false otherwise
+     */
     private boolean isEligibleForRevive(CommandSender sender, PlayerData playerData) {
-        int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+        int minHearts = plugin.getConfig().getInt("minHearts");
 
         if (playerData.getMaxhp() > minHearts * 2) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
@@ -86,16 +98,26 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    /**
+     * Revives the player
+     * @param sender The command sender
+     * @param targetPlayerName The name of the player to be revived
+     * @param playerData The player data of the player to be revived
+     */
     private void revivePlayer(CommandSender sender, String targetPlayerName, PlayerData playerData) {
-        playerData.setMaxhp(LifeStealZ.getInstance().getConfig().getDouble("respawnHP") * 2);
+        playerData.setMaxhp(plugin.getConfig().getDouble("respawnHP") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
-        LifeStealZ.getInstance().getPlayerDataStorage().save(playerData);
+        plugin.getPlayerDataStorage().save(playerData);
 
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess",
                 "&7You successfully revived &c%player%&7!",
                 new MessageUtils.Replaceable("%player%", targetPlayerName)));
     }
 
+    /**
+     * Throws a usage error message
+     * @param sender The command sender
+     */
     private void throwUsageError(CommandSender sender) {
         Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError",
                 "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/revive <player>"));
