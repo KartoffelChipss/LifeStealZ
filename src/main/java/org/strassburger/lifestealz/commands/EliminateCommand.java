@@ -25,8 +25,6 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
-
-    private final LifeStealZ plugin = LifeStealZ.getInstance();
     WhitelistManager wm = new WhitelistManager();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
