@@ -51,17 +51,17 @@ public class PlayerDeathListener implements Listener {
         final World world = player.getWorld();
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
-        // Check for elimination
-        if (playerData.getMaxhp() - 2.0 <= minHearts) {
-            handleElimination(event, player, killer, isDeathByPlayer);
-            return;
-        }
-
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
             world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
         } else if (isDeathByPlayer) {
             handleKillerHeartGain(player, killer, world);
+        }
+
+        // Check for elimination
+        if (playerData.getMaxhp() - 2.0 <= minHearts) {
+            handleElimination(event, player, killer, isDeathByPlayer);
+            return;
         }
 
         // Reduce the victim's hearts
