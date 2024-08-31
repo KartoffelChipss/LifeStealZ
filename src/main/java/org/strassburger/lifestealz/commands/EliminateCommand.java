@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
@@ -24,16 +25,14 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
+
+    private final LifeStealZ plugin = LifeStealZ.getInstance();
+    WhitelistManager wm = new WhitelistManager();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
-        if (sender instanceof Player && !worldWhitelist.contains(((Player) sender).getLocation().getWorld().getName())) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
-            return false;
-        }
+        if (!wm.isWorldWhitelisted(sender)) return false;
 
-        String targetPlayerName = args != null && args.length > 0 ? args[0] : null;
-
+        String targetPlayerName = (args != null && args.length > 0) ? args[0] : null;
         if (targetPlayerName == null) {
             throwUsageError(sender);
             return false;
@@ -46,25 +45,36 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
+        eliminatePlayer(sender, targetPlayer);
+        return true;
+    }
+
+
+    private void eliminatePlayer(CommandSender sender, Player targetPlayer) {
         PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
         playerData.setMaxhp(0.0);
         plugin.getPlayerDataStorage().save(playerData);
 
-        for (ItemStack item : targetPlayer.getInventory().getContents()) {
-            if (item != null) targetPlayer.getWorld().dropItem(targetPlayer.getLocation(), item);
-        }
+        dropPlayerInventory(targetPlayer);
 
-        targetPlayer.getInventory().clear();
         Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
         targetPlayer.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!",
+                new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
         if (plugin.getConfig().getBoolean("announceElimination")) {
-            Component elimAannouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
-            Bukkit.broadcast(elimAannouncementMsg);
+            Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!",
+                    new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
+            Bukkit.broadcast(elimAnnouncementMsg);
         }
-        return false;
+    }
+
+    private void dropPlayerInventory(Player targetPlayer) {
+        for (ItemStack item : targetPlayer.getInventory().getContents()) {
+            if (item != null) targetPlayer.getWorld().dropItem(targetPlayer.getLocation(), item);
+        }
+        targetPlayer.getInventory().clear();
     }
 
     private void throwUsageError(CommandSender sender) {
@@ -72,6 +82,7 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(usageMessage);
     }
 
+    @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         return null;
     }

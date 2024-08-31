@@ -11,9 +11,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.RecipeManager;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 
@@ -23,298 +22,330 @@ import java.util.List;
 import java.util.Set;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
-    private LifeStealZ plugin;
+    private final LifeStealZ plugin;
+    private final FileConfiguration config;
+    private final PlayerDataStorage playerDataStorage;
+
 
     public SettingsCommand(LifeStealZ plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfig();
+        this.playerDataStorage = plugin.getPlayerDataStorage();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        FileConfiguration config = plugin.getConfig();
-        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
-        RecipeManager recipeManager = plugin.getRecipeManager();
 
         if (args.length == 0) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%", new MessageUtils.Replaceable("%version%", plugin.getDescription().getVersion())));
+            sendVersionMessage(sender);
             return false;
         }
 
         String optionOne = args[0];
 
-        if (optionOne.equals("reload")) {
-            if (!sender.hasPermission("lifestealz.admin.reload")) {
-                throwPermissionError(sender);
+        switch (optionOne) {
+            case "reload":
+                return handleReload(sender);
+            case "help":
+                return handleHelp(sender);
+            case "recipe":
+                return handleRecipe(sender, args);
+            case "hearts":
+                return handleHearts(sender, args);
+            case "giveItem":
+                return handleGiveItem(sender, args);
+            case "data":
+                return handleData(sender, args);
+            default:
                 return false;
-            }
+        }
+    }
 
-            plugin.reloadConfig();
-            config = plugin.getConfig();
-            plugin.getLanguageManager().reload();
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"));
+    private void sendVersionMessage(CommandSender sender) {
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.versionMsg", "FALLBACK&7You are using version %version%",
+                new MessageUtils.Replaceable("%version%", plugin.getDescription().getVersion())));
+    }
+
+    private boolean handleReload(CommandSender sender) {
+        if (!sender.hasPermission("lifestealz.admin.reload")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        plugin.reloadConfig();
+        plugin.getLanguageManager().reload();
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"));
+        return true;
+    }
+
+    private boolean handleHelp(CommandSender sender) {
+        if (!sender.hasPermission("lifestealz.help")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        StringBuilder helpMessage = new StringBuilder("<reset><!i><!b> \n&8----------------------------------------------------\n&c&lLifeStealZ &7help page<!b>\n&8----------------------------------------------------\n");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.reload", "/lifestealz reload", "- reload the config");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.setlife", "/lifestealz hearts", "- modify how many hearts a player has");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.giveitem", "/lifestealz giveItem", "- give other players custom items, such as hearts");
+        addHelpEntry(helpMessage, sender, "lifestealz.viewrecipes", "/lifestealz recipe", "- view all recipes");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.revive", "/revive", "- revive a player without a revive item");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.eliminate", "/eliminate", "- eliminate a player");
+        addHelpEntry(helpMessage, sender, "lifestealz.withdraw", "/withdrawheart", "- withdraw a heart");
+        helpMessage.append("\n&8----------------------------------------------------\n<reset><!i><!b> ");
+
+        sender.sendMessage(MessageUtils.formatMsg(helpMessage.toString()));
+        return true;
+    }
+
+    private void addHelpEntry(StringBuilder helpMessage, CommandSender sender, String permission, String command, String description) {
+        if (sender.hasPermission(permission)) {
+            helpMessage.append("&c<click:SUGGEST_COMMAND:").append(command).append(">").append(command).append("</click> &8- &7").append(description).append("\n");
+        }
+    }
+
+    private boolean handleRecipe(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("lifestealz.viewrecipes")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        if (!(sender instanceof Player)) return false;
+
+        if (args.length < 2) {
+            throwRecipeUsageError(sender);
+            return false;
+        }
+
+        String recipe = args[1];
+
+        if (recipe == null || !plugin.getRecipeManager().getRecipeIds().contains(recipe)) {
+            throwRecipeUsageError(sender);
+            return false;
+        }
+
+        if (!plugin.getRecipeManager().isCraftable(recipe)) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.recipeNotCraftable", "&cThis item is not craftable!"));
+            return false;
+        }
+
+        plugin.getRecipeManager().renderRecipe((Player) sender, recipe);
+        return true;
+    }
+
+    private boolean handleHearts(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("lifestealz.admin.setlife")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        if (args.length < 3) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        String optionTwo = args[1];
+        List<String> possibleOptionTwo = List.of("add", "set", "remove", "get");
+
+        if (optionTwo == null || !possibleOptionTwo.contains(optionTwo)) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        String targetPlayerName = args[2];
+
+        if (targetPlayerName == null) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+
+        if (targetPlayer.getName() == null) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        PlayerData targetPlayerData = playerDataStorage.load(targetPlayer.getUniqueId());
+
+        if (targetPlayerData == null) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+            return false;
+        }
+
+        if (optionTwo.equals("get")) {
+            int hearts = (int) (targetPlayerData.getMaxhp() / 2);
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!",
+                    new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
             return true;
         }
 
-        if (optionOne.equals("help")) {
-            if (!sender.hasPermission("lifestealz.help")) {
-                throwPermissionError(sender);
-                return false;
-            }
+        int amount = Integer.parseInt(args[3]);
 
-            String helpMessage = "<reset><!i><!b> \n&8----------------------------------------------------\n&c&lLifeStealZ &7help page<!b>\n&8----------------------------------------------------";
-            helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz help>/lifestealz help</click> &8- &7open this menu";
-            if (sender.hasPermission("lifestealz.admin.reload"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz reload>/lifestealz reload</click> &8- &7reload the config";
-            if (sender.hasPermission("lifestealz.admin.setlife"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz hearts>/lifestealz hearts</click> &8- &7modify how many hearts a player has";
-            if (sender.hasPermission("lifestealz.admin.giveitem"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz giveItem>/lifestealz giveItem</click> &8- &7give other players custom items, such as hearts";
-            if (sender.hasPermission("lifestealz.viewrecipes"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/lifestealz recipe>/lifestealz recipe</click> &8- &7view all recipes";
-            if (sender.hasPermission("lifestealz.admin.revive"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/revive>/revive</click> &8- &7revive a player without a revive item";
-            if (sender.hasPermission("lifestealz.admin.eliminate"))
-                helpMessage += "\n&c<click:SUGGEST_COMMAND:/eliminate>/eliminate</click> &8- &7eliminate a player";
-            if (sender.hasPermission("lifestealz.withdraw")) helpMessage += "\n&c<click:SUGGEST_COMMAND:/withdrawheart>/withdrawheart</click> &8- &7withdraw a heart";
-            helpMessage += "\n&8----------------------------------------------------\n<reset><!i><!b> ";
-
-            Component helpMessageFormatted = MessageUtils.formatMsg(helpMessage);
-
-            sender.sendMessage(helpMessageFormatted);
+        if (amount < 0) {
+            throwUsageError(sender);
+            return false;
         }
 
-        if (optionOne.equals("recipe")) {
-            if (!sender.hasPermission("lifestealz.viewrecipes")) {
-                throwPermissionError(sender);
-                return false;
-            }
+        int finalAmount = amount;
 
-            if (!(sender instanceof Player)) return false;
-
-            if (args.length < 2) {
-                throwRecipeUsageError(sender);
-                return false;
-            }
-
-            String recipe = args[1];
-
-            if (recipe == null || !recipeManager.getRecipeIds().contains(recipe)) {
-                throwRecipeUsageError(sender);
-                return false;
-            }
-
-            if (!recipeManager.isCraftable(recipe)) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.recipeNotCraftable", "&cThis item is not craftable!"));
-                return false;
-            }
-
-            recipeManager.renderRecipe((Player) sender, recipe);
-        }
-
-        String optionTwo = null;
-
-        if (optionOne.equals("hearts")) {
-            if (!sender.hasPermission("lifestealz.admin.setlife")) {
-                throwPermissionError(sender);
-                return false;
-            }
-
-            if (args.length < 3) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            optionTwo = args[1];
-            List<String> possibleOptionTwo = List.of("add", "set", "remove", "get");
-
-            if (optionTwo == null || !possibleOptionTwo.contains(optionTwo)) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            String targetPlayerName = args[2];
-
-            if (targetPlayerName == null) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
-
-            if (targetPlayer.getName() == null) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            PlayerData targetPlayerData = playerDataStorage.load(targetPlayer.getUniqueId());
-
-            if (targetPlayerData == null) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
-                return false;
-            }
-
-            if (optionTwo.equals("get")) {
-                int hearts = (int) (targetPlayerData.getMaxhp() / 2);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!", new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
-                return true;
-            }
-
-            int amount = Integer.parseInt(args[3]);
-
-            if (amount < 0) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            int finalAmount = amount;
-
-            switch (optionTwo) {
-                case "add": {
-                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxhp() + (amount * 2) > config.getInt("maxHearts") * 2) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
-                        sender.sendMessage(maxHeartsMsg);
-                        return false;
-                    }
-
-                    targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() + (amount * 2));
-                    playerDataStorage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
-                    finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
-                    break;
+        switch (optionTwo) {
+            case "add": {
+                if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxhp() + (amount * 2) > config.getInt("maxHearts") * 2) {
+                    Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!",
+                            new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
+                    sender.sendMessage(maxHeartsMsg);
+                    return false;
                 }
-                case "set": {
-                    if (amount == 0) {
-                        sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
-                        return false;
-                    }
 
-                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
-                        sender.sendMessage(maxHeartsMsg);
-                        return false;
-                    }
-
-                    targetPlayerData.setMaxhp(amount * 2);
-                    playerDataStorage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
-                    break;
+                targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() + (amount * 2));
+                playerDataStorage.save(targetPlayerData);
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
+                break;
+            }
+            case "set": {
+                if (amount == 0) {
+                    sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
+                    return false;
                 }
-                case "remove": {
-                    if ((targetPlayerData.getMaxhp() / 2) - (double) amount <= 0) {
-                        sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
-                        return false;
-                    }
 
-                    targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() - (amount * 2));
-                    playerDataStorage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
-                    finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
-                    break;
+                if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
+                    Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!",
+                            new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
+                    sender.sendMessage(maxHeartsMsg);
+                    return false;
                 }
+
+                targetPlayerData.setMaxhp(amount * 2);
+                playerDataStorage.save(targetPlayerData);
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                break;
             }
+            case "remove": {
+                if ((targetPlayerData.getMaxhp() / 2) - (double) amount <= 0) {
+                    sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
+                    return false;
+                }
 
-            Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!", new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
-            sender.sendMessage(setHeartsConfirmMessage);
-        }
-
-        if (optionOne.equals("giveItem")) {
-            if (!sender.hasPermission("lifestealz.admin.giveitem")) {
-                throwPermissionError(sender);
-                return false;
-            }
-
-            if (args.length < 3) {
-                throwGiveItemUsageError(sender);
-                return false;
-            }
-
-            String targetPlayerName = args[1];
-
-            if (targetPlayerName == null) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            Player targetPlayer = plugin.getServer().getPlayer(targetPlayerName);
-
-            if (targetPlayer == null) {
-                throwUsageError(sender);
-                return false;
-            }
-
-            String item = args[2];
-
-            if (item == null) {
-                throwGiveItemUsageError(sender);
-                return false;
-            }
-
-            Set<String> possibleItems = recipeManager.getRecipeIds();
-
-            if (!possibleItems.contains(item)) {
-                throwGiveItemUsageError(sender);
-                return false;
-            }
-
-            int amount = args.length > 3 ? Integer.parseInt(args[3]) : 1;
-
-            if (amount < 1) {
-                throwGiveItemUsageError(sender);
-                return false;
-            }
-
-            boolean silent = args.length > 4 && args[4].equals("silent");
-
-            targetPlayer.getInventory().addItem(CustomItemManager.createCustomItem(item, amount));
-            if (!silent) targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!", new MessageUtils.Replaceable("%amount%", amount + ""), new MessageUtils.Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
-        }
-
-        if (optionOne.equals("data")) {
-            if (!sender.hasPermission("lifestealz.managedata")) {
-                throwPermissionError(sender);
-                return false;
-            }
-
-            if (args.length < 3) {
-                throwDataUsageError(sender);
-                return false;
-            }
-
-            optionTwo = args[1];
-
-            String fileName = args[2];
-
-            if (optionTwo.equals("export")) {
-                playerDataStorage.export(fileName);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv", new MessageUtils.Replaceable("%file%", fileName)));
-            } else if (optionTwo.equals("import")) {
-                playerDataStorage.importData(fileName);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!", new MessageUtils.Replaceable("%file%", fileName)));
-            } else {
-                throwUsageError(sender);
+                targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() - (amount * 2));
+                playerDataStorage.save(targetPlayerData);
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
+                break;
             }
         }
 
-        return false;
+        Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!",
+                new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
+        sender.sendMessage(setHeartsConfirmMessage);
+        return true;
+    }
+
+    private boolean handleGiveItem(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("lifestealz.admin.giveitem")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        if (args.length < 3) {
+            throwGiveItemUsageError(sender);
+            return false;
+        }
+
+        String targetPlayerName = args[1];
+
+        if (targetPlayerName == null) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        Player targetPlayer = plugin.getServer().getPlayer(targetPlayerName);
+
+        if (targetPlayer == null) {
+            throwUsageError(sender);
+            return false;
+        }
+
+        String item = args[2];
+
+        if (item == null) {
+            throwGiveItemUsageError(sender);
+            return false;
+        }
+
+        Set<String> possibleItems = plugin.getRecipeManager().getRecipeIds();
+
+        if (!possibleItems.contains(item)) {
+            throwGiveItemUsageError(sender);
+            return false;
+        }
+
+        int amount = args.length > 3 ? Integer.parseInt(args[3]) : 1;
+
+        if (amount < 1) {
+            throwGiveItemUsageError(sender);
+            return false;
+        }
+
+        boolean silent = args.length > 4 && args[4].equals("silent");
+
+        targetPlayer.getInventory().addItem(CustomItemManager.createCustomItem(item, amount));
+        if (!silent)
+            targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!",
+                    new MessageUtils.Replaceable("%amount%", amount + ""), new MessageUtils.Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
+        return true;
+    }
+
+    private boolean handleData(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("lifestealz.managedata")) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        if (args.length < 3) {
+            throwDataUsageError(sender);
+            return false;
+        }
+
+        String optionTwo = args[1];
+        String fileName = args[2];
+
+        if (optionTwo.equals("export")) {
+            playerDataStorage.export(fileName);
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv",
+                    new MessageUtils.Replaceable("%file%", fileName)));
+        } else if (optionTwo.equals("import")) {
+            playerDataStorage.importData(fileName);
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
+                    new MessageUtils.Replaceable("%file%", fileName)));
+        } else {
+            throwUsageError(sender);
+        }
+        return true;
     }
 
     private void throwUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
+                new MessageUtils.Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
         sender.sendMessage(msg);
     }
 
     private void throwDataUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
+                new MessageUtils.Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
         sender.sendMessage(msg);
     }
 
     private void throwGiveItemUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
+                new MessageUtils.Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"));
         sender.sendMessage(msg);
     }
 
     private void throwRecipeUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">"));
+        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
+                new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">"));
         sender.sendMessage(msg);
     }
 
@@ -323,23 +354,23 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(msg);
     }
 
-
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            List<String> availableoptions = new java.util.ArrayList<>(List.of());
-            if (sender.hasPermission("lifestealz.admin.reload")) availableoptions.add("reload");
-            if (sender.hasPermission("lifestealz.admin.setlife")) availableoptions.add("hearts");
-            if (sender.hasPermission("lifestealz.admin.giveitem")) availableoptions.add("giveItem");
-            if (sender.hasPermission("lifestealz.viewrecipes")) availableoptions.add("recipe");
-            if (sender.hasPermission("lifestealz.help")) availableoptions.add("help");
-            if (sender.hasPermission("lifestealz.managedata")) availableoptions.add("data");
-            return availableoptions;
+            List<String>
+                    availableOptions = new ArrayList<>();
+            if (sender.hasPermission("lifestealz.admin.reload")) availableOptions.add("reload");
+            if (sender.hasPermission("lifestealz.admin.setlife")) availableOptions.add("hearts");
+            if (sender.hasPermission("lifestealz.admin.giveitem")) availableOptions.add("giveItem");
+            if (sender.hasPermission("lifestealz.viewrecipes")) availableOptions.add("recipe");
+            if (sender.hasPermission("lifestealz.help")) availableOptions.add("help");
+            if (sender.hasPermission("lifestealz.managedata")) availableOptions.add("data");
+            return availableOptions;
         } else if (args.length == 2) {
             if (args[0].equals("hearts")) {
                 return List.of("add", "set", "remove", "get");
             } else if (args[0].equals("giveItem")) {
-                return null;
+                return null; // Suggest online player names
             } else if (args[0].equals("recipe")) {
                 return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             } else if (args[0].equals("data") && sender.hasPermission("lifestealz.managedata")) {
@@ -347,7 +378,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             }
         } else if (args.length == 3) {
             if (args[0].equals("hearts")) {
-                return null;
+                return null; // Suggest online player names
             } else if (args[0].equals("giveItem")) {
                 return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             } else if (args[0].equals("data") && args[1].equals("import") && sender.hasPermission("lifestealz.managedata")) {

@@ -113,7 +113,7 @@ public class CustomItemManager {
     }
 
     public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
-        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID().toString()))).getItemStack();
+        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID()))).getItemStack();
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
