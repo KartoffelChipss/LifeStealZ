@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MySQLPlayerDataStorage extends SQLPlayerDataStorage implements PlayerDataStorage {
+public class MariaDBPlayerDataStorage extends SQLPlayerDataStorage implements PlayerDataStorage {
     Connection createConnection() {
         FileConfiguration config = LifeStealZ.getInstance().getConfig();
 
@@ -18,9 +18,9 @@ public class MySQLPlayerDataStorage extends SQLPlayerDataStorage implements Play
         final String PASSWORD = config.getString("storage.password");
 
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);
+            return DriverManager.getConnection("jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to create connection to MySQL database: " + e.getMessage());
+            LifeStealZ.getInstance().getLogger().severe("Failed to create connection to MariaDB database: " + e.getMessage());
             return null;
         }
     }

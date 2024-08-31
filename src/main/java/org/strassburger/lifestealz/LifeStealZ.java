@@ -7,6 +7,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.storage.MariaDBPlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.MySQLPlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
 import org.strassburger.lifestealz.util.storage.SQLitePlayerDataStorage;
@@ -107,15 +108,20 @@ public final class LifeStealZ extends JavaPlugin {
     }
 
     private PlayerDataStorage createPlayerDataStorage() {
-        String option = getConfig().getString("storage.type");
-
-        if (option.equalsIgnoreCase("mysql")) {
-            getLogger().info("Using MySQL storage");
-            return new MySQLPlayerDataStorage();
+        switch (getConfig().getString("storage.type").toLowerCase()) {
+            case "mysql":
+                getLogger().info("Using MySQL storage");
+                return new MySQLPlayerDataStorage();
+            case "sqlite":
+                getLogger().info("Using SQLite storage");
+                return new SQLitePlayerDataStorage();
+            case "mariadb":
+                getLogger().info("Using MariaDB storage");
+                return new MariaDBPlayerDataStorage();
+            default:
+                getLogger().warning("Invalid storage type in config.yml! Using SQLite storage as fallback.");
+                return new SQLitePlayerDataStorage();
         }
-
-        getLogger().info("Using SQLite storage");
-        return new SQLitePlayerDataStorage();
     }
 
     public static void setMaxHealth(OfflinePlayer offlinePlayer, double maxHealth) {

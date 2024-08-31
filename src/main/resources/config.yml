@@ -137,7 +137,7 @@ antiAlt:
 
 storage:
   # The type of storage to use. You have the following options:
-  # "SQLite", "MySQL"
+  # "SQLite", "MySQL", "MariaDB"
   type: "SQLite"
 
   # This section is only relevant if you use a MySQL database
