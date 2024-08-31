@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
@@ -24,9 +25,7 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         Storage storage = plugin.getStorage();
 
-        List<String> worldWhitelisted = plugin.getConfig().getStringList("worlds");
-
-        if (!worldWhitelisted.contains(player.getLocation().getWorld().getName())) {
+        if (!WhitelistManager.isWorldWhitelisted(player)) {
             handleUnwhitelistedWorld(player);
             return;
         }

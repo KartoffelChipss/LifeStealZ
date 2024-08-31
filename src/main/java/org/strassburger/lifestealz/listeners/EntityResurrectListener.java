@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.WhitelistManager;
 
 import java.util.List;
 
@@ -20,8 +21,7 @@ public class EntityResurrectListener implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
 
-        List<String> worldWhitelist = plugin.getConfig().getStringList("worlds");
-        if (!worldWhitelist.contains(player.getLocation().getWorld().getName())) return;
+        if (!WhitelistManager.isWorldWhitelisted(player)) return;
 
         if (plugin.getConfig().getBoolean("preventTotems")) event.setCancelled(true);
     }

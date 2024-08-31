@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.CooldownManager;
+import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -31,7 +32,7 @@ public class PlayerDeathListener implements Listener {
         final Player player = event.getEntity();
         final Player killer = player.getKiller();
 
-        if (!plugin.getConfig().getStringList("worlds").contains(player.getWorld().getName())) return;
+        if (!WhitelistManager.isWorldWhitelisted(player)) return;
 
         // WorldGuard check
         if (plugin.hasWorldGuard() && !WorldGuardManager.checkHeartLossFlag(player)) return;
