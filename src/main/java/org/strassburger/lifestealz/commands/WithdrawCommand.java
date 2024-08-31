@@ -47,7 +47,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         String confirmOption = args != null && args.length > 1 ? args[1] : null;
 
         Player player = (Player) sender;
-        PlayerData playerdata = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerdata = plugin.getStorage().load(player.getUniqueId());
 
         boolean withdrawtoDeath = plugin.getConfig().getBoolean("allowDyingFromWithdraw");
 
@@ -97,7 +97,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             }
 
             playerdata.setMaxhp(0.0);
-            plugin.getPlayerDataStorage().save(playerdata);
+            plugin.getStorage().save(playerdata);
 
             Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
             player.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
@@ -112,7 +112,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
 
         playerdata.setMaxhp(playerdata.getMaxhp() - (double) withdrawHearts * 2);
-        plugin.getPlayerDataStorage().save(playerdata);
+        plugin.getStorage().save(playerdata);
         LifeStealZ.setMaxHealth(player, playerdata.getMaxhp());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 500.0f, 1.0f);
 

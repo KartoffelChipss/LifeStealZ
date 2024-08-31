@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
-import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
+import org.strassburger.lifestealz.util.storage.Storage;
 
 public class PlayerLoginListener implements Listener {
     private final LifeStealZ plugin;
@@ -21,22 +21,22 @@ public class PlayerLoginListener implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
+        Storage storage = plugin.getStorage();
 
         if (!WhitelistManager.isWorldWhitelisted(player)) return;
 
-        PlayerData playerData = loadOrCreatePlayerData(player, playerDataStorage);
+        PlayerData playerData = loadOrCreatePlayerData(player, storage);
 
         if (shouldKickPlayer(playerData)) {
             kickPlayer(event);
         }
     }
 
-    private PlayerData loadOrCreatePlayerData(Player player, PlayerDataStorage playerDataStorage) {
-        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+    private PlayerData loadOrCreatePlayerData(Player player, Storage storage) {
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         if (playerData == null) {
             playerData = new PlayerData(player.getName(), player.getUniqueId());
-            playerDataStorage.save(playerData);
+            storage.save(playerData);
         }
         return playerData;
     }

@@ -7,17 +7,17 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.util.*;
-import org.strassburger.lifestealz.util.storage.MariaDBPlayerDataStorage;
-import org.strassburger.lifestealz.util.storage.MySQLPlayerDataStorage;
-import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
-import org.strassburger.lifestealz.util.storage.SQLitePlayerDataStorage;
+import org.strassburger.lifestealz.util.storage.MariaDBStorage;
+import org.strassburger.lifestealz.util.storage.MySQLStorage;
+import org.strassburger.lifestealz.util.storage.Storage;
+import org.strassburger.lifestealz.util.storage.SQLiteStorage;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
 public final class LifeStealZ extends JavaPlugin {
 
     static LifeStealZ instance;
     private VersionChecker versionChecker;
-    private PlayerDataStorage playerDataStorage;
+    private Storage storage;
     private WorldGuardManager worldGuardManager;
     private LanguageManager languageManager;
     private RecipeManager recipeManager;
@@ -43,8 +43,8 @@ public final class LifeStealZ extends JavaPlugin {
 
         languageManager = new LanguageManager(this);
 
-        playerDataStorage = createPlayerDataStorage();
-        playerDataStorage.init();
+        storage = createPlayerDataStorage();
+        storage.init();
 
         recipeManager = new RecipeManager(this);
         recipeManager.registerRecipes();
@@ -83,8 +83,8 @@ public final class LifeStealZ extends JavaPlugin {
         return versionChecker;
     }
 
-    public PlayerDataStorage getPlayerDataStorage() {
-        return playerDataStorage;
+    public Storage getStorage() {
+        return storage;
     }
 
     public WorldGuardManager getWorldGuardManager() {
@@ -107,20 +107,20 @@ public final class LifeStealZ extends JavaPlugin {
         return languageManager;
     }
 
-    private PlayerDataStorage createPlayerDataStorage() {
+    private Storage createPlayerDataStorage() {
         switch (getConfig().getString("storage.type").toLowerCase()) {
             case "mysql":
                 getLogger().info("Using MySQL storage");
-                return new MySQLPlayerDataStorage();
+                return new MySQLStorage(this);
             case "sqlite":
                 getLogger().info("Using SQLite storage");
-                return new SQLitePlayerDataStorage();
+                return new SQLiteStorage(this);
             case "mariadb":
                 getLogger().info("Using MariaDB storage");
-                return new MariaDBPlayerDataStorage();
+                return new MariaDBStorage(this);
             default:
                 getLogger().warning("Invalid storage type in config.yml! Using SQLite storage as fallback.");
-                return new SQLitePlayerDataStorage();
+                return new SQLiteStorage(this);
         }
     }
 

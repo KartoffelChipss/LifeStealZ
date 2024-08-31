@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
-import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
+import org.strassburger.lifestealz.util.storage.Storage;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerDataStorage playerDataStorage = plugin.getPlayerDataStorage();
+        Storage storage = plugin.getStorage();
 
         List<String> worldWhitelisted = plugin.getConfig().getStringList("worlds");
 
@@ -31,7 +31,7 @@ public class PlayerJoinListener implements Listener {
             return;
         }
 
-        PlayerData playerData = loadOrCreatePlayerData(player, playerDataStorage);
+        PlayerData playerData = loadOrCreatePlayerData(player, storage);
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
 
         notifyOpAboutUpdate(player);
@@ -48,11 +48,11 @@ public class PlayerJoinListener implements Listener {
         }
     }
 
-    private PlayerData loadOrCreatePlayerData(Player player, PlayerDataStorage playerDataStorage) {
-        PlayerData playerData = playerDataStorage.load(player.getUniqueId());
+    private PlayerData loadOrCreatePlayerData(Player player, Storage storage) {
+        PlayerData playerData = storage.load(player.getUniqueId());
         if (playerData == null) {
             playerData = new PlayerData(player.getName(), player.getUniqueId());
-            playerDataStorage.save(playerData);
+            storage.save(playerData);
         }
         return playerData;
     }

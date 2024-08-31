@@ -33,7 +33,7 @@ public class WorldSwitchListener implements Listener {
     }
 
     private void handleWhitelistedWorld(Player player, World fromWorld, List<String> worldWhitelist) {
-        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
 
         if (!worldWhitelist.contains(fromWorld.getName())) {

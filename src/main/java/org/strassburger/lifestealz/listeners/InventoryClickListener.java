@@ -81,7 +81,7 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
 
-                    PlayerData targetPlayerData = plugin.getPlayerDataStorage().load(playerUUID);
+                    PlayerData targetPlayerData = plugin.getStorage().load(playerUUID);
 
                     int reviveMaximum = plugin.getConfig().getInt("maxRevives");
                     if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
@@ -97,7 +97,7 @@ public class InventoryClickListener implements Listener {
 
                     targetPlayerData.setMaxhp(plugin.getConfig().getInt("respawnHP") * 2);
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
-                    plugin.getPlayerDataStorage().save(targetPlayerData);
+                    plugin.getStorage().save(targetPlayerData);
 
                     player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 

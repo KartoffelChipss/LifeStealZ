@@ -21,7 +21,7 @@ public class GuiManager {
     public static Map<UUID, Inventory> RECIPE_GUI_MAP = new HashMap<>();
 
     public static void openReviveGui(Player player, int page) {
-        List<UUID> eliminatedPlayers = LifeStealZ.getInstance().getPlayerDataStorage().getEliminatedPlayers();
+        List<UUID> eliminatedPlayers = LifeStealZ.getInstance().getStorage().getEliminatedPlayers();
 
         Inventory inventory = Bukkit.createInventory(null, 6 * 9, MessageUtils.getAndFormatMsg(false, "messages.reviveTitle", "&8Revive a player"));
 

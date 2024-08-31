@@ -46,7 +46,7 @@ public class InteractionListener implements Listener {
                     return;
                 }
 
-                PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
 
                 Integer savedHeartAmountInteger = item.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
                 int savedHeartAmount = savedHeartAmountInteger != null ? savedHeartAmountInteger : 1;
@@ -67,7 +67,7 @@ public class InteractionListener implements Listener {
                 }
 
                 playerData.setMaxhp(newHearts);
-                plugin.getPlayerDataStorage().save(playerData);
+                plugin.getStorage().save(playerData);
                 LifeStealZ.setMaxHealth(player, newHearts);
                 player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 

@@ -36,7 +36,7 @@ public class PlayerDeathListener implements Listener {
         // WorldGuard check
         if (plugin.hasWorldGuard() && !WorldGuardManager.checkHeartLossFlag(player)) return;
 
-        final PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        final PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
 
         final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
 
@@ -66,7 +66,7 @@ public class PlayerDeathListener implements Listener {
 
         // Reduce the victim's hearts
         playerData.setMaxhp(playerData.getMaxhp() - 2.0);
-        plugin.getPlayerDataStorage().save(playerData);
+        plugin.getStorage().save(playerData);
         LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
     }
 
@@ -87,9 +87,9 @@ public class PlayerDeathListener implements Listener {
 
         if (disableBanOnElimination) {
             double respawnHP = plugin.getConfig().getInt("respawnHP") * 2;
-            PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+            PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
             playerData.setMaxhp(respawnHP);
-            plugin.getPlayerDataStorage().save(playerData);
+            plugin.getStorage().save(playerData);
             LifeStealZ.setMaxHealth(player, respawnHP);
             return;
         }
@@ -117,9 +117,9 @@ public class PlayerDeathListener implements Listener {
             world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
         }
 
-        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         playerData.setMaxhp(0.0);
-        plugin.getPlayerDataStorage().save(playerData);
+        plugin.getStorage().save(playerData);
     }
 
     private void handleKillerHeartGain(Player player, Player killer, World world) {
@@ -131,8 +131,8 @@ public class PlayerDeathListener implements Listener {
         final boolean heartRewardOnElimination = plugin.getConfig().getBoolean("heartRewardOnElimination");
         final boolean dropHeartsIfMax = plugin.getConfig().getBoolean("dropHeartsIfMax");
 
-        PlayerData playerData = plugin.getPlayerDataStorage().load(player.getUniqueId());
-        PlayerData killerPlayerData = plugin.getPlayerDataStorage().load(killer.getUniqueId());
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
+        PlayerData killerPlayerData = plugin.getStorage().load(killer.getUniqueId());
 
         // Anti-alt logic
         if (handleAntiAltLogic(player, killer)) return;
@@ -155,7 +155,7 @@ public class PlayerDeathListener implements Listener {
                 }
             } else {
                 killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
-                plugin.getPlayerDataStorage().save(killerPlayerData);
+                plugin.getStorage().save(killerPlayerData);
                 LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
                 killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
                 CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());

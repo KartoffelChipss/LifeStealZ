@@ -1,15 +1,19 @@
 package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.strassburger.lifestealz.LifeStealZ;
+import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MariaDBPlayerDataStorage extends SQLPlayerDataStorage implements PlayerDataStorage {
+public class MySQLStorage extends SQLStorage {
+    public MySQLStorage(Plugin plugin) {
+        super(plugin);
+    }
+
     Connection createConnection() {
-        FileConfiguration config = LifeStealZ.getInstance().getConfig();
+        FileConfiguration config = getPlugin().getConfig();
 
         final String HOST = config.getString("storage.host");
         final String PORT = config.getString("storage.port");
@@ -18,9 +22,9 @@ public class MariaDBPlayerDataStorage extends SQLPlayerDataStorage implements Pl
         final String PASSWORD = config.getString("storage.password");
 
         try {
-            return DriverManager.getConnection("jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);
+            return DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to create connection to MariaDB database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to create connection to MySQL database: " + e.getMessage());
             return null;
         }
     }

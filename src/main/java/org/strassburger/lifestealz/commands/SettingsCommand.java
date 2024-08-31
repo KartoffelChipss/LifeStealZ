@@ -14,7 +14,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
-import org.strassburger.lifestealz.util.storage.PlayerDataStorage;
+import org.strassburger.lifestealz.util.storage.Storage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ import java.util.Set;
 public class SettingsCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
     private final FileConfiguration config;
-    private final PlayerDataStorage playerDataStorage;
+    private final Storage storage;
 
 
     public SettingsCommand(LifeStealZ plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        this.playerDataStorage = plugin.getPlayerDataStorage();
+        this.storage = plugin.getStorage();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData targetPlayerData = playerDataStorage.load(targetPlayer.getUniqueId());
+        PlayerData targetPlayerData = storage.load(targetPlayer.getUniqueId());
 
         if (targetPlayerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
@@ -199,7 +199,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 }
 
                 targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() + (amount * 2));
-                playerDataStorage.save(targetPlayerData);
+                storage.save(targetPlayerData);
                 LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                 finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
                 break;
@@ -218,7 +218,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 }
 
                 targetPlayerData.setMaxhp(amount * 2);
-                playerDataStorage.save(targetPlayerData);
+                storage.save(targetPlayerData);
                 LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                 break;
             }
@@ -229,7 +229,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 }
 
                 targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() - (amount * 2));
-                playerDataStorage.save(targetPlayerData);
+                storage.save(targetPlayerData);
                 LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
                 finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
                 break;
@@ -312,11 +312,11 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         String fileName = args[2];
 
         if (optionTwo.equals("export")) {
-            playerDataStorage.export(fileName);
+            storage.export(fileName);
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.exportData", "&7Successfully exported player data to &c%file%.csv",
                     new MessageUtils.Replaceable("%file%", fileName)));
         } else if (optionTwo.equals("import")) {
-            playerDataStorage.importData(fileName);
+            storage.importData(fileName);
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
                     new MessageUtils.Replaceable("%file%", fileName)));
         } else {

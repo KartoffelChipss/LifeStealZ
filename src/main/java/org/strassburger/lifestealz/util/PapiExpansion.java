@@ -31,11 +31,11 @@ public class PapiExpansion extends PlaceholderExpansion {
                 return player.getName();
             }
             case "hearts": {
-                PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
                 return String.valueOf((int) playerData.getMaxhp() / 2);
             }
             case "revived": {
-                PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getHasbeenRevived());
             }
             case "health": {
@@ -48,11 +48,11 @@ public class PapiExpansion extends PlaceholderExpansion {
                 return String.valueOf(LifeStealZ.getInstance().getConfig().getInt("maxRevives"));
             }
             case "craftedhearts": {
-                PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getCraftedHearts());
             }
             case "craftedrevives": {
-                PlayerData playerData = LifeStealZ.getInstance().getPlayerDataStorage().load(player.getUniqueId());
+                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getCraftedRevives());
             }
         }

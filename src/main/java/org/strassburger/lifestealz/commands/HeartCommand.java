@@ -49,7 +49,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
         }
 
         Player player = (Player) sender;
-        PlayerData playerdata = plugin.getPlayerDataStorage().load(player.getUniqueId());
+        PlayerData playerdata = plugin.getStorage().load(player.getUniqueId());
         int heartCount = (int) Math.floor(playerdata.getMaxhp() / 2);
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsYou", "&7You have &c%amount% &7hearts!",
                 new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount))));
@@ -70,7 +70,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData playerdata = plugin.getPlayerDataStorage().load(target.getUniqueId());
+        PlayerData playerdata = plugin.getStorage().load(target.getUniqueId());
 
         if (playerdata == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));

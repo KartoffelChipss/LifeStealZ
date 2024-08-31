@@ -49,9 +49,9 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
 
 
     private void eliminatePlayer(CommandSender sender, Player targetPlayer) {
-        PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
         playerData.setMaxhp(0.0);
-        plugin.getPlayerDataStorage().save(playerData);
+        plugin.getStorage().save(playerData);
 
         dropPlayerInventory(targetPlayer);
 

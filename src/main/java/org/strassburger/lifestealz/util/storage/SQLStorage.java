@@ -2,7 +2,7 @@ package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.strassburger.lifestealz.LifeStealZ;
+import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 import java.sql.*;
@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
+public abstract class SQLStorage extends Storage {
     private static final String CSV_SEPARATOR = ",";
+
+    public SQLStorage(Plugin plugin) {
+        super(plugin);
+    }
 
     @Override
     public void init() {
@@ -20,10 +24,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER)");
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
         }
     }
 
@@ -36,10 +40,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxhp() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
         }
     }
 
@@ -68,15 +72,15 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
 
                     return playerData;
                 } catch (SQLException e) {
-                    LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                    getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
                     return null;
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
                 return null;
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             return null;
         }
     }
@@ -90,7 +94,7 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
     public List<UUID> getEliminatedPlayers() {
         List<UUID> eliminatedPlayers = new ArrayList<>();
 
-        int minHearts = LifeStealZ.getInstance().getConfig().getInt("minHearts");
+        int minHearts = getPlugin().getConfig().getInt("minHearts");
 
         try (Connection connection = createConnection()) {
             if (connection == null) return eliminatedPlayers;
@@ -104,10 +108,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                     eliminatedPlayers.add(UUID.fromString(resultSet.getString("uuid")));
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
         }
 
         return eliminatedPlayers;
@@ -116,8 +120,8 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
 
     @Override
     public String export(String fileName) {
-        String filePath = LifeStealZ.getInstance().getDataFolder().getPath() + "/" + fileName + ".csv";
-        System.out.println(filePath);
+        String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName + ".csv";
+        getPlugin().getLogger().info("Exporting player data to " + filePath);
         try (Connection connection = createConnection()) {
             if (connection == null) return null;
 
@@ -137,12 +141,14 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                         writer.newLine();
                     }
                 }
+
+                getPlugin().getLogger().info("Successfully exported player data to " + filePath);
             } catch (SQLException | IOException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
                 return null;
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
             return null;
         }
         return filePath;
@@ -150,7 +156,7 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
 
     @Override
     public void importData(String fileName) {
-        String filePath = LifeStealZ.getInstance().getDataFolder().getPath() + "/" + fileName;
+        String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -158,7 +164,7 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                 String[] data = line.split(CSV_SEPARATOR);
 
                 if (data.length != 7) {
-                    LifeStealZ.getInstance().getLogger().severe("Invalid CSV format.");
+                    getPlugin().getLogger().severe("Invalid CSV format.");
                     continue;
                 }
 
@@ -167,14 +173,14 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                     try (Statement statement = connection.createStatement()) {
                         statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + data[0] + "', '" + data[1] + "', " + Double.parseDouble(data[2]) + ", " + Integer.parseInt(data[3]) + ", " + Integer.parseInt(data[4]) + ", " + Integer.parseInt(data[5]) + ", " + Integer.parseInt(data[6]) + ")");
                     } catch (SQLException e) {
-                        LifeStealZ.getInstance().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
+                        getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
                     }
                 } catch (SQLException e) {
-                    LifeStealZ.getInstance().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
+                    getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
                 }
             }
         } catch (IOException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to read CSV file: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to read CSV file: " + e.getMessage());
         }
     }
 
@@ -194,10 +200,10 @@ public abstract class SQLPlayerDataStorage implements PlayerDataStorage {
                     playerNames.add(resultSet.getString("name"));
                 }
             } catch (SQLException e) {
-                LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             }
         } catch (SQLException e) {
-            LifeStealZ.getInstance().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
         }
 
         return playerNames;

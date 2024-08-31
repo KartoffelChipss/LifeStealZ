@@ -38,7 +38,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         }
 
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
-        PlayerData playerData = plugin.getPlayerDataStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
 
         if (playerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
@@ -107,7 +107,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
     private void revivePlayer(CommandSender sender, String targetPlayerName, PlayerData playerData) {
         playerData.setMaxhp(plugin.getConfig().getDouble("respawnHP") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
-        plugin.getPlayerDataStorage().save(playerData);
+        plugin.getStorage().save(playerData);
 
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess",
                 "&7You successfully revived &c%player%&7!",
