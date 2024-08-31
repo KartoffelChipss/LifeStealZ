@@ -87,7 +87,7 @@ public class PlayerDeathListener implements Listener {
         }, 1L);
 
         if (disableBanOnElimination) {
-            double respawnHP = plugin.getConfig().getInt("respawnHP") * 2;
+            double respawnHP = plugin.getConfig().getInt("respawnHearts") * 2;
             PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
             playerData.setMaxhp(respawnHP);
             plugin.getStorage().save(playerData);

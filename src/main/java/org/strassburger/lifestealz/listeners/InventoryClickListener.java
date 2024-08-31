@@ -95,7 +95,7 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
 
-                    targetPlayerData.setMaxhp(plugin.getConfig().getInt("respawnHP") * 2);
+                    targetPlayerData.setMaxhp(plugin.getConfig().getInt("respawnHearts") * 2);
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
                     plugin.getStorage().save(targetPlayerData);
 
