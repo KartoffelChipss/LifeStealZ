@@ -20,6 +20,7 @@ public final class LifeStealZ extends JavaPlugin {
     private Storage storage;
     private WorldGuardManager worldGuardManager;
     private LanguageManager languageManager;
+    private ConfigManager configManager;
     private RecipeManager recipeManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
@@ -42,6 +43,7 @@ public final class LifeStealZ extends JavaPlugin {
         saveDefaultConfig();
 
         languageManager = new LanguageManager(this);
+        configManager = new ConfigManager(this);
 
         storage = createPlayerDataStorage();
         storage.init();
@@ -105,8 +107,12 @@ public final class LifeStealZ extends JavaPlugin {
         return languageManager;
     }
 
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
     private Storage createPlayerDataStorage() {
-        switch (getConfig().getString("storage.type").toLowerCase()) {
+        switch (getConfigManager().getStorageConfig().getString("type").toLowerCase()) {
             case "mysql":
                 getLogger().info("Using MySQL storage");
                 return new MySQLStorage(this);
@@ -136,7 +142,7 @@ public final class LifeStealZ extends JavaPlugin {
         int pluginId = 18735;
         Metrics metrics = new Metrics(this, pluginId);
 
-        metrics.addCustomChart(new Metrics.SimplePie("storage_type", () -> getConfig().getString("storage.type")));
+        metrics.addCustomChart(new Metrics.SimplePie("storage_type", () -> getConfigManager().getStorageConfig().getString("type")));
         metrics.addCustomChart(new Metrics.SimplePie("language", () -> getConfig().getString("lang")));
     }
 }

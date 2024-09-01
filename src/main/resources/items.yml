@@ -1,0 +1,73 @@
+# === Custom Items ===
+
+# Here you can modify everything about the custom items
+items:
+  # DONT DELETE THE defaultheart ITEM!!!
+  defaultheart:
+    name: "&cHeart"
+    lore:
+      - "&7Rightclick to use"
+    #     - "This would be a second line"
+    #     - "And this possibly a third line"
+    material: "NETHER_STAR"
+    enchanted: false
+    customModelData: 100
+    # Custom item type for the item ("heart" or "revive")
+    customItemType: "heart"
+    # When customItemType is "heart", this value is used to determine how many hearts the item gives
+    customHeartValue: 1
+    # true if this item should be craftable
+    craftable: true
+    recipe:
+      # Every item represents one slot in the crafting table
+      # The first item in a row is the left most item in the crafting table
+      # If you want a slot to be blank, use 'AIR' or 'empty'
+      # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
+      rowOne:
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+      rowTwo:
+        - "OBSIDIAN"
+        - "NETHER_STAR"
+        - "OBSIDIAN"
+      rowThree:
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+    sound:
+      enabled: true
+      sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+      volume: 1.0
+      pitch: 1.0
+
+  revive:
+    name: "&dRevive Crystal"
+    lore:
+      - "&7Rightclick to use"
+    material: "AMETHYST_SHARD"
+    enchanted: true
+    customModelData: 101
+    customItemType: "revive"
+    customHeartValue: 0
+    craftable: true
+    recipe:
+      rowOne:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+      rowTwo:
+        - "OBSIDIAN"
+        - "BEACON"
+        - "OBSIDIAN"
+      rowThree:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+    sound:
+      enabled: false
+      sound: ENTITY_PLAYER_LEVELUP
+      volume: 1.0
+      pitch: 1.0
+
+  # You can add as many custom items as you want

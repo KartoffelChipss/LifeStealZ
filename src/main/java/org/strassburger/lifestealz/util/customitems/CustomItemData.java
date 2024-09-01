@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.util.customitems;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.List;
@@ -30,15 +31,16 @@ public class CustomItemData {
     }
 
     public CustomItemData(String itemId) {
+        FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
         this.itemId = itemId;
-        this.name = LifeStealZ.getInstance().getConfig().getString("items." + itemId + ".name");
-        this.lore = LifeStealZ.getInstance().getConfig().getStringList("items." + itemId + ".lore");
-        this.material = Material.valueOf(LifeStealZ.getInstance().getConfig().getString("items." + itemId + ".material"));
-        this.enchanted = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".enchanted");
-        this.customModelData = LifeStealZ.getInstance().getConfig().getInt("items." + itemId + ".customModelData");
-        this.customItemType = LifeStealZ.getInstance().getConfig().getString("items." + itemId + ".customItemType");
-        this.customHeartValue = LifeStealZ.getInstance().getConfig().getInt("items." + itemId + ".customHeartValue");
-        this.craftable = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".craftable");
+        this.name = config.getString("items." + itemId + ".name");
+        this.lore = config.getStringList("items." + itemId + ".lore");
+        this.material = Material.valueOf(config.getString("items." + itemId + ".material"));
+        this.enchanted = config.getBoolean("items." + itemId + ".enchanted");
+        this.customModelData = config.getInt("items." + itemId + ".customModelData");
+        this.customItemType = config.getString("items." + itemId + ".customItemType");
+        this.customHeartValue = config.getInt("items." + itemId + ".customHeartValue");
+        this.craftable = config.getBoolean("items." + itemId + ".craftable");
     }
 
     public CustomItemSoundData getSound() {
@@ -88,10 +90,11 @@ public class CustomItemData {
         private final double pitch;
 
         private CustomItemSoundData(String itemId) {
-            enabled = LifeStealZ.getInstance().getConfig().getBoolean("items." + itemId + ".sound.enabled");
-            sound = Sound.valueOf(LifeStealZ.getInstance().getConfig().getString("items." + itemId + ".sound.sound"));
-            volume = LifeStealZ.getInstance().getConfig().getDouble("items." + itemId + ".sound.volume");
-            pitch = LifeStealZ.getInstance().getConfig().getDouble("items." + itemId + ".sound.pitch");
+            FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
+            enabled = config.getBoolean("items." + itemId + ".sound.enabled");
+            sound = Sound.valueOf(config.getString("items." + itemId + ".sound.sound"));
+            volume = config.getDouble("items." + itemId + ".sound.volume");
+            pitch = config.getDouble("items." + itemId + ".sound.pitch");
         }
 
         public boolean isEnabled() {

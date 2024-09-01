@@ -1,21 +1,23 @@
 package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.plugin.Plugin;
+import org.strassburger.lifestealz.LifeStealZ;
+
 import java.util.List;
 import java.util.UUID;
 
 public abstract class Storage {
 
     // Private field to store the Plugin instance
-    private final Plugin plugin;
+    private final LifeStealZ plugin;
 
     // Constructor to initialize the Plugin instance
-    public Storage(Plugin plugin) {
+    public Storage(LifeStealZ plugin) {
         this.plugin = plugin;
     }
 
     // Getter method for the Plugin instance (if needed)
-    protected Plugin getPlugin() {
+    protected LifeStealZ getPlugin() {
         return plugin;
     }
 

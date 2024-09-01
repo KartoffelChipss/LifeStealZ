@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.strassburger.lifestealz.LifeStealZ;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,18 +10,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class MariaDBStorage extends SQLStorage {
-    public MariaDBStorage(Plugin plugin) {
+    public MariaDBStorage(LifeStealZ plugin) {
         super(plugin);
     }
 
     Connection createConnection() {
-        FileConfiguration config = getPlugin().getConfig();
+        FileConfiguration config = getPlugin().getConfigManager().getStorageConfig();
 
-        final String HOST = config.getString("storage.host");
-        final String PORT = config.getString("storage.port");
-        final String DATABASE = config.getString("storage.database");
-        final String USERNAME = config.getString("storage.username");
-        final String PASSWORD = config.getString("storage.password");
+        final String HOST = config.getString("host");
+        final String PORT = config.getString("port");
+        final String DATABASE = config.getString("database");
+        final String USERNAME = config.getString("username");
+        final String PASSWORD = config.getString("password");
 
         try {
             return DriverManager.getConnection("jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE, USERNAME, PASSWORD);

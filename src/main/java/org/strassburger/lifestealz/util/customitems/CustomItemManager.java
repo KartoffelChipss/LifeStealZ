@@ -30,7 +30,7 @@ public class CustomItemManager {
      * @return The custom item
      */
     public static ItemStack createCustomItem(String itemId) {
-        FileConfiguration config = LifeStealZ.getInstance().getConfig();
+        FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
 
         CustomItem ci = new CustomItem(Material.valueOf(config.getString("items." + itemId + ".material")))
                 .setName(config.getString("items." + itemId + ".name"))

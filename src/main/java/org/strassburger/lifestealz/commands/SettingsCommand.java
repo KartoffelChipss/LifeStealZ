@@ -74,6 +74,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
         plugin.reloadConfig();
         plugin.getLanguageManager().reload();
+        plugin.getRecipeManager().registerRecipes();
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reloadMsg", "&7Successfully reloaded the plugin!"));
         return true;
     }

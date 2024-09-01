@@ -3,6 +3,7 @@ package org.strassburger.lifestealz.util.storage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.strassburger.lifestealz.LifeStealZ;
 
 import java.io.*;
 import java.sql.*;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public abstract class SQLStorage extends Storage {
     private static final String CSV_SEPARATOR = ",";
 
-    public SQLStorage(Plugin plugin) {
+    public SQLStorage(LifeStealZ plugin) {
         super(plugin);
     }
 

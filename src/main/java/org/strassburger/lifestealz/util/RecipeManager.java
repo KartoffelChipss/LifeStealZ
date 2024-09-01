@@ -3,6 +3,7 @@ package org.strassburger.lifestealz.util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -28,14 +29,15 @@ public class RecipeManager {
      * @return All recipe ids
      */
     public Set<String> getRecipeIds() {
-        return Objects.requireNonNull(plugin.getConfig().getConfigurationSection("items")).getKeys(false);
+        return Objects.requireNonNull(plugin.getConfigManager().getCustomItemConfig().getConfigurationSection("items")).getKeys(false);
     }
 
     /**
      * Registers all recipes
      */
     public void registerRecipes() {
-        for (String itemId : Objects.requireNonNull(plugin.getConfig().getConfigurationSection("items")).getKeys(false)) {
+        for (String itemId : Objects.requireNonNull(plugin.getConfigManager().getCustomItemConfig().getConfigurationSection("items")).getKeys(false)) {
+            removeRecipe(itemId);
             registerRecipe(itemId);
         }
     }
@@ -46,7 +48,7 @@ public class RecipeManager {
      * @return If the item is craftable
      */
     public boolean isCraftable(String itemId) {
-        return plugin.getConfig().getBoolean("items." + itemId + ".craftable");
+        return plugin.getConfigManager().getCustomItemConfig().getBoolean("items." + itemId + ".craftable");
     }
 
     /**
@@ -54,18 +56,20 @@ public class RecipeManager {
      * @param itemId The item id to register
      */
     private void registerRecipe(String itemId) {
-        boolean craftable = plugin.getConfig().getBoolean("items." + itemId + ".craftable");
+        boolean craftable = plugin.getConfigManager().getCustomItemConfig().getBoolean("items." + itemId + ".craftable");
 
         if (!craftable) return;
+
+        FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
 
         NamespacedKey heartRecipeKey = new NamespacedKey(plugin, "recipe" + itemId);
         ItemStack resultItem = CustomItemManager.createCustomItem(itemId);
         ShapedRecipe recipe = new ShapedRecipe(heartRecipeKey, resultItem);
 
         recipe.shape("ABC", "DEF", "GHI");
-        List<String> rowOne = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = config.getStringList("items." + itemId + ".recipe.rowOne");
+        List<String> rowTwo = config.getStringList("items." + itemId + ".recipe.rowTwo");
+        List<String> rowThree = config.getStringList("items." + itemId + ".recipe.rowThree");
 
         setIngredient(recipe, "A", rowOne.get(0));
         setIngredient(recipe, "B", rowOne.get(1));
@@ -81,11 +85,21 @@ public class RecipeManager {
     }
 
     /**
+     * Removes a recipe
+     * @param itemId The id of the item to remove the recipe for
+     */
+    private void removeRecipe(String itemId) {
+        NamespacedKey heartRecipeKey = new NamespacedKey(plugin, "recipe" + itemId);
+        Bukkit.removeRecipe(heartRecipeKey);
+    }
+
+    /**
      * Renders a recipe in an inventory gui
      * @param player The player to render the recipe for
      * @param itemId The item id to render
      */
     public void renderRecipe(Player player, String itemId) {
+        FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
         Inventory inventory = Bukkit.createInventory(null, 5 * 9, MessageUtils.formatMsg("&8Crafting recipe"));
 
         inventory.setItem(40, CustomItemManager.createCloseItem());
@@ -99,9 +113,9 @@ public class RecipeManager {
             inventory.setItem(slot, glass);
         }
 
-        List<String> rowOne = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = plugin.getConfig().getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = config.getStringList("items." + itemId + ".recipe.rowOne");
+        List<String> rowTwo = config.getStringList("items." + itemId + ".recipe.rowTwo");
+        List<String> rowThree = config.getStringList("items." + itemId + ".recipe.rowThree");
         renderIngredient(inventory, 10, rowOne.get(0));
         renderIngredient(inventory, 11, rowOne.get(1));
         renderIngredient(inventory, 12, rowOne.get(2));

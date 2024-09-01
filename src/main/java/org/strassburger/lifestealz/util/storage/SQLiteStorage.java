@@ -1,13 +1,14 @@
 package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.plugin.Plugin;
+import org.strassburger.lifestealz.LifeStealZ;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SQLiteStorage extends SQLStorage {
-    public SQLiteStorage(Plugin plugin) {
+    public SQLiteStorage(LifeStealZ plugin) {
         super(plugin);
     }
 

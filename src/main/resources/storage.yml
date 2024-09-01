@@ -1,0 +1,12 @@
+# === Storage ===
+
+# The type of storage to use. You have the following options:
+# "SQLite", "MySQL", "MariaDB"
+type: "SQLite"
+
+# This section is only relevant if you use a MySQL database
+host: "localhost"
+port: 3306
+database: "lifestealz"
+username: "root"
+password: "password"
