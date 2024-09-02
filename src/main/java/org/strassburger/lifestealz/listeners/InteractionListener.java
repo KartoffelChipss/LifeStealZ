@@ -36,6 +36,10 @@ public class InteractionListener implements Listener {
             }
 
             if (CustomItemManager.isHeartItem(item)) {
+                CustomItemData customItemData = CustomItemManager.getCustomItemData(CustomItemManager.getCustomItemId(item));
+
+                if (customItemData == null) return;
+
                 event.setCancelled(true);
 
                 long heartCooldown = plugin.getConfig().getLong("heartCooldown");
@@ -58,6 +62,16 @@ public class InteractionListener implements Listener {
                     return;
                 }
 
+                if (playerData.getMaxhp() < customItemData.getMinHearts() * 2 && customItemData.getMinHearts() != -1) {
+                    player.sendMessage(MessageUtils.getAndFormatMsg(false, "itemMinHearts", "&cYou need at least %amount% hearts to use this item!", new MessageUtils.Replaceable("%amount%", Integer.toString(customItemData.getMinHearts()))));
+                    return;
+                }
+
+                if (playerData.getMaxhp() >= customItemData.getMaxHearts() * 2 && customItemData.getMaxHearts() != -1) {
+                    player.sendMessage(MessageUtils.getAndFormatMsg(false, "itemMaxHearts", "&cYou can't use this item with more than %amount% hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString(customItemData.getMaxHearts()))));
+                    return;
+                }
+
                 if (hand == EquipmentSlot.HAND) {
                     updateItemInHand(player, item, player.getInventory().getHeldItemSlot());
                 } else if (hand == EquipmentSlot.OFF_HAND) {
@@ -70,7 +84,6 @@ public class InteractionListener implements Listener {
                 player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 
                 String customItemID = CustomItemManager.getCustomItemId(item);
-                System.out.printf("customItemID: %s\n", customItemID);
                 if (customItemID != null) {
                     CustomItemData.CustomItemSoundData sound = CustomItemManager.getCustomItemData(customItemID).getSound();
                     if (sound.isEnabled()) player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());

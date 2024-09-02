@@ -1,73 +1,79 @@
 # === Custom Items ===
 
 # Here you can modify everything about the custom items
-items:
-  # DONT DELETE THE defaultheart ITEM!!!
-  defaultheart:
-    name: "&cHeart"
-    lore:
-      - "&7Rightclick to use"
-    #     - "This would be a second line"
-    #     - "And this possibly a third line"
-    material: "NETHER_STAR"
-    enchanted: false
-    customModelData: 100
-    # Custom item type for the item ("heart" or "revive")
-    customItemType: "heart"
-    # When customItemType is "heart", this value is used to determine how many hearts the item gives
-    customHeartValue: 1
-    # true if this item should be craftable
-    craftable: true
-    recipe:
-      # Every item represents one slot in the crafting table
-      # The first item in a row is the left most item in the crafting table
-      # If you want a slot to be blank, use 'AIR' or 'empty'
-      # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
-      rowOne:
-        - "GOLD_BLOCK"
-        - "GOLD_BLOCK"
-        - "GOLD_BLOCK"
-      rowTwo:
-        - "OBSIDIAN"
-        - "NETHER_STAR"
-        - "OBSIDIAN"
-      rowThree:
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-        - "DIAMOND_BLOCK"
-    sound:
-      enabled: true
-      sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-      volume: 1.0
-      pitch: 1.0
+# You can change which item is dropped on death in the main config.yml
 
-  revive:
-    name: "&dRevive Crystal"
-    lore:
-      - "&7Rightclick to use"
-    material: "AMETHYST_SHARD"
-    enchanted: true
-    customModelData: 101
-    customItemType: "revive"
-    customHeartValue: 0
-    craftable: true
-    recipe:
-      rowOne:
-        - "AMETHYST_SHARD"
-        - "NETHERITE_BLOCK"
-        - "AMETHYST_SHARD"
-      rowTwo:
-        - "OBSIDIAN"
-        - "BEACON"
-        - "OBSIDIAN"
-      rowThree:
-        - "AMETHYST_SHARD"
-        - "NETHERITE_BLOCK"
-        - "AMETHYST_SHARD"
-    sound:
-      enabled: false
-      sound: ENTITY_PLAYER_LEVELUP
-      volume: 1.0
-      pitch: 1.0
+defaultheart:
+  name: "&cHeart"
+  lore:
+    - "&7Rightclick to use"
+  #  - "This would be a second line"
+  #  - "And this possibly a third line"
+  material: "NETHER_STAR" # Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  enchanted: false
+  customModelData: 100
+  # Custom item type for the item ("heart", "revive" or "none")
+  customItemType: "heart"
+  # When customItemType is "heart", this value is used to determine how many hearts the item gives
+  customHeartValue: 1
+  # The minimum amount of hearts a player must have to use this item (only relevant if customItemType is "heart")
+  minHearts: 0
+  # The maximum amount of hearts a player can have to use this item (-1 for infinite) (only relevant if customItemType is "heart")
+  maxHearts: -1
+  # true if this item should be craftable
+  craftable: true
+  recipe:
+    # Every item represents one slot in the crafting table
+    # The first item in a row is the left most item in the crafting table
+    # If you want a slot to be blank, use 'AIR' or 'empty'
+    # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
+    rowOne:
+      - "GOLD_BLOCK"
+      - "GOLD_BLOCK"
+      - "GOLD_BLOCK"
+    rowTwo:
+      - "OBSIDIAN"
+      - "NETHER_STAR"
+      - "OBSIDIAN"
+    rowThree:
+      - "DIAMOND_BLOCK"
+      - "DIAMOND_BLOCK"
+      - "DIAMOND_BLOCK"
+  sound:
+    enabled: true
+    sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+    volume: 1.0
+    pitch: 1.0
 
-  # You can add as many custom items as you want
+revive:
+  name: "&dRevive Crystal"
+  lore:
+    - "&7Rightclick to use"
+  material: "AMETHYST_SHARD"
+  enchanted: true
+  customModelData: 101
+  customItemType: "revive"
+  customHeartValue: 0
+  minHearts: 0
+  maxHearts: -1
+  craftable: true
+  recipe:
+    rowOne:
+      - "AMETHYST_SHARD"
+      - "NETHERITE_BLOCK"
+      - "AMETHYST_SHARD"
+    rowTwo:
+      - "OBSIDIAN"
+      - "BEACON"
+      - "OBSIDIAN"
+    rowThree:
+      - "AMETHYST_SHARD"
+      - "NETHERITE_BLOCK"
+      - "AMETHYST_SHARD"
+  sound:
+    enabled: false
+    sound: ENTITY_PLAYER_LEVELUP
+    volume: 1.0
+    pitch: 1.0
+
+# You can add as many custom items as you want

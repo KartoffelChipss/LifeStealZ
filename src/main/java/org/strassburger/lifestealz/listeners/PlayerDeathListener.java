@@ -53,7 +53,7 @@ public class PlayerDeathListener implements Listener {
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
         // Drop hearts or handle heart gain for the killer (if applicable)
-        if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
+        if (plugin.getConfig().getBoolean("dropHearts")) {
             world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
         } else if (isDeathByPlayer) {
             handleKillerHeartGain(player, killer, world);
@@ -113,10 +113,6 @@ public class PlayerDeathListener implements Listener {
         }
 
         // I suppose this is where webhook support should go here eventually.
-
-        if (plugin.getConfig().getBoolean("dropHeartsOnDeath")) {
-            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
-        }
 
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         playerData.setMaxhp(0.0);

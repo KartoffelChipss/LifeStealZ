@@ -29,14 +29,14 @@ public class RecipeManager {
      * @return All recipe ids
      */
     public Set<String> getRecipeIds() {
-        return Objects.requireNonNull(plugin.getConfigManager().getCustomItemConfig().getConfigurationSection("items")).getKeys(false);
+        return plugin.getConfigManager().getCustomItemConfig().getKeys(false);
     }
 
     /**
      * Registers all recipes
      */
     public void registerRecipes() {
-        for (String itemId : Objects.requireNonNull(plugin.getConfigManager().getCustomItemConfig().getConfigurationSection("items")).getKeys(false)) {
+        for (String itemId : plugin.getConfigManager().getCustomItemConfig().getKeys(false)) {
             removeRecipe(itemId);
             registerRecipe(itemId);
         }
@@ -48,7 +48,7 @@ public class RecipeManager {
      * @return If the item is craftable
      */
     public boolean isCraftable(String itemId) {
-        return plugin.getConfigManager().getCustomItemConfig().getBoolean("items." + itemId + ".craftable");
+        return plugin.getConfigManager().getCustomItemConfig().getBoolean(itemId + ".craftable");
     }
 
     /**
@@ -56,7 +56,7 @@ public class RecipeManager {
      * @param itemId The item id to register
      */
     private void registerRecipe(String itemId) {
-        boolean craftable = plugin.getConfigManager().getCustomItemConfig().getBoolean("items." + itemId + ".craftable");
+        boolean craftable = plugin.getConfigManager().getCustomItemConfig().getBoolean(itemId + ".craftable");
 
         if (!craftable) return;
 
@@ -67,9 +67,9 @@ public class RecipeManager {
         ShapedRecipe recipe = new ShapedRecipe(heartRecipeKey, resultItem);
 
         recipe.shape("ABC", "DEF", "GHI");
-        List<String> rowOne = config.getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = config.getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = config.getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
+        List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
+        List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
 
         setIngredient(recipe, "A", rowOne.get(0));
         setIngredient(recipe, "B", rowOne.get(1));
@@ -113,9 +113,9 @@ public class RecipeManager {
             inventory.setItem(slot, glass);
         }
 
-        List<String> rowOne = config.getStringList("items." + itemId + ".recipe.rowOne");
-        List<String> rowTwo = config.getStringList("items." + itemId + ".recipe.rowTwo");
-        List<String> rowThree = config.getStringList("items." + itemId + ".recipe.rowThree");
+        List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
+        List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
+        List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
         renderIngredient(inventory, 10, rowOne.get(0));
         renderIngredient(inventory, 11, rowOne.get(1));
         renderIngredient(inventory, 12, rowOne.get(2));

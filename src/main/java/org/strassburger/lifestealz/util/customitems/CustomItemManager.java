@@ -32,39 +32,52 @@ public class CustomItemManager {
     public static ItemStack createCustomItem(String itemId) {
         FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
 
-        CustomItem ci = new CustomItem(Material.valueOf(config.getString("items." + itemId + ".material")))
-                .setName(config.getString("items." + itemId + ".name"))
-                .setLore(config.getStringList("items." + itemId + ".lore"))
-                .setCustomModelID(config.getInt("items." + itemId + ".customModelData"))
-                .setEnchanted(config.getBoolean("items." + itemId + ".enchanted"))
+        CustomItem ci = new CustomItem(Material.valueOf(config.getString(itemId + ".material")))
+                .setName(config.getString(itemId + ".name"))
+                .setLore(config.getStringList(itemId + ".lore"))
+                .setCustomModelID(config.getInt(itemId + ".customModelData"))
+                .setEnchanted(config.getBoolean(itemId + ".enchanted"))
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
         ItemMeta itemMeta = ci.getItemStack().getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING, itemId);
 
-        String customItemType = config.getString("items." + itemId + ".customItemType") != null ? Objects.requireNonNull(config.getString("items." + itemId + ".customItemType")) : "heart";
+        String customItemType = config.getString(itemId + ".customItemType") != null ? Objects.requireNonNull(config.getString(itemId + ".customItemType")) : "heart";
         itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING, customItemType);
 
-        if (customItemType.equalsIgnoreCase("heart")) itemMeta.getPersistentDataContainer().set(CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER, config.getInt("items." + itemId + ".customHeartValue"));
+        if (customItemType.equalsIgnoreCase("heart")) itemMeta.getPersistentDataContainer().set(CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER, config.getInt( itemId + ".customHeartValue"));
 
         ci.getItemStack().setItemMeta(itemMeta);
 
         return ci.getItemStack();
     }
 
+    /**
+     * Creates a custom item with a specific amount
+     *
+     * @param itemId The id of the item
+     * @param amount The amount of the item
+     * @return The custom item
+     */
     public static ItemStack createCustomItem(String itemId, int amount) {
         return new CustomItem(createCustomItem(itemId)).setAmount(amount).getItemStack();
     }
 
+    /**
+     * Creates the default heart item
+     *
+     * @return The default heart item
+     */
     public static ItemStack createHeart() {
-        return createCustomItem("defaultheart");
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem", "defaultheart"));
     }
 
-    public static ItemStack createRevive() {
-        return createCustomItem("revive");
-    }
-
+    /**
+     * Creates a close item for GUIs
+     *
+     * @return The close item
+     */
     public static ItemStack createCloseItem() {
         return new CustomItem(Material.BARRIER)
                 .setName(MessageUtils.getAndFormatMsg(false, "closeBtn", "&cClose"))
@@ -73,6 +86,12 @@ public class CustomItemManager {
                 .getItemStack();
     }
 
+    /**
+     * Creates a back item for paginated GUIs
+     *
+     * @param page The page to go back to
+     * @return The back item
+     */
     public static ItemStack createBackItem(int page) {
         CustomItem ci = new CustomItem(Material.ARROW)
                 .setName(MessageUtils.getAndFormatMsg(false, "backBtn", "&cBack"))
@@ -86,6 +105,12 @@ public class CustomItemManager {
         return ci.getItemStack();
     }
 
+    /**
+     * Creates a next item for paginated GUIs
+     *
+     * @param page The page to go to
+     * @return The next item
+     */
     public static ItemStack createNextItem(int page) {
         CustomItem ci = new CustomItem(Material.ARROW)
                 .setName(MessageUtils.getAndFormatMsg(false, "nextBtn", "&cNext"))
@@ -99,19 +124,43 @@ public class CustomItemManager {
         return ci.getItemStack();
     }
 
+    /**
+     * Checks if an item is a heart item
+     *
+     * @param item The item to check
+     * @return If the item is a heart item
+     */
     public static boolean isHeartItem(ItemStack item) {
         return item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
     }
 
+    /**
+     * Checks if an item is a revive item
+     *
+     * @param item The item to check
+     * @return If the item is a revive item
+     */
     public static boolean isReviveItem(ItemStack item) {
         return item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
     }
 
+    /**
+     * Gets the custom item id of an item
+     *
+     * @param item The item to get the id from
+     * @return The custom item id
+     */
     public static String getCustomItemId(ItemStack item) {
         if (item.getItemMeta() == null || !item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING)) return null;
         else return item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING);
     }
 
+    /**
+     * Gets the head of an offline player
+     *
+     * @param offlinePlayer The offline player
+     * @return The head of the player
+     */
     public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID()))).getItemStack();
 
@@ -131,7 +180,17 @@ public class CustomItemManager {
         return head;
     }
 
+    /**
+     * Gets the custom item data of an item
+     *
+     * @param itemId The id of the item
+     * @return The custom item data
+     */
     public static CustomItemData getCustomItemData(String itemId) {
-        return new CustomItemData(itemId);
+        try {
+            return new CustomItemData(itemId);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

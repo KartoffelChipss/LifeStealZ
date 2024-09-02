@@ -54,6 +54,8 @@ respawnHearts: 1
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
+# The custom item that should be dropped if a player is killed (Must be an id from the items.yml)
+heartItem: "defaultheart"
 
 
 # === HEART BEHAVIOR SETTINGS ===

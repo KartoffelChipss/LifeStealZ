@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.util.customitems;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.strassburger.lifestealz.LifeStealZ;
 
@@ -16,9 +17,11 @@ public class CustomItemData {
     private final int customModelData;
     private final String customItemType;
     private final int customHeartValue;
+    private final int minHearts;
+    private final int maxHearts;
     private final boolean craftable;
 
-    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, boolean craftable) {
+    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, int minHearts, int maxHearts, boolean craftable) {
         this.itemId = itemId;
         this.name = name;
         this.lore = lore;
@@ -27,20 +30,29 @@ public class CustomItemData {
         this.customModelData = customModelData;
         this.customItemType = customItemType;
         this.customHeartValue = customHeartValue;
+        this.minHearts = minHearts;
+        this.maxHearts = maxHearts;
         this.craftable = craftable;
     }
 
-    public CustomItemData(String itemId) {
+    public CustomItemData(String itemId) throws IllegalArgumentException {
         FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
+
+        ConfigurationSection section = config.getConfigurationSection(itemId);
+
+        if (section == null) throw new IllegalArgumentException("Custom item with id " + itemId + " does not exist!");
+
         this.itemId = itemId;
-        this.name = config.getString("items." + itemId + ".name");
-        this.lore = config.getStringList("items." + itemId + ".lore");
-        this.material = Material.valueOf(config.getString("items." + itemId + ".material"));
-        this.enchanted = config.getBoolean("items." + itemId + ".enchanted");
-        this.customModelData = config.getInt("items." + itemId + ".customModelData");
-        this.customItemType = config.getString("items." + itemId + ".customItemType");
-        this.customHeartValue = config.getInt("items." + itemId + ".customHeartValue");
-        this.craftable = config.getBoolean("items." + itemId + ".craftable");
+        this.name = config.getString(itemId + ".name");
+        this.lore = config.getStringList(itemId + ".lore");
+        this.material = Material.valueOf(config.getString(itemId + ".material"));
+        this.enchanted = config.getBoolean(itemId + ".enchanted");
+        this.customModelData = config.getInt(itemId + ".customModelData");
+        this.customItemType = config.getString(itemId + ".customItemType");
+        this.customHeartValue = config.getInt(itemId + ".customHeartValue");
+        this.minHearts = config.getInt(itemId + ".minHearts");
+        this.maxHearts = config.getInt(itemId + ".maxHearts");
+        this.craftable = config.getBoolean(itemId + ".craftable");
     }
 
     public CustomItemSoundData getSound() {
@@ -79,6 +91,14 @@ public class CustomItemData {
         return customHeartValue;
     }
 
+    public int getMinHearts() {
+        return minHearts;
+    }
+
+    public int getMaxHearts() {
+        return maxHearts;
+    }
+
     public boolean isCraftable() {
         return craftable;
     }
@@ -91,10 +111,10 @@ public class CustomItemData {
 
         private CustomItemSoundData(String itemId) {
             FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
-            enabled = config.getBoolean("items." + itemId + ".sound.enabled");
-            sound = Sound.valueOf(config.getString("items." + itemId + ".sound.sound"));
-            volume = config.getDouble("items." + itemId + ".sound.volume");
-            pitch = config.getDouble("items." + itemId + ".sound.pitch");
+            enabled = config.getBoolean(itemId + ".sound.enabled");
+            sound = Sound.valueOf(config.getString(itemId + ".sound.sound"));
+            volume = config.getDouble(itemId + ".sound.volume");
+            pitch = config.getDouble(itemId + ".sound.pitch");
         }
 
         public boolean isEnabled() {
