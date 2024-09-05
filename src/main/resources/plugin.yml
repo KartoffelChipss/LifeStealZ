@@ -4,7 +4,7 @@ main: org.strassburger.lifestealz.LifeStealZ
 api-version: '1.19'
 author: Kartoffelchips
 website: https://lsz.strassburger.dev/
-description: A LifeSteal SMP plugin providing you all the features you need!
+description: LifeStealZ - The Ultimate LifeSteal SMP Plugin!
 
 softdepend:
     - PlaceholderAPI

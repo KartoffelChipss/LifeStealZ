@@ -51,10 +51,21 @@ public class LanguageManager {
         langConfig = YamlConfiguration.loadConfiguration(selectedLangFile);
     }
 
+    /**
+     * Get a string from the language file
+     * @param key The key to get the string for
+     * @return The string from the language file
+     */
     public String getString(String key) {
         return langConfig.getString(key);
     }
 
+    /**
+     * Get a string from the language file with a fallback
+     * @param key The key to get the string for
+     * @param fallback The fallback string
+     * @return The string from the language file or the fallback
+     */
     public String getString(String key, String fallback) {
         return langConfig.getString(key) != null ? langConfig.getString(key) : fallback;
     }
