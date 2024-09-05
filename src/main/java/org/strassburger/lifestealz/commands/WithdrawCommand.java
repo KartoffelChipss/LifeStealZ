@@ -76,7 +76,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        double resultingHealth = playerdata.getMaxhp() - ((double) withdrawHearts * 2);
+        double resultingHealth = playerdata.getMaxHealth() - ((double) withdrawHearts * 2);
         double minHealth = plugin.getConfig().getDouble("minHearts", 2.0) * 2; // Default to 2.0 if not set
 
         if (resultingHealth < minHealth) {
@@ -92,11 +92,11 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            for (int i = 0; i < playerdata.getMaxhp() / 2; i++) {
+            for (int i = 0; i < playerdata.getMaxHealth() / 2; i++) {
                 player.getInventory().addItem(CustomItemManager.createHeart());
             }
 
-            playerdata.setMaxhp(0.0);
+            playerdata.setMaxHealth(0.0);
             plugin.getStorage().save(playerdata);
 
             Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
@@ -111,9 +111,9 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         }
 
 
-        playerdata.setMaxhp(playerdata.getMaxhp() - (double) withdrawHearts * 2);
+        playerdata.setMaxHealth(playerdata.getMaxHealth() - (double) withdrawHearts * 2);
         plugin.getStorage().save(playerdata);
-        LifeStealZ.setMaxHealth(player, playerdata.getMaxhp());
+        LifeStealZ.setMaxHealth(player, playerdata.getMaxHealth());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 500.0f, 1.0f);
 
         for (int i = 0; i < withdrawHearts; i++) {

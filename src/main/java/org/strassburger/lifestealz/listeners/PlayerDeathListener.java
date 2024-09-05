@@ -60,15 +60,15 @@ public class PlayerDeathListener implements Listener {
         }
 
         // Check for elimination
-        if (playerData.getMaxhp() - 2.0 <= minHearts) {
+        if (playerData.getMaxHealth() - 2.0 <= minHearts) {
             handleElimination(event, player, killer, isDeathByPlayer);
             return;
         }
 
         // Reduce the victim's hearts
-        playerData.setMaxhp(playerData.getMaxhp() - 2.0);
+        playerData.setMaxHealth(playerData.getMaxHealth() - 2.0);
         plugin.getStorage().save(playerData);
-        LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
+        LifeStealZ.setMaxHealth(player, playerData.getMaxHealth());
     }
 
     private void handleElimination(PlayerDeathEvent event, Player player, Player killer, boolean isDeathByPlayer) {
@@ -89,7 +89,7 @@ public class PlayerDeathListener implements Listener {
         if (disableBanOnElimination) {
             double respawnHP = plugin.getConfig().getInt("respawnHearts") * 2;
             PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
-            playerData.setMaxhp(respawnHP);
+            playerData.setMaxHealth(respawnHP);
             plugin.getStorage().save(playerData);
             LifeStealZ.setMaxHealth(player, respawnHP);
             return;
@@ -115,7 +115,7 @@ public class PlayerDeathListener implements Listener {
         // I suppose this is where webhook support should go here eventually.
 
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
-        playerData.setMaxhp(0.0);
+        playerData.setMaxHealth(0.0);
         plugin.getStorage().save(playerData);
     }
 
@@ -141,8 +141,8 @@ public class PlayerDeathListener implements Listener {
             if (heartGainCooldownDropOnCooldown) {
                 world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
             }
-        } else if (playerData.getMaxhp() - 2.0 > minHearts || (playerData.getMaxhp() - 2.0 <= minHearts && heartRewardOnElimination)) {
-            if (killerPlayerData.getMaxhp() + 2.0 > maxHearts) {
+        } else if (playerData.getMaxHealth() - 2.0 > minHearts || (playerData.getMaxHealth() - 2.0 <= minHearts && heartRewardOnElimination)) {
+            if (killerPlayerData.getMaxHealth() + 2.0 > maxHearts) {
                 if (dropHeartsIfMax) {
                     world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
                 } else {
@@ -151,10 +151,10 @@ public class PlayerDeathListener implements Listener {
                             new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                 }
             } else {
-                killerPlayerData.setMaxhp(killerPlayerData.getMaxhp() + 2.0);
+                killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + 2.0);
                 plugin.getStorage().save(killerPlayerData);
-                LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxhp());
-                killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxhp()));
+                LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxHealth());
+                killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxHealth()));
                 CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
             }
         }

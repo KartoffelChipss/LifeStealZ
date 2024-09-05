@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.sql.Connection;
@@ -43,7 +42,7 @@ public class MariaDBStorage extends SQLStorage {
             )) {
                 statement.setString(1, playerData.getUuid());
                 statement.setString(2, playerData.getName());
-                statement.setDouble(3, playerData.getMaxhp());
+                statement.setDouble(3, playerData.getMaxHealth());
                 statement.setInt(4, playerData.getHasbeenRevived());
                 statement.setInt(5, playerData.getCraftedHearts());
                 statement.setInt(6, playerData.getCraftedRevives());

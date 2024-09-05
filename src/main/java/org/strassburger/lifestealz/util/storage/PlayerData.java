@@ -7,7 +7,7 @@ import java.util.UUID;
 public class PlayerData {
     private final String name;
     private final String uuid;
-    private double maxhp = (LifeStealZ.getInstance().getConfig().getInt("startHearts") * 2);
+    private double maxHealth = (LifeStealZ.getInstance().getConfig().getInt("startHearts") * 2);
     private int craftedHearts = 0;
     private int craftedRevives = 0;
     private int hasbeenRevived = 0;
@@ -26,13 +26,13 @@ public class PlayerData {
         return uuid;
     }
 
-    public double getMaxhp() {
-        return maxhp;
+    public double getMaxHealth() {
+        return maxHealth;
     }
 
-    public void setMaxhp(double maxhp) throws IllegalArgumentException {
-        if (maxhp < 0.0) throw new IllegalArgumentException("maxhp cannot be negative");
-        this.maxhp = maxhp;
+    public void setMaxHealth(double maxHealth) throws IllegalArgumentException {
+        if (maxHealth < 0.0) throw new IllegalArgumentException("maxhp cannot be negative");
+        this.maxHealth = maxHealth;
     }
 
     public int getCraftedHearts() {

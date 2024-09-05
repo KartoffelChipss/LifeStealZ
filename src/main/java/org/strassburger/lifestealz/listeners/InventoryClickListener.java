@@ -90,12 +90,12 @@ public class InventoryClickListener implements Listener {
                     }
 
                     int minHearts = plugin.getConfig().getInt("minHearts");
-                    if (targetPlayerData.getMaxhp() > minHearts * 2) {
+                    if (targetPlayerData.getMaxHealth() > minHearts * 2) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
                     }
 
-                    targetPlayerData.setMaxhp(plugin.getConfig().getInt("respawnHearts") * 2);
+                    targetPlayerData.setMaxHealth(plugin.getConfig().getInt("respawnHearts") * 2);
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
                     plugin.getStorage().save(targetPlayerData);
 

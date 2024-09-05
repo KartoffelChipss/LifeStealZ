@@ -44,7 +44,7 @@ public class PlayerLoginListener implements Listener {
     private boolean shouldKickPlayer(PlayerData playerData) {
         boolean disabledBanOnDeath = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
         double minHearts = plugin.getConfig().getInt("minHearts") * 2;
-        return playerData.getMaxhp() <= minHearts && !disabledBanOnDeath;
+        return playerData.getMaxHealth() <= minHearts && !disabledBanOnDeath;
     }
 
     private void kickPlayer(PlayerLoginEvent event) {

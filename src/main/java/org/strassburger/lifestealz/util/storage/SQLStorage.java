@@ -2,7 +2,6 @@ package org.strassburger.lifestealz.util.storage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.io.*;
@@ -39,7 +38,7 @@ public abstract class SQLStorage extends Storage {
         try (Connection connection = createConnection()) {
             if (connection == null) return;
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxhp() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
+                statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxHealth() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
             } catch (SQLException e) {
                 getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
             }
@@ -65,7 +64,7 @@ public abstract class SQLStorage extends Storage {
                     }
 
                     PlayerData playerData = new PlayerData(resultSet.getString("name"), uuid);
-                    playerData.setMaxhp(resultSet.getDouble("maxhp"));
+                    playerData.setMaxHealth(resultSet.getDouble("maxhp"));
                     playerData.setHasbeenRevived(resultSet.getInt("hasbeenRevived"));
                     playerData.setCraftedHearts(resultSet.getInt("craftedHearts"));
                     playerData.setCraftedRevives(resultSet.getInt("craftedRevives"));

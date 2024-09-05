@@ -32,7 +32,7 @@ public class PapiExpansion extends PlaceholderExpansion {
             }
             case "hearts": {
                 PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
-                return String.valueOf((int) playerData.getMaxhp() / 2);
+                return String.valueOf((int) playerData.getMaxHealth() / 2);
             }
             case "revived": {
                 PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());

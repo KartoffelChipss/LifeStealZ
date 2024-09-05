@@ -10,8 +10,6 @@ import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
-import java.util.List;
-
 public class PlayerJoinListener implements Listener {
 
     private final LifeStealZ plugin;
@@ -31,7 +29,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         PlayerData playerData = loadOrCreatePlayerData(player, storage);
-        LifeStealZ.setMaxHealth(player, playerData.getMaxhp());
+        LifeStealZ.setMaxHealth(player, playerData.getMaxHealth());
 
         notifyOpAboutUpdate(player);
     }

@@ -175,7 +175,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (optionTwo.equals("get")) {
-            int hearts = (int) (targetPlayerData.getMaxhp() / 2);
+            int hearts = (int) (targetPlayerData.getMaxHealth() / 2);
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!",
                     new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
             return true;
@@ -192,17 +192,17 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
         switch (optionTwo) {
             case "add": {
-                if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxhp() + (amount * 2) > config.getInt("maxHearts") * 2) {
+                if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxHealth() + (amount * 2) > config.getInt("maxHearts") * 2) {
                     Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!",
                             new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
                     sender.sendMessage(maxHeartsMsg);
                     return false;
                 }
 
-                targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() + (amount * 2));
+                targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() + (amount * 2));
                 storage.save(targetPlayerData);
-                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
-                finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
+                finalAmount = (int) (targetPlayerData.getMaxHealth() / 2);
                 break;
             }
             case "set": {
@@ -218,21 +218,21 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                targetPlayerData.setMaxhp(amount * 2);
+                targetPlayerData.setMaxHealth(amount * 2);
                 storage.save(targetPlayerData);
-                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
                 break;
             }
             case "remove": {
-                if ((targetPlayerData.getMaxhp() / 2) - (double) amount <= 0) {
+                if ((targetPlayerData.getMaxHealth() / 2) - (double) amount <= 0) {
                     sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
                     return false;
                 }
 
-                targetPlayerData.setMaxhp(targetPlayerData.getMaxhp() - (amount * 2));
+                targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() - (amount * 2));
                 storage.save(targetPlayerData);
-                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxhp());
-                finalAmount = (int) (targetPlayerData.getMaxhp() / 2);
+                LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
+                finalAmount = (int) (targetPlayerData.getMaxHealth() / 2);
                 break;
             }
         }

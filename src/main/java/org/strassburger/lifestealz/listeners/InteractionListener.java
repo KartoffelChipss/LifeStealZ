@@ -53,7 +53,7 @@ public class InteractionListener implements Listener {
                 Integer savedHeartAmountInteger = item.getItemMeta().getPersistentDataContainer().has(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) ? item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER) : 1;
                 int savedHeartAmount = savedHeartAmountInteger != null ? savedHeartAmountInteger : 1;
                 double heartsToAdd = savedHeartAmount * 2;
-                double newHearts = playerData.getMaxhp() + heartsToAdd;
+                double newHearts = playerData.getMaxHealth() + heartsToAdd;
 
                 double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
 
@@ -62,12 +62,12 @@ public class InteractionListener implements Listener {
                     return;
                 }
 
-                if (playerData.getMaxhp() < customItemData.getMinHearts() * 2 && customItemData.getMinHearts() != -1) {
+                if (playerData.getMaxHealth() < customItemData.getMinHearts() * 2 && customItemData.getMinHearts() != -1) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "itemMinHearts", "&cYou need at least %amount% hearts to use this item!", new MessageUtils.Replaceable("%amount%", Integer.toString(customItemData.getMinHearts()))));
                     return;
                 }
 
-                if (playerData.getMaxhp() >= customItemData.getMaxHearts() * 2 && customItemData.getMaxHearts() != -1) {
+                if (playerData.getMaxHealth() >= customItemData.getMaxHearts() * 2 && customItemData.getMaxHearts() != -1) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "itemMaxHearts", "&cYou can't use this item with more than %amount% hearts!", new MessageUtils.Replaceable("%amount%", Integer.toString(customItemData.getMaxHearts()))));
                     return;
                 }
@@ -78,7 +78,7 @@ public class InteractionListener implements Listener {
                     updateItemInHand(player, item, 40);
                 }
 
-                playerData.setMaxhp(newHearts);
+                playerData.setMaxHealth(newHearts);
                 plugin.getStorage().save(playerData);
                 LifeStealZ.setMaxHealth(player, newHearts);
                 player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));

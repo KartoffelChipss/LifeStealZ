@@ -91,7 +91,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
     private boolean isEligibleForRevive(CommandSender sender, PlayerData playerData) {
         int minHearts = plugin.getConfig().getInt("minHearts");
 
-        if (playerData.getMaxhp() > minHearts * 2) {
+        if (playerData.getMaxHealth() > minHearts * 2) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
             return false;
         }
@@ -105,7 +105,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
      * @param playerData The player data of the player to be revived
      */
     private void revivePlayer(CommandSender sender, String targetPlayerName, PlayerData playerData) {
-        playerData.setMaxhp(plugin.getConfig().getDouble("respawnHearts") * 2);
+        playerData.setMaxHealth(plugin.getConfig().getDouble("respawnHearts") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
         plugin.getStorage().save(playerData);
 
