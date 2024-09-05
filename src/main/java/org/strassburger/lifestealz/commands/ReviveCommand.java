@@ -105,7 +105,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
      * @param playerData The player data of the player to be revived
      */
     private void revivePlayer(CommandSender sender, String targetPlayerName, PlayerData playerData) {
-        playerData.setMaxHealth(plugin.getConfig().getDouble("respawnHearts") * 2);
+        playerData.setMaxHealth(plugin.getConfig().getDouble("reviveHearts") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
         plugin.getStorage().save(playerData);
 

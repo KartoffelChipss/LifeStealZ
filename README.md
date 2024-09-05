@@ -127,7 +127,7 @@ startHearts: 10
 # The maximal amount of hearts, a player can have
 maxHearts: 20
 # The amount of hp a player should have after getting eliminated
-respawnHearts: 1
+reviveHearts: 1
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0

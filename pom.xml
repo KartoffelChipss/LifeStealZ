@@ -6,7 +6,7 @@
 
     <groupId>org.strassburger</groupId>
     <artifactId>lifestealz</artifactId>
-    <version>2.2.0-beta</version>
+    <version>2.3.0-beta</version>
     <packaging>jar</packaging>
 
     <name>LifeStealZ</name>

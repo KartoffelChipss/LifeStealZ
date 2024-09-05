@@ -6,6 +6,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.strassburger.lifestealz.api.LifeStealZAPI;
+import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.storage.MariaDBStorage;
 import org.strassburger.lifestealz.util.storage.MySQLStorage;
@@ -77,6 +79,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public static LifeStealZ getInstance() {
         return instance;
+    }
+
+    public static LifeStealZAPI getAPI() {
+        return new LifeStealZAPIImpl(getInstance());
     }
 
     public VersionChecker getVersionChecker() {

@@ -31,7 +31,7 @@ public class PlayerData {
     }
 
     public void setMaxHealth(double maxHealth) throws IllegalArgumentException {
-        if (maxHealth < 0.0) throw new IllegalArgumentException("maxhp cannot be negative");
+        if (maxHealth < 0.0) throw new IllegalArgumentException("maxHealth cannot be negative");
         this.maxHealth = maxHealth;
     }
 
