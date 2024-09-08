@@ -1,4 +1,4 @@
-![LifestealZBanner](https://strassburger.org/img/lifestealz/banner_logo.png)
+![LifeStealZ Banner](https://file.strassburger.dev/LifeStealZ_banner_new.png)
 
 ---
 
