@@ -42,7 +42,7 @@ public final class LifeStealZ extends JavaPlugin {
         }
 
         if(hasGeyser) {
-            getLogger().info("Floodgate found, enabling Bedrock player support.");
+            getLogger().info("Geyser found, enabling Bedrock player support.");
             geyserManager = new GeyserManager();
             geyserPlayerFile = new GeyserPlayerFile();
         }
