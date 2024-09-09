@@ -1,0 +1,59 @@
+---
+prefix: "&8[&cLifeStealZ&8]"
+newVersionAvailable: |-
+  &7Een nieuwe versie van LifeStealZ is beschikbaar!
+  &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
+usageError: "&cGebruik: %usage%"
+noPermsError: "<red>Je hebt geen toegang om dit commando uit te voeren!"
+playerNotFound: "&cSpeler niet gevonden!"
+worldNotWhitelisted: "&cDeze wereld is niet ge-whitelist voor LifeStealZ!"
+specifyPlayerOrBePlayer: "&cJe moet een speler opgeven of zelf een speler zijn!"
+noPermissionError: "&cJe hebt geen toegang om dit te gebruiken!!"
+noPlayerData: "&cDeze speler heeft nog niet op deze server gespeeld!"
+eliminateSuccess: "&7Je hebt &c%player%&7 succesvol uitgeschakeld!"
+reviveSuccess: "&7Je hebt &c%player% succesvol tot leven gewekt!"
+reviveMaxReached: "&cDeze speler is al %amount% keer tot leven gewekt!"
+onlyReviveElimPlayers: "&cJe kunt alleen uitgeschakelde spelers tot leven wekken!"
+eliminatedJoin: "&cJe hebt geen hartjes meer over!"
+eliminationAnnouncement: "&c%player% &7 is uitgeschakeld door &c%killer%&7!"
+eliminateionAnnouncementNature: "&c%player% &7 is uitgeschakeld!"
+setHeartsConfirm: "&7Succesvol de hartjes van &c%player%&7 ingesteld op &c%amount%"
+getHearts: "&c%player% &7heeft momenteel &c%amount% &7hartjes!"
+reloadMsg: "&7De plugin is succesvol herladen!"
+versionMsg: "&7Je gebruikt versie <red>%version%"
+noWithdraw: "&cJe wordt uitgeschakeld als je een hartje opneemt!"
+withdrawConfirmmsg: "&8&oGebruik <underlined><click:SUGGEST_COMMAND:/withdrawheart
+  %amount% confirm>/withdrawheart %amount% confirm</click></underlined> als je echt
+  een hartje wilt opnemen"
+maxHeartLimitReached: "&cJe hebt de limiet van %limit% hartjes al bereikt!"
+closeBtn: "&cSluit"
+backBtn: "&cTerug"
+nextBtn: "&cVolgende"
+reviveTitle: "&Wek een speler tot leven"
+revivePlayerDesc: "&7Klik om deze speler tot leven te wekken"
+viewheartsYou: "&7Je hebt momenteel &c%amount% &7hartjes!"
+viewheartsOther: "&c%player% &7heeft momenteel &c%amount% &7hartjes!"
+heartconsume: "&7Je hebt &c%amount% &7hearts!"
+heartconsumeCooldown: "&cJe moet wachten voordat je nog een hartje kunt gebruiken!"
+recipeNotCraftable: "&cDit voorwerp kan niet vervaardigd worden!"
+altKill: "&cVersla alsjeblieft geen alts! Deze poging is geregistreerd!"
+withdrawMin: "&cJe kunt niet minder dan 1 hartje opnemen!"
+noInventorySpace: "&cJe hebt niet genoeg inventarisruimte om zoveel hartjes op te
+  nemen!"
+giveItem: "&7Je hebt %amount%x &c%item%&7 ontvangen!"
+heartGainCooldown: "&cJe moet wachten voordat je een nieuw hartje kan krijgen!"
+exportData: "&7Spelergegevens succesvol geëxporteerd naar &c%file%.csv"
+importData: |-
+  &c%file%.csv&7 &7succesvol geïmporteerd!
+  &cHerstart de server om een vlekkeloze migratie te garanderen!
+unwhitelistedWorld: |2
+
+  <red><b><grey>></grey> World Whitelist</b></red>
+
+  <gray>Je speelt momenteel op wereld <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red>.
+  Deze wereld is niet ge-whitelist. LSZ zal hier niet activeren.</gray>
+
+  <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentatie</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u></red>   <u><hover:show_text:'<gray>Om te negeren: Stel 'supressWhitelistMessage' in op <b>true</b> in het config bestand.</gray>'><red>Verberg Bericht</red></hover></u>
+itemFramesDisabled: "&cJe kunt geen aangepaste voorwerpen in voorwerplijsten plaatsen!"
+itemMinHearts: "&cJe hebt minimaal %amount% hartjes nodig om dit voorwerp te gebruiken!"
+itemMaxHearts: "&cJe hebt het maximale aantal hartjes voor dit voorwerp bereikt!"
