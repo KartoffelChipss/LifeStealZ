@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
@@ -25,12 +26,14 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
     private final FileConfiguration config;
     private final Storage storage;
+    private final GeyserManager geyserManager;
 
 
     public SettingsCommand(LifeStealZ plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.storage = plugin.getStorage();
+        this.geyserManager = plugin.getGeyserManager();
     }
 
     @Override
@@ -160,14 +163,25 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+        PlayerData targetPlayerData = null;
 
-        if (targetPlayer.getName() == null) {
-            throwUsageError(sender);
-            return false;
+        if(plugin.hasGeyser() && geyserManager.isBedrockPlayer(plugin.getServer().getPlayer(targetPlayerName))) {
+
+            targetPlayerData = storage.load(geyserManager.getOfflineBedrockPlayerUniqueId(targetPlayerName));
+
+        } else {
+
+            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+
+            if (targetPlayer.getName() == null) {
+                throwUsageError(sender);
+                return false;
+            }
+
+            targetPlayerData = storage.load(targetPlayer.getUniqueId());
         }
 
-        PlayerData targetPlayerData = storage.load(targetPlayer.getUniqueId());
+        Player targetPlayer = plugin.getServer().getPlayer(targetPlayerName);
 
         if (targetPlayerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
@@ -177,7 +191,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         if (optionTwo.equals("get")) {
             int hearts = (int) (targetPlayerData.getMaxHealth() / 2);
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!",
-                    new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
+                    new MessageUtils.Replaceable("%player%", targetPlayerName), new MessageUtils.Replaceable("%amount%", hearts + "")));
             return true;
         }
 
@@ -238,7 +252,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         }
 
         Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!",
-                new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", targetPlayer.getName()), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
+                new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", targetPlayerName), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
         sender.sendMessage(setHeartsConfirmMessage);
         return true;
     }

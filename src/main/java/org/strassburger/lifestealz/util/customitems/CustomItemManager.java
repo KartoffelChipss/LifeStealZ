@@ -181,6 +181,29 @@ public class CustomItemManager {
     }
 
     /**
+     * Gets a skelleton skull instead of a head
+     *
+     * @param uuid The uuid of the bedrock player
+     * @return A skelleton skull
+     */
+    public static ItemStack getBedrockPlayerHead(UUID uuid) {
+        ItemStack head = new ItemStack(Material.SKELETON_SKULL);
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+
+        skullMeta.displayName(Component.text("§d" + LifeStealZ.getInstance().getGeyserManager().getOfflineBedrockPlayerName(uuid)));
+
+        List<Component> lines = new ArrayList<>();
+        lines.add(MessageUtils.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"));
+        lines.add(MessageUtils.formatMsg("<dark_gray>" + uuid));
+        lines.add(MessageUtils.formatMsg("<dark_gray><i>This player is using the Bedrock Edition of Minecraft.</i>"));
+
+        skullMeta.lore(lines);
+
+        head.setItemMeta(skullMeta);
+        return head;
+    }
+
+    /**
      * Gets the custom item data of an item
      *
      * @param itemId The id of the item

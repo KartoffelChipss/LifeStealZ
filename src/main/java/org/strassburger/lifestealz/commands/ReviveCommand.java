@@ -37,13 +37,25 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
-        PlayerData playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
+        PlayerData playerData = null;
 
-        if (playerData == null) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
-            return false;
+        if(plugin.hasGeyser() && plugin.getGeyserManager().isBedrockPlayer(plugin.getServer().getPlayer(targetPlayerName))) {
+
+            playerData = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetPlayerName));
+
+        } else {
+
+            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+
+            if (playerData == null) {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
+                return false;
+            }
+
+            playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
         }
+
+
 
         // Check if the player has reached the revive limit or has the bypass permission
         if (!canRevive(sender, playerData, bypassOption)) {

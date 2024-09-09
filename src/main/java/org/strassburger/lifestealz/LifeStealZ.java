@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -9,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.api.LifeStealZAPI;
 import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.geysermc.GeyserManager;
+import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.util.storage.MariaDBStorage;
 import org.strassburger.lifestealz.util.storage.MySQLStorage;
 import org.strassburger.lifestealz.util.storage.Storage;
@@ -24,8 +25,12 @@ public final class LifeStealZ extends JavaPlugin {
     private LanguageManager languageManager;
     private ConfigManager configManager;
     private RecipeManager recipeManager;
+    private GeyserManager geyserManager;
+    private GeyserPlayerFile geyserPlayerFile;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+    private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
+
 
     @Override
     public void onLoad() {
@@ -34,6 +39,12 @@ public final class LifeStealZ extends JavaPlugin {
             getLogger().info("WorldGuard found! Enabling WorldGuard support...");
             worldGuardManager = new WorldGuardManager();
             getLogger().info("WorldGuard found! Enabled WorldGuard support!");
+        }
+
+        if(hasGeyser) {
+            getLogger().info("Floodgate found, enabling Bedrock player support.");
+            geyserManager = new GeyserManager();
+            geyserPlayerFile = new GeyserPlayerFile();
         }
     }
 
@@ -101,12 +112,24 @@ public final class LifeStealZ extends JavaPlugin {
         return recipeManager;
     }
 
+    public GeyserManager getGeyserManager() {
+        return geyserManager;
+    }
+
+    public GeyserPlayerFile getGeyserPlayerFile() {
+        return geyserPlayerFile;
+    }
+
     public boolean hasWorldGuard() {
         return hasWorldGuard;
     }
 
     public boolean hasPlaceholderApi() {
         return hasPlaceholderApi;
+    }
+
+    public boolean hasGeyser() {
+        return hasGeyser;
     }
 
     public LanguageManager getLanguageManager() {
@@ -134,15 +157,13 @@ public final class LifeStealZ extends JavaPlugin {
         }
     }
 
-    public static void setMaxHealth(OfflinePlayer offlinePlayer, double maxHealth) {
-        if (!(offlinePlayer instanceof Player)) return;
-
-        Player player = (Player) offlinePlayer;
+    public static void setMaxHealth(Player player, double maxHealth) {
         AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (attribute != null) {
             attribute.setBaseValue(maxHealth);
         }
     }
+
 
     private void initializeBStats() {
         int pluginId = 18735;
