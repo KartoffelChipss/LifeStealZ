@@ -62,5 +62,10 @@ public class GeyserPlayerFile {
     public boolean isPlayerStored(UUID uuid) {
         return geyserPlayerConfig.contains("players." + uuid.toString());
     }
+
+    public boolean isPlayerStored(String name) {
+        if(getPlayerUUID(name) == null) return false;
+        else return true;
+    }
 }
 

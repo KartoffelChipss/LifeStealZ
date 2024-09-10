@@ -44,6 +44,9 @@ public class InventoryClickListener implements Listener {
         }
 
         if (openInventory.equals(GuiManager.REVIVE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
+            int reviveMaximum = plugin.getConfig().getInt("maxRevives");
+            int minHearts = plugin.getConfig().getInt("minHearts");
+
             event.setCancelled(true);
 
             ItemStack item = event.getCurrentItem();
@@ -66,7 +69,7 @@ public class InventoryClickListener implements Listener {
                     }
 
                     if (item.lore() == null) return;
-                    String uuidString = getLastLineOfLore(item);
+                    String uuidString = getLastLineOfLore(item, false);
                     if (uuidString == null) return;
                     UUID playerUUID = UUID.fromString(uuidString);
                     OfflinePlayer targetPlayer = Bukkit.getServer().getOfflinePlayer(playerUUID);
@@ -83,13 +86,11 @@ public class InventoryClickListener implements Listener {
 
                     PlayerData targetPlayerData = plugin.getStorage().load(playerUUID);
 
-                    int reviveMaximum = plugin.getConfig().getInt("maxRevives");
                     if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
                         return;
                     }
 
-                    int minHearts = plugin.getConfig().getInt("minHearts");
                     if (targetPlayerData.getMaxHealth() > minHearts * 2) {
                         player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
@@ -112,6 +113,59 @@ public class InventoryClickListener implements Listener {
 
                     removeReviveCrystal(player);
                     break;
+                case SKELETON_SKULL:
+                    if (!player.hasPermission("lifestealz.revive")) {
+                        throwPermissionError(player);
+                        return;
+                    }
+
+                    if (item.lore() == null) return;
+                    String bedrockUuidString = getLastLineOfLore(item, true);
+                    if (bedrockUuidString == null) return;
+                    UUID bedrockPlayerUUID = UUID.fromString(bedrockUuidString);
+                    OfflinePlayer targetBedrockPlayer = Bukkit.getServer().getOfflinePlayer(bedrockPlayerUUID);
+
+                    if (targetBedrockPlayer.getName() == null) {
+                        player.sendMessage(Component.text("§cAn error occurred while fetching playerdata! Are you sure this is a real player?"));
+                        return;
+                    }
+
+                    if (!hasReviveCrystal(player)) {
+                        plugin.getLogger().warning("Player " + player.getName() + " tried to revive " + targetBedrockPlayer.getName() + " without a revive crystal!");
+                        return;
+                    }
+
+                    PlayerData targetBedrockPlayerData = plugin.getStorage().load(bedrockPlayerUUID);
+
+
+                    if (reviveMaximum != -1 && targetBedrockPlayerData.getHasbeenRevived() >= reviveMaximum) {
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasbeenRevived() + "")));
+                        return;
+                    }
+
+
+                    if (targetBedrockPlayerData.getMaxHealth() > minHearts * 2) {
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
+                        return;
+                    }
+
+                    targetBedrockPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
+                    targetBedrockPlayerData.setHasbeenRevived(targetBedrockPlayerData.getHasbeenRevived() + 1);
+                    plugin.getStorage().save(targetBedrockPlayerData);
+
+                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetBedrockPlayer.getName())));
+
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
+
+                    event.getInventory().close();
+
+                    List<String> bedrockReviveCommands = plugin.getConfig().getStringList("reviveuseCommands");
+                    for (String command : bedrockReviveCommands) {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()).replace("&target&", targetBedrockPlayer.getName()));
+                    }
+
+                    removeReviveCrystal(player);
+                    break;
             }
         }
     }
@@ -121,11 +175,13 @@ public class InventoryClickListener implements Listener {
         player.sendMessage(usageMessage);
     }
 
-    private String getLastLineOfLore(ItemStack item) {
+    private String getLastLineOfLore(ItemStack item, boolean bedrock) {
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
         List<Component> lore = item.lore();
         if (lore == null) return null;
-        Component lastLore = lore.get(lore.size() - 1);
+        int line;
+        if(bedrock) line = 2; else line = 1;
+        Component lastLore = lore.get(lore.size() - line);
         return plainSerializer.serialize(lastLore);
     }
 

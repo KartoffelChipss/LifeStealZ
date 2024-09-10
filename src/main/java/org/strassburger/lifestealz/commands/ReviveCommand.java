@@ -39,7 +39,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
 
         PlayerData playerData = null;
 
-        if(plugin.hasGeyser() && plugin.getGeyserManager().isBedrockPlayer(plugin.getServer().getPlayer(targetPlayerName))) {
+        if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetPlayerName)) {
 
             playerData = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetPlayerName));
 

@@ -66,7 +66,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
 
         PlayerData playerdata;
 
-        if(plugin.hasGeyser() && plugin.getGeyserManager().isBedrockPlayer(plugin.getServer().getPlayer(targetName))) {
+        if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetName)) {
 
             playerdata = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetName));
 

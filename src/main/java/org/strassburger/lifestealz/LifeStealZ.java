@@ -40,17 +40,17 @@ public final class LifeStealZ extends JavaPlugin {
             worldGuardManager = new WorldGuardManager();
             getLogger().info("WorldGuard found! Enabled WorldGuard support!");
         }
-
-        if(hasGeyser) {
-            getLogger().info("Geyser found, enabling Bedrock player support.");
-            geyserManager = new GeyserManager();
-            geyserPlayerFile = new GeyserPlayerFile();
-        }
     }
 
     @Override
     public void onEnable() {
         instance = this;
+
+        if(hasGeyser()) {
+            getLogger().info("Geyser found, enabling Bedrock player support.");
+            geyserPlayerFile = new GeyserPlayerFile();
+            geyserManager = new GeyserManager();
+        }
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
