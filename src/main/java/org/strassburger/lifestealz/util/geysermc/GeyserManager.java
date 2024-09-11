@@ -7,14 +7,11 @@ import org.strassburger.lifestealz.LifeStealZ;
 import java.util.UUID;
 
 public class GeyserManager {
-    private GeyserApi geyserApi = GeyserApi.api();
-    private GeyserPlayerFile geyserPlayerFile = LifeStealZ.getInstance().getGeyserPlayerFile();
+    private final GeyserApi geyserApi = GeyserApi.api();
+    private final GeyserPlayerFile geyserPlayerFile = LifeStealZ.getInstance().getGeyserPlayerFile();
 
     public boolean isBedrockPlayer(Player player) {
-        if(geyserApi.isBedrockPlayer(player.getUniqueId()))
-            return true;
-         else
-            return false;
+        return geyserApi.isBedrockPlayer(player.getUniqueId());
     }
 
     public UUID getOfflineBedrockPlayerUniqueId(String playerName) {
@@ -24,5 +21,4 @@ public class GeyserManager {
     public String getOfflineBedrockPlayerName(UUID playerUniqueId) {
         return geyserPlayerFile.getPlayerName(playerUniqueId);
     }
-
 }

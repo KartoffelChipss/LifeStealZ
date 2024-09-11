@@ -46,7 +46,7 @@ public final class LifeStealZ extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        if(hasGeyser()) {
+        if (hasGeyser()) {
             getLogger().info("Geyser found, enabling Bedrock player support.");
             geyserPlayerFile = new GeyserPlayerFile();
             geyserManager = new GeyserManager();
