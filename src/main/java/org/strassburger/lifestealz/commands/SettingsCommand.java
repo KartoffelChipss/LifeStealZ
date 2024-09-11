@@ -160,14 +160,17 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+        // Fetch the player by name first to ensure we get the correct UUID even if offline
+        Player onlinePlayer = plugin.getServer().getPlayer(targetPlayerName);
+        UUID targetUUID = (onlinePlayer != null) ? onlinePlayer.getUniqueId() : plugin.getServer().getOfflinePlayer(targetPlayerName).getUniqueId();
+        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetUUID);
 
         if (targetPlayer.getName() == null) {
             throwUsageError(sender);
             return false;
         }
 
-        PlayerData targetPlayerData = storage.load(targetPlayer.getUniqueId());
+        PlayerData targetPlayerData = storage.load(targetUUID);
 
         if (targetPlayerData == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
