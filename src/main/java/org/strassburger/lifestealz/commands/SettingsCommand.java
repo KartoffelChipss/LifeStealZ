@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
@@ -166,12 +167,11 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         PlayerData targetPlayerData = null;
 
         if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetPlayerName)) {
-
             targetPlayerData = storage.load(geyserManager.getOfflineBedrockPlayerUniqueId(targetPlayerName));
-
         } else {
-
-            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+            Player onlinePlayer = plugin.getServer().getPlayer(targetPlayerName);
+            UUID targetUUID = (onlinePlayer != null) ? onlinePlayer.getUniqueId() : plugin.getServer().getOfflinePlayer(targetPlayerName).getUniqueId();
+            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetUUID);
 
             if (targetPlayer.getName() == null) {
                 throwUsageError(sender);
