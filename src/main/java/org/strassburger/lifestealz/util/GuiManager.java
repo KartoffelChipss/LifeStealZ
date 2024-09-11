@@ -35,11 +35,11 @@ public class GuiManager {
         for (int i = startIndex; i < endIndex; i++) {
             UUID eliminatedPlayerUUID = eliminatedPlayers.get(i);
             if (eliminatedPlayerUUID == null) continue;
-            if(!LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
+            if(LifeStealZ.getInstance().hasGeyser() && LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
+                inventory.addItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID));
+            } else {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
                 inventory.addItem(CustomItemManager.getPlayerHead(offlinePlayer));
-            } else {
-                inventory.addItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID));
             }
         }
 
