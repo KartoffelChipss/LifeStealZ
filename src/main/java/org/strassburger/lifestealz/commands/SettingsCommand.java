@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
