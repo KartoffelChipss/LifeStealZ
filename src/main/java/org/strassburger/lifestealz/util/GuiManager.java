@@ -35,8 +35,12 @@ public class GuiManager {
         for (int i = startIndex; i < endIndex; i++) {
             UUID eliminatedPlayerUUID = eliminatedPlayers.get(i);
             if (eliminatedPlayerUUID == null) continue;
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
-            inventory.addItem(CustomItemManager.getPlayerHead(offlinePlayer));
+            if(LifeStealZ.getInstance().hasGeyser() && LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
+                inventory.addItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID));
+            } else {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
+                inventory.addItem(CustomItemManager.getPlayerHead(offlinePlayer));
+            }
         }
 
         addNavbar(inventory, page, page > 1, endIndex < eliminatedPlayers.size());

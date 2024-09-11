@@ -63,14 +63,23 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
      * @return Whether the command was executed successfully
      */
     private boolean handleOtherHeartCheck(CommandSender sender, String targetName) {
-        OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
-        if (target.getName() == null) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
-            return false;
+        PlayerData playerdata;
+
+        if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetName)) {
+
+            playerdata = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetName));
+
+        } else {
+            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
+
+            if (target.getName() == null) {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+                return false;
+            }
+
+            playerdata = plugin.getStorage().load(target.getUniqueId());
         }
-
-        PlayerData playerdata = plugin.getStorage().load(target.getUniqueId());
 
         if (playerdata == null) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
@@ -80,7 +89,7 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
         int heartCount = (int) Math.floor(playerdata.getMaxHealth() / 2);
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!",
                 new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount)),
-                new MessageUtils.Replaceable("%player%", target.getName())));
+                new MessageUtils.Replaceable("%player%", targetName)));
         return true;
     }
 
