@@ -7,12 +7,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WhitelistManager;
+import org.strassburger.lifestealz.util.geysermc.GeyserManager;
+import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
 public class PlayerJoinListener implements Listener {
 
     private final LifeStealZ plugin;
+
+    private GeyserManager geyserManager = LifeStealZ.getInstance().getGeyserManager();
+    private GeyserPlayerFile geyserPlayerFile = LifeStealZ.getInstance().getGeyserPlayerFile();
 
     public PlayerJoinListener(LifeStealZ plugin) {
         this.plugin = plugin;
@@ -22,6 +27,12 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Storage storage = plugin.getStorage();
+
+        if(LifeStealZ.getInstance().hasGeyser()) {
+            if(geyserManager.isBedrockPlayer(player)) {
+                geyserPlayerFile.savePlayer(player.getUniqueId(), player.getName());
+            }
+        }
 
         if (!WhitelistManager.isWorldWhitelisted(player)) {
             handleUnwhitelistedWorld(player);
