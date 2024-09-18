@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.WebHookManager;
 import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
@@ -40,12 +41,10 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         PlayerData playerData = null;
 
         if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetPlayerName)) {
-
             playerData = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetPlayerName));
-
         } else {
-
             OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+            playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
 
             if (playerData == null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
@@ -124,6 +123,8 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess",
                 "&7You successfully revived &c%player%&7!",
                 new MessageUtils.Replaceable("%player%", targetPlayerName)));
+
+        plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, targetPlayerName, sender.getName());
     }
 
     /**

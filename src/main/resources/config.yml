@@ -136,3 +136,11 @@ antiAlt:
   commands:
     # - "say Please don't kill alts"
     # - "ban &player& 1h"
+
+webhook:
+  # If a webhook should be sent, when a player is eliminated
+  elimination: false
+  # If a webhook should be sent, when a player is revived
+  revive: false
+  # The URL of the webhook
+  url: ""

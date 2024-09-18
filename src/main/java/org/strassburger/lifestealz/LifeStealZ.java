@@ -27,6 +27,7 @@ public final class LifeStealZ extends JavaPlugin {
     private RecipeManager recipeManager;
     private GeyserManager geyserManager;
     private GeyserPlayerFile geyserPlayerFile;
+    private WebHookManager webHookManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
@@ -65,6 +66,7 @@ public final class LifeStealZ extends JavaPlugin {
         recipeManager.registerRecipes();
 
         versionChecker = new VersionChecker();
+        webHookManager = new WebHookManager(this);
 
         new CommandManager(this).registerCommands();
 
@@ -130,6 +132,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public boolean hasGeyser() {
         return hasGeyser;
+    }
+
+    public WebHookManager getWebHookManager() {
+        return webHookManager;
     }
 
     public LanguageManager getLanguageManager() {

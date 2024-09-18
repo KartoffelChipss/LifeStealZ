@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.WebHookManager;
 import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
@@ -66,6 +67,8 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
                     new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
             Bukkit.broadcast(elimAnnouncementMsg);
         }
+
+        plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.ELIMINATION, targetPlayer.getName(), sender.getName());
     }
 
     private void dropPlayerInventory(Player targetPlayer) {

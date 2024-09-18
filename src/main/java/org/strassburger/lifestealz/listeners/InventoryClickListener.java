@@ -112,6 +112,8 @@ public class InventoryClickListener implements Listener {
                     }
 
                     removeReviveCrystal(player);
+
+                    plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, targetPlayer.getName(), player.getName());
                     break;
                 case SKELETON_SKULL:
                     if (!player.hasPermission("lifestealz.revive")) {

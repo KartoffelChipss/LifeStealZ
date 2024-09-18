@@ -8,10 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.CooldownManager;
-import org.strassburger.lifestealz.util.WhitelistManager;
+import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
@@ -112,7 +110,7 @@ public class PlayerDeathListener implements Listener {
             event.setDeathMessage(null);
         }
 
-        // I suppose this is where webhook support should go here eventually.
+        plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.ELIMINATION, player.getName(), killer != null ? killer.getName() : "");
 
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         playerData.setMaxHealth(0.0);
