@@ -41,12 +41,15 @@ public class GeyserPlayerFile {
     }
 
     public UUID getPlayerUUID(String name) {
+        if(name == null) return null;
         Set<String> keys = Objects.requireNonNull(geyserPlayerConfig.getConfigurationSection("players")).getKeys(false);
+        if(keys != null) {
         for (String uuidString : keys) {
             String storedName = geyserPlayerConfig.getString("players." + uuidString + ".name");
             if (storedName != null && storedName.equalsIgnoreCase(name)) {
                 return UUID.fromString(uuidString);
             }
+        }
         }
         return null;
     }
