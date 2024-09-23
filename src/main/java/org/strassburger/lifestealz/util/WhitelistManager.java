@@ -23,10 +23,6 @@ public class WhitelistManager {
 
         if (!whiteListEnabled || worldWhitelist.isEmpty()) return true;
 
-        if (!worldWhitelist.contains(player.getLocation().getWorld().getName())) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
-            return false;
-        }
-        return true;
+        return worldWhitelist.contains(player.getLocation().getWorld().getName());
     }
 }
