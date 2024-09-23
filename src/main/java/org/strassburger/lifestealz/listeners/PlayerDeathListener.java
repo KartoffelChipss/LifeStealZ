@@ -2,6 +2,7 @@ package org.strassburger.lifestealz.listeners;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,9 +40,11 @@ public class PlayerDeathListener implements Listener {
 
         final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
 
+        boolean looseHeartsToNature = plugin.getConfig().getBoolean("looseHeartsToNature") || plugin.getConfig().getInt("heartsPerKill") <= 0;
+        boolean looseHeartsToPlayer = plugin.getConfig().getBoolean("looseHeartsToPlayer") || plugin.getConfig().getInt("heartsPerNaturalDeath") <= 0;
+
         // Natural death or death by player
-        if ((!isDeathByPlayer && plugin.getConfig().getBoolean("looseHeartsToNature"))
-                || (isDeathByPlayer && plugin.getConfig().getBoolean("looseHeartsToPlayer"))) {
+        if ((!isDeathByPlayer && looseHeartsToNature) || (isDeathByPlayer && looseHeartsToPlayer)) {
             handleHeartLoss(event, player, killer, playerData, isDeathByPlayer);
         }
     }
@@ -50,23 +53,27 @@ public class PlayerDeathListener implements Listener {
         final World world = player.getWorld();
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
+        double healthPerKill = plugin.getConfig().getInt("heartsPerKill") * 2;
+        double healthPerNaturalDeath = plugin.getConfig().getInt("heartsPerNaturalDeath") * 2;
+        double healthToLoose = isDeathByPlayer ? healthPerKill : healthPerNaturalDeath;
+
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
-            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
         } else if (isDeathByPlayer) {
-            handleKillerHeartGain(player, killer, world);
+            handleKillerHeartGain(player, killer, world, healthToLoose);
         } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
-            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
         }
 
         // Check for elimination
-        if (playerData.getMaxHealth() - 2.0 <= minHearts) {
+        if (playerData.getMaxHealth() - healthToLoose <= minHearts) {
             handleElimination(event, player, killer, isDeathByPlayer);
             return;
         }
 
         // Reduce the victim's hearts
-        playerData.setMaxHealth(playerData.getMaxHealth() - 2.0);
+        playerData.setMaxHealth(playerData.getMaxHealth() - healthToLoose);
         plugin.getStorage().save(playerData);
         LifeStealZ.setMaxHealth(player, playerData.getMaxHealth());
     }
@@ -118,7 +125,7 @@ public class PlayerDeathListener implements Listener {
         plugin.getStorage().save(playerData);
     }
 
-    private void handleKillerHeartGain(Player player, Player killer, World world) {
+    private void handleKillerHeartGain(Player player, Player killer, World world, double healthGain) {
         final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
         final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
         final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
@@ -138,22 +145,22 @@ public class PlayerDeathListener implements Listener {
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
             killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
             if (heartGainCooldownDropOnCooldown) {
-                world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
+                dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
             }
-        } else if (playerData.getMaxHealth() - 2.0 > minHearts || (playerData.getMaxHealth() - 2.0 <= minHearts && heartRewardOnElimination)) {
-            if (killerPlayerData.getMaxHealth() + 2.0 > maxHearts) {
+        } else if (playerData.getMaxHealth() - healthGain > minHearts || (playerData.getMaxHealth() - healthGain <= minHearts && heartRewardOnElimination)) {
+            if (killerPlayerData.getMaxHealth() + healthGain > maxHearts) {
                 if (dropHeartsIfMax) {
-                    world.dropItemNaturally(killer.getLocation(), CustomItemManager.createHeart());
+                    dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
                 } else {
                     killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached",
                             "&cYou already reached the limit of %limit% hearts!",
                             new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                 }
             } else {
-                killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + 2.0);
+                killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + healthGain);
                 plugin.getStorage().save(killerPlayerData);
                 LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxHealth());
-                killer.setHealth(Math.min(killer.getHealth() + 2.0, killerPlayerData.getMaxHealth()));
+                killer.setHealth(Math.min(killer.getHealth() + healthGain, killerPlayerData.getMaxHealth()));
                 CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
             }
         }
@@ -175,8 +182,6 @@ public class PlayerDeathListener implements Listener {
             for (String command : plugin.getConfig().getStringList("antiAlt.commands")) {
                 plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
                         command.replace("&player&", killer.getName()));
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
-                        command.replace("&player&", player.getName()));
             }
             return plugin.getConfig().getBoolean("antiAlt.preventKill");
         }
@@ -190,5 +195,11 @@ public class PlayerDeathListener implements Listener {
         return address.getHostAddress();
     }
 
+    private void dropHeartsNaturally(Location location, int amount) {
+        World world = location.getWorld();
+        for (int i = 0; i < amount; i++) {
+            world.dropItemNaturally(location, CustomItemManager.createHeart());
+        }
+    }
 }
 
