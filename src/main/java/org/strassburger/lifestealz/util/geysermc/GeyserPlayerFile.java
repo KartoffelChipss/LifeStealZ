@@ -1,5 +1,6 @@
 package org.strassburger.lifestealz.util.geysermc;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,14 +43,14 @@ public class GeyserPlayerFile {
 
     public UUID getPlayerUUID(String name) {
         if(name == null) return null;
-        Set<String> keys = Objects.requireNonNull(geyserPlayerConfig.getConfigurationSection("players")).getKeys(false);
-        if(keys != null) {
+        ConfigurationSection playersSection = geyserPlayerConfig.getConfigurationSection("players");
+        if (playersSection == null) return null;
+        Set<String> keys = playersSection.getKeys(false);
         for (String uuidString : keys) {
             String storedName = geyserPlayerConfig.getString("players." + uuidString + ".name");
             if (storedName != null && storedName.equalsIgnoreCase(name)) {
                 return UUID.fromString(uuidString);
             }
-        }
         }
         return null;
     }
