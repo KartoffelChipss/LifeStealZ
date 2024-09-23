@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.commands;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.customitems.CustomItem;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -60,6 +62,8 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return handleGiveItem(sender, args);
             case "data":
                 return handleData(sender, args);
+            case "dev":
+                return handleDev(sender, args);
             default:
                 return false;
         }
@@ -118,14 +122,14 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         if (!(sender instanceof Player)) return false;
 
         if (args.length < 2) {
-            throwRecipeUsageError(sender);
+            throwUsageError(sender, "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">");
             return false;
         }
 
         String recipe = args[1];
 
         if (recipe == null || !plugin.getRecipeManager().getRecipeIds().contains(recipe)) {
-            throwRecipeUsageError(sender);
+            throwUsageError(sender, "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">");
             return false;
         }
 
@@ -145,7 +149,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 3) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz hearts <add | set | remove> <player> [amount]");
             return false;
         }
 
@@ -153,14 +157,14 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         List<String> possibleOptionTwo = List.of("add", "set", "remove", "get");
 
         if (optionTwo == null || !possibleOptionTwo.contains(optionTwo)) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz hearts <add | set | remove> <player> [amount]");
             return false;
         }
 
         String targetPlayerName = args[2];
 
         if (targetPlayerName == null) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz hearts <add | set | remove> <player> [amount]");
             return false;
         }
 
@@ -174,7 +178,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetUUID);
 
             if (targetPlayer.getName() == null) {
-                throwUsageError(sender);
+                throwUsageError(sender, "/lifestealz hearts <add | set | remove> <player> [amount]");
                 return false;
             }
 
@@ -198,7 +202,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         int amount = Integer.parseInt(args[3]);
 
         if (amount < 0) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz hearts <add | set | remove> <player> [amount]");
             return false;
         }
 
@@ -264,42 +268,42 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 3) {
-            throwGiveItemUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
         String targetPlayerName = args[1];
 
         if (targetPlayerName == null) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
         Player targetPlayer = plugin.getServer().getPlayer(targetPlayerName);
 
         if (targetPlayer == null) {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
         String item = args[2];
 
         if (item == null) {
-            throwGiveItemUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
         Set<String> possibleItems = plugin.getRecipeManager().getRecipeIds();
 
         if (!possibleItems.contains(item)) {
-            throwGiveItemUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
         int amount = args.length > 3 ? Integer.parseInt(args[3]) : 1;
 
         if (amount < 1) {
-            throwGiveItemUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
             return false;
         }
 
@@ -319,7 +323,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 3) {
-            throwDataUsageError(sender);
+            throwUsageError(sender, "/lifestealz data <import | export> <file>");
             return false;
         }
 
@@ -335,32 +339,40 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
                     new MessageUtils.Replaceable("%file%", fileName)));
         } else {
-            throwUsageError(sender);
+            throwUsageError(sender, "/lifestealz giveItem <player> <item> [amount]");
         }
         return true;
     }
 
-    private void throwUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
-                new MessageUtils.Replaceable("%usage%", "/lifestealz hearts <add | set | remove> <player> [amount]"));
-        sender.sendMessage(msg);
+    private boolean handleDev(CommandSender sender, String[] args) {
+        if (!sender.isOp()) {
+            throwPermissionError(sender);
+            return false;
+        }
+
+        if (args.length < 2) {
+            throwUsageError(sender, "/lifestealz dev <giveForbiddenitem>");
+            return false;
+        }
+
+        String optionTwo = args[1];
+
+        if (optionTwo.equals("giveForbiddenitem")) {
+            if (!(sender instanceof Player)) return false;
+
+            Player player = (Player) sender;
+
+            player.getInventory().addItem(new CustomItem(Material.BARRIER).makeForbidden().getItemStack());
+
+            return true;
+        }
+
+        return false;
     }
 
-    private void throwDataUsageError(CommandSender sender) {
+    private void throwUsageError(CommandSender sender, String usage) {
         Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
-                new MessageUtils.Replaceable("%usage%", "/lifestealz data <import | export> <file>"));
-        sender.sendMessage(msg);
-    }
-
-    private void throwGiveItemUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
-                new MessageUtils.Replaceable("%usage%", "/lifestealz giveItem <player> <item> [amount]"));
-        sender.sendMessage(msg);
-    }
-
-    private void throwRecipeUsageError(CommandSender sender) {
-        Component msg = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%",
-                new MessageUtils.Replaceable("%usage%", "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">"));
+                new MessageUtils.Replaceable("%usage%", usage));
         sender.sendMessage(msg);
     }
 
@@ -390,6 +402,8 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
                 return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             } else if (args[0].equals("data") && sender.hasPermission("lifestealz.managedata")) {
                 return List.of("export", "import");
+            } else if (args[0].equals("dev")) {
+                return List.of("giveForbiddenitem");
             }
         } else if (args.length == 3) {
             if (args[0].equals("hearts")) {

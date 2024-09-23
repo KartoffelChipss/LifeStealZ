@@ -41,6 +41,8 @@ public class InventoryClickListener implements Listener {
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.BARRIER) {
                 event.getWhoClicked().closeInventory();
             }
+
+            return;
         }
 
         if (openInventory.equals(GuiManager.REVIVE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
@@ -169,6 +171,13 @@ public class InventoryClickListener implements Listener {
                     removeReviveCrystal(player);
                     break;
             }
+
+            return;
+        }
+
+        if (event.getCurrentItem() != null && CustomItemManager.isForbiddenItem(event.getCurrentItem())) {
+            event.setCancelled(true);
+            event.setCurrentItem(new ItemStack(Material.AIR));
         }
     }
 

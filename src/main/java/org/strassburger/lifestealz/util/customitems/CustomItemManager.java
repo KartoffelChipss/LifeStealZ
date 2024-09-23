@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 
@@ -83,6 +84,7 @@ public class CustomItemManager {
                 .setName(MessageUtils.getAndFormatMsg(false, "closeBtn", "&cClose"))
                 .setCustomModelID(999)
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES)
+                .makeForbidden()
                 .getItemStack();
     }
 
@@ -96,7 +98,8 @@ public class CustomItemManager {
         CustomItem ci = new CustomItem(Material.ARROW)
                 .setName(MessageUtils.getAndFormatMsg(false, "backBtn", "&cBack"))
                 .setCustomModelID(998)
-                .addFlag(ItemFlag.HIDE_ATTRIBUTES);
+                .addFlag(ItemFlag.HIDE_ATTRIBUTES)
+                .makeForbidden();
 
         ItemMeta itemMeta = ci.getItemStack().getItemMeta();
         itemMeta.getPersistentDataContainer().set(REVIVE_PAGE_KEY, PersistentDataType.INTEGER, page);
@@ -115,7 +118,8 @@ public class CustomItemManager {
         CustomItem ci = new CustomItem(Material.ARROW)
                 .setName(MessageUtils.getAndFormatMsg(false, "nextBtn", "&cNext"))
                 .setCustomModelID(997)
-                .addFlag(ItemFlag.HIDE_ATTRIBUTES);
+                .addFlag(ItemFlag.HIDE_ATTRIBUTES)
+                .makeForbidden();
 
         ItemMeta itemMeta = ci.getItemStack().getItemMeta();
         itemMeta.getPersistentDataContainer().set(REVIVE_PAGE_KEY, PersistentDataType.INTEGER, page);
@@ -131,7 +135,9 @@ public class CustomItemManager {
      * @return If the item is a heart item
      */
     public static boolean isHeartItem(ItemStack item) {
-        return item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
+                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
     }
 
     /**
@@ -141,7 +147,18 @@ public class CustomItemManager {
      * @return If the item is a revive item
      */
     public static boolean isReviveItem(ItemStack item) {
-        return item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING) && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
+                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
+    }
+
+    /**
+     * Checks if an item is a forbidden item
+     * @param item The item to check
+     * @return If the item is a forbidden item
+     */
+    public static boolean isForbiddenItem(ItemStack item) {
+        return getCustomItemId(item) != null && getCustomItemId(item).equals("forbidden");
     }
 
     /**
@@ -150,6 +167,7 @@ public class CustomItemManager {
      * @param item The item to get the id from
      * @return The custom item id
      */
+    @Nullable
     public static String getCustomItemId(ItemStack item) {
         if (item.getItemMeta() == null || !item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING)) return null;
         else return item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING);
@@ -181,10 +199,10 @@ public class CustomItemManager {
     }
 
     /**
-     * Gets a skelleton skull instead of a head
+     * Gets a skeleton skull instead of a head
      *
      * @param uuid The uuid of the bedrock player
-     * @return A skelleton skull
+     * @return A skeleton skull
      */
     public static ItemStack getBedrockPlayerHead(UUID uuid) {
         ItemStack head = new ItemStack(Material.SKELETON_SKULL);

@@ -30,6 +30,15 @@ public class InteractionListener implements Listener {
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
         if (event.getAction().isRightClick() && item != null) {
+            if (CustomItemManager.isForbiddenItem(item)) {
+                event.setCancelled(true);
+                if (hand == EquipmentSlot.HAND) {
+                    player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
+                } else if (hand == EquipmentSlot.OFF_HAND) {
+                    player.getInventory().setItem(40, new ItemStack(Material.AIR));
+                }
+            }
+
             if (!WhitelistManager.isWorldWhitelisted(player) && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))) {
                 player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
                 return;

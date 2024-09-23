@@ -106,6 +106,7 @@ public class RecipeManager {
 
         ItemStack glass = new CustomItem(Material.GRAY_STAINED_GLASS_PANE)
                 .setName("&c ")
+                .makeForbidden()
                 .getItemStack();
 
         List<Integer> glassSlots = Arrays.asList(0,1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,22,23,25,26,27,31,32,33,34,35,36,37,38,39,41,42,43,44);
@@ -125,7 +126,7 @@ public class RecipeManager {
         renderIngredient(inventory, 28, rowThree.get(0));
         renderIngredient(inventory, 29, rowThree.get(1));
         renderIngredient(inventory, 30, rowThree.get(2));
-        inventory.setItem(24, CustomItemManager.createCustomItem(itemId));
+        inventory.setItem(24, new CustomItem(CustomItemManager.createCustomItem(itemId)).makeForbidden().getItemStack());
 
         GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
         player.openInventory(inventory);
@@ -152,8 +153,8 @@ public class RecipeManager {
      */
     private void renderIngredient(Inventory inventory, int slot, String material) {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
-        if (getRecipeIds().contains(material.toLowerCase())) inventory.setItem(slot, CustomItemManager.createCustomItem(material));
-        else if (Material.getMaterial(material) != null) inventory.setItem(slot, new ItemStack(Material.valueOf(material), 1));
+        if (getRecipeIds().contains(material.toLowerCase())) inventory.setItem(slot, new CustomItem(CustomItemManager.createCustomItem(material)).makeForbidden().getItemStack());
+        else if (Material.getMaterial(material) != null) inventory.setItem(slot, new CustomItem(new ItemStack(Material.valueOf(material), 1)).makeForbidden().getItemStack());
         else throw new IllegalArgumentException("Invalid material: " + material);
     }
 }

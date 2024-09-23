@@ -1,14 +1,13 @@
 package org.strassburger.lifestealz.util;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.customitems.CustomItem;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import java.util.HashMap;
@@ -36,10 +35,10 @@ public class GuiManager {
             UUID eliminatedPlayerUUID = eliminatedPlayers.get(i);
             if (eliminatedPlayerUUID == null) continue;
             if(LifeStealZ.getInstance().hasGeyser() && LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
-                inventory.addItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID));
+                inventory.addItem(new CustomItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID)).makeForbidden().getItemStack());
             } else {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
-                inventory.addItem(CustomItemManager.getPlayerHead(offlinePlayer));
+                inventory.addItem(new CustomItem(CustomItemManager.getPlayerHead(offlinePlayer)).makeForbidden().getItemStack());
             }
         }
 
@@ -52,10 +51,11 @@ public class GuiManager {
     private static void addNavbar(Inventory inventory, int page, boolean addBackButton, boolean addNextButton) {
         inventory.setItem(49, CustomItemManager.createCloseItem());
 
-        ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1);
-        ItemMeta glassMeta = glass.getItemMeta();
-        glassMeta.displayName(Component.text("§r "));
-        glass.setItemMeta(glassMeta);
+        ItemStack glass = new CustomItem(Material.GRAY_STAINED_GLASS_PANE)
+                .setName("&r ")
+                .makeForbidden()
+                .getItemStack();
+
         int[] glassSlots = {45, 47, 48, 50, 51, 53};
         for (int slot : glassSlots) {
             inventory.setItem(slot, glass);

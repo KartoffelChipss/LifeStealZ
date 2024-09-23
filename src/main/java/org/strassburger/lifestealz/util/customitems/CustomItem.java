@@ -7,11 +7,14 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.util.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static org.strassburger.lifestealz.util.customitems.CustomItemManager.CUSTOM_ITEM_ID_KEY;
 
 public class CustomItem {
     private final ItemStack itemStack;
@@ -102,6 +105,14 @@ public class CustomItem {
 
     public PersistentDataContainer getPersistentDataContainer() {
         return itemStack.getItemMeta().getPersistentDataContainer();
+    }
+
+    public CustomItem makeForbidden() {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING, "forbidden");
+        itemStack.setItemMeta(itemMeta);
+
+        return this;
     }
 
     public CustomItem setLore(List<String> lore) {
