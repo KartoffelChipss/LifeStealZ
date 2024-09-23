@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -20,10 +21,7 @@ import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class SettingsCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
@@ -309,7 +307,16 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
 
         boolean silent = args.length > 4 && args[4].equals("silent");
 
-        targetPlayer.getInventory().addItem(CustomItemManager.createCustomItem(item, amount));
+        ItemStack itemStack = CustomItemManager.createCustomItem(item, amount);
+        HashMap<Integer, ItemStack> leftover = targetPlayer.getInventory().addItem(itemStack);
+
+        // Check if there are any leftover items that couldn't fit in the inventory
+        if (!leftover.isEmpty()) {
+            for (ItemStack dropItem : leftover.values()) {
+                targetPlayer.getWorld().dropItemNaturally(targetPlayer.getLocation(), dropItem);
+            }
+        }
+
         if (!silent)
             targetPlayer.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.giveItem", "&7You received &c%amount% &7%item%!",
                     new MessageUtils.Replaceable("%amount%", amount + ""), new MessageUtils.Replaceable("%item%", CustomItemManager.getCustomItemData(item).getName())));
