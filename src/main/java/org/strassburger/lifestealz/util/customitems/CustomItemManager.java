@@ -180,7 +180,7 @@ public class CustomItemManager {
      * @return The head of the player
      */
     public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
-        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<String>(List.of("&8" + UUID.randomUUID()))).getItemStack();
+        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<>(List.of("&8" + UUID.randomUUID()))).getItemStack();
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();

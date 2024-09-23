@@ -168,7 +168,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        PlayerData targetPlayerData = null;
+        PlayerData targetPlayerData;
 
         if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetPlayerName)) {
             targetPlayerData = storage.load(geyserManager.getOfflineBedrockPlayerUniqueId(targetPlayerName));
