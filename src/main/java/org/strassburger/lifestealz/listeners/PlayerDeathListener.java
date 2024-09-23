@@ -51,10 +51,12 @@ public class PlayerDeathListener implements Listener {
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
         // Drop hearts or handle heart gain for the killer (if applicable)
-        if (plugin.getConfig().getBoolean("dropHearts")) {
+        if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
         } else if (isDeathByPlayer) {
             handleKillerHeartGain(player, killer, world);
+        } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
+            world.dropItemNaturally(player.getLocation(), CustomItemManager.createHeart());
         }
 
         // Check for elimination
@@ -73,7 +75,6 @@ public class PlayerDeathListener implements Listener {
         final List<String> elimCommands = plugin.getConfig().getStringList("eliminationCommands");
         final boolean disableBanOnElimination = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
         final boolean announceElimination = plugin.getConfig().getBoolean("announceElimination");
-        final World world = player.getWorld();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             for (String command : elimCommands) {

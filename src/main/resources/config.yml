@@ -60,8 +60,10 @@ heartItem: "defaultheart"
 
 # === HEART BEHAVIOR SETTINGS ===
 
-# If hearts should be dropped instead of directly added to the killer
-dropHearts: false
+# If hearts should be dropped when killed by player
+dropHeartsPlayer: false
+# If hearts should be dropped when killed naturally
+dropHeartsNatural: true
 # If a heart should be dropped, when the killer already has the max amount of hearts
 dropHeartsIfMax: true
 # If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
