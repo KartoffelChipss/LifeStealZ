@@ -345,8 +345,6 @@ If you are using [PlaceholderAPI](https://www.spigotmc.org/resources/placeholder
 - **%lifestealz_maxhearts%** - The maximum amount of hearts a user can have
 - **%lifestealz_health%** - The current health, that the player has (half hearts rounded up)
 - **%lifestealz_revived%** - The amount of times a player has been revived
-- **%lifestealz_craftedhearts%** - The amount of times a player has crafted a heart
-- **%lifestealz_craftedrevives%** - The amount of times a player has crafted a revive crystal
 
 <br>
 
