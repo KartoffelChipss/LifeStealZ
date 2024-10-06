@@ -1,6 +1,4 @@
-# LifeStealZ language file
-# pl-PL - by Ernestozilla
-
+---
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: |-
   &7Dostępna jest nowa wersja pluginu LifeStealZ!
@@ -24,9 +22,9 @@ getHearts: "&c%player% &7aktualnie ma &c%amount% &7serc!"
 reloadMsg: "&7Pomyślnie przeładowałeś plugin!"
 versionMsg: "&7Używasz wersji <red>%version%"
 noWithdraw: "&cJeśli wypłacisz serce, zostaniesz wyeliminowany!"
-withdrawConfirmmsg: "&8&oUżyj <underlined><click:SUGGEST_COMMAND:/withdrawheart
-  %amount% potwierdź>/withdrawheart %amount% potwierdź</click></underlined> jeśli
-  naprawdę chcesz wypłacić serce"
+withdrawConfirmmsg: "&8&oUżyj <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount%
+  potwierdź>/withdrawheart %amount% potwierdź</click></underlined> jeśli naprawdę
+  chcesz wypłacić serce"
 maxHeartLimitReached: "&cOsiągnąłeś limit serc &7(&f%limit%&7)"
 closeBtn: "&cZamknij"
 backBtn: "&cCofnij"
@@ -37,7 +35,7 @@ viewheartsYou: "&7Aktualnie posiadasz &c%amount% &7serc!"
 viewheartsOther: "&c%player% &7ma aktualnie &c%amount% &7serc!"
 heartconsume: "&7Masz &c%amount% &7serc!"
 heartconsumeCooldown: "&cMusisz poczekać zanim użyjesz kolejnego serca!"
-recipeNotCraftable: "&cThis item is not craftable!"
+recipeNotCraftable: Ten item nie jest do stworzenia!
 altKill: "&cProszę nie zabijać altów! Ta próba została zarejestrowana!"
 withdrawMin: "&cNie możesz wypłacić mniej niż 1 serce!"
 noInventorySpace: "&cNie masz tyle miejsca w ekwipunku by wypłacić tyle serc!"
@@ -55,4 +53,12 @@ unwhitelistedWorld: |2
   Ten świat nie znajduje się na białej liście. LSZ nie zostanie tutaj aktywowany.</gray>
 
   <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Dokumentacja</click></u></red> <red><u><click:open_url:'https://strassburger.org/discord'>Wsparcie Discord</click></u></red> <u><hover:show_text:'<gray>Aby zignorować: Ustaw 'supressWhitelistMessage' na <b>true</b> w pliku konfiguracyjnym.</gray>'><red>Ukryj wiadomość</red></hover></u>
-itemFramesDisabled: "&cYou cannot put custom items in itemframes!"
+itemFramesDisabled: "&cNie możesz umieszczać custom przedmiotów w ramkach!"
+itemMinHearts: Aby użyć tego przedmiotu, potrzebujesz co najmniej %amount% serc
+itemMaxHearts: "&cOsiągnąłeś maksymalną liczbę serc dla tego przedmiotu!"
+webhookEliminationTitle: Gracz Wyeliminowany
+webhookElimination: Gracz **%player%** został wyeliminowany przez **%killer%**!
+webhookEliminationColor: ea3323
+webhookReviveTitle: Ożywiono Gracza
+webhookRevive: Gracz **%player%** został ożywiony przez **%reviver%**!
+webhookReviveColor: b094ee
