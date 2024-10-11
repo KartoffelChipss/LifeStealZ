@@ -1,7 +1,5 @@
 package org.strassburger.lifestealz.util.storage;
 
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.List;

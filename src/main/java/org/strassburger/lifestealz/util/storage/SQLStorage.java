@@ -34,20 +34,6 @@ public abstract class SQLStorage extends Storage {
     abstract Connection createConnection();
 
     @Override
-    public void save(PlayerData playerData) {
-        try (Connection connection = createConnection()) {
-            if (connection == null) return;
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxHealth() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
-            } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
-            }
-        } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
-        }
-    }
-
-    @Override
     public PlayerData load(UUID uuid) {
         try (Connection connection = createConnection()) {
             if (connection == null) return null;
