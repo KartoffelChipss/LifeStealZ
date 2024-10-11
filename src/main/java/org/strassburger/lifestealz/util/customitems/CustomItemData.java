@@ -20,8 +20,9 @@ public class CustomItemData {
     private final int minHearts;
     private final int maxHearts;
     private final boolean craftable;
+    private final boolean requirePermission;
 
-    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, int minHearts, int maxHearts, boolean craftable) {
+    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, int minHearts, int maxHearts, boolean craftable, boolean requirePermission) {
         this.itemId = itemId;
         this.name = name;
         this.lore = lore;
@@ -33,6 +34,7 @@ public class CustomItemData {
         this.minHearts = minHearts;
         this.maxHearts = maxHearts;
         this.craftable = craftable;
+        this.requirePermission = requirePermission;
     }
 
     public CustomItemData(String itemId) throws IllegalArgumentException {
@@ -53,6 +55,7 @@ public class CustomItemData {
         this.minHearts = config.getInt(itemId + ".minHearts");
         this.maxHearts = config.getInt(itemId + ".maxHearts");
         this.craftable = config.getBoolean(itemId + ".craftable");
+        this.requirePermission = config.getBoolean(itemId + ".requirePermission");
     }
 
     public CustomItemSoundData getSound() {
@@ -101,6 +104,14 @@ public class CustomItemData {
 
     public boolean isCraftable() {
         return craftable;
+    }
+
+    public boolean requiresPermission() {
+        return requirePermission;
+    }
+
+    public String getPermission() {
+        return "lifestealz.item." + itemId;
     }
 
     public static class CustomItemSoundData {

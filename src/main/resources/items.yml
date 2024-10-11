@@ -3,7 +3,7 @@
 # Here you can modify everything about the custom items
 # You can change which item is dropped on death in the main config.yml
 
-defaultheart:
+defaultheart: # <- This is the item id that can be used in recipes and for permissions
   name: "&cHeart"
   lore:
     - "&7Rightclick to use"
@@ -20,6 +20,8 @@ defaultheart:
   minHearts: 0
   # The maximum amount of hearts a player can have to use this item (-1 for infinite) (only relevant if customItemType is "heart")
   maxHearts: -1
+  # If this item requires a permission to be used (lifestealz.item.defaultheart)
+  requirePermission: false
   # true if this item should be craftable
   craftable: true
   recipe:
@@ -56,6 +58,7 @@ revive:
   customHeartValue: 0
   minHearts: 0
   maxHearts: -1
+  requirePermission: false # (lifestealz.item.revive)
   craftable: true
   recipe:
     rowOne:
