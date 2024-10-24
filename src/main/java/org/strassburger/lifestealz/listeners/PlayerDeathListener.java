@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
@@ -39,6 +40,8 @@ public class PlayerDeathListener implements Listener {
         final PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
 
         final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
+
+        if (handleAntiAltLogic(player, killer)) return;
 
         boolean looseHeartsToNature = plugin.getConfig().getBoolean("looseHeartsToNature") || plugin.getConfig().getInt("heartsPerKill") <= 0;
         boolean looseHeartsToPlayer = plugin.getConfig().getBoolean("looseHeartsToPlayer") || plugin.getConfig().getInt("heartsPerNaturalDeath") <= 0;
@@ -137,9 +140,6 @@ public class PlayerDeathListener implements Listener {
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         PlayerData killerPlayerData = plugin.getStorage().load(killer.getUniqueId());
 
-        // Anti-alt logic
-        if (handleAntiAltLogic(player, killer)) return;
-
         if (heartGainCooldownEnabled
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
@@ -166,7 +166,9 @@ public class PlayerDeathListener implements Listener {
         }
     }
 
-    private boolean handleAntiAltLogic(Player player, Player killer) {
+    private boolean handleAntiAltLogic(Player player, @Nullable Player killer) {
+        if (killer == null) return false;
+
         final String victimIP = getPlayerIP(player);
         final String killerIP = getPlayerIP(killer);
 
