@@ -75,7 +75,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 The conifuration is split into multiple files located at `plugins/LifeStealZ/`:
 
 <details>
-<summary>conifg.yml</summary>
+<summary>config.yml</summary>
 
 ```yml
 #     _      _  __        _____ _             _   ______
