@@ -15,9 +15,8 @@
 
 * [💬 Messages](configuration/messages.md)
 * [🔧 Configuration](configuration/configuration-main.md)
-* [🌾 Custom Crafting](configuration/custom-crafting.md)
-* [📜 Whitelist](configuration/whitelist.md)
 * [💎 Custom Items](configuration/custom-items.md)
+* [📜 Whitelist](configuration/whitelist.md)
 * [🗄️ Data Migration](configuration/data-migration.md)
 
 ## Cross plugin support
