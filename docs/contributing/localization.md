@@ -23,6 +23,6 @@ To start translating, follow these steps:
 
 If the language, you want to translate to is not yet present in the list, please open a ticket on the [Discord](https://strassburger.org/discord)
 
-### Discord role
+### Discord Role
 
 When you have contributed to translations, you can request a Translator role in the [Discord Server](https://strassburger.org/discord). With that you can talk and coordinate with other translators.
