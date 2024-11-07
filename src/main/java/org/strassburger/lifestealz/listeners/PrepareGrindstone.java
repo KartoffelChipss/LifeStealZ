@@ -1,0 +1,30 @@
+package org.strassburger.lifestealz.listeners;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareGrindstoneEvent;
+import org.bukkit.inventory.GrindstoneInventory;
+import org.bukkit.inventory.ItemStack;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+
+public class PrepareGrindstone implements Listener {
+    @EventHandler
+    public void onPrepareGrindstone(PrepareGrindstoneEvent event) {
+        GrindstoneInventory inventory = event.getInventory();
+        ItemStack[] inputs = inventory.getContents();
+
+        if (hasCustomItem(inputs)) {
+            inventory.setResult(null);
+            event.setResult(null);
+        }
+    }
+
+    private boolean hasCustomItem(ItemStack[] items) {
+        for (ItemStack item : items) {
+            if (item == null) continue;
+            if (item.getItemMeta() == null) continue;
+            if (CustomItemManager.isCustomItem(item)) return true;
+        }
+        return false;
+    }
+}

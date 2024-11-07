@@ -26,6 +26,8 @@ public class EventManager {
         registerListener(new WorldSwitchListener(plugin));
         registerListener(new PlayerItemPickupListener(plugin));
         registerListener(new InteractionEntityEventListener(plugin));
+        registerListener(new PrepareItemCraft());
+        registerListener(new PrepareGrindstone());
     }
 
     /**

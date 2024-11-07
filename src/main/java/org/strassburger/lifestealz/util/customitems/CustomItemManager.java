@@ -162,6 +162,15 @@ public class CustomItemManager {
     }
 
     /**
+     * Checks if an item is a custom item (checks if it has a custom item id)
+     * @param item The item to check
+     * @return If the item is a custom item
+     */
+    public static boolean isCustomItem(ItemStack item) {
+        return getCustomItemId(item) != null;
+    }
+
+    /**
      * Gets the custom item id of an item
      *
      * @param item The item to get the id from
