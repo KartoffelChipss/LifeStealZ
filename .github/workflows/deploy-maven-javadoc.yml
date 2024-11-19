@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'  # Use the desired Java distribution
-          java-version: '17'       # Use your project's Java version
+          java-version: '21'       # Use your project's Java version
 
       # Step 3: Cache Maven dependencies
       - name: Cache Maven repository
