@@ -34,7 +34,12 @@ jobs:
       - name: Build Javadocs
         run: mvn clean javadoc:javadoc
 
-      # Step 5: Deploy to GitHub Pages
+      # Step 5: Add the CNAME file
+      - name: Add CNAME file
+        run: |
+          echo "javadocs.lsz.strassburger.dev" > target/site/apidocs/CNAME
+
+      # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
