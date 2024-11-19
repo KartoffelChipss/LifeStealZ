@@ -37,7 +37,7 @@ jobs:
       # Step 5: Add the CNAME file
       - name: Add CNAME file
         run: |
-          echo "javadocs.lsz.strassburger.dev" > target/site/apidocs/CNAME
+          echo "javadocs.lsz.strassburger.dev" > target/reports/apidocs/CNAME
 
       # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
