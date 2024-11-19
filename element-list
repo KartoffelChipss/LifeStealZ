@@ -1,0 +1,9 @@
+org.strassburger.lifestealz
+org.strassburger.lifestealz.api
+org.strassburger.lifestealz.commands
+org.strassburger.lifestealz.listeners
+org.strassburger.lifestealz.util
+org.strassburger.lifestealz.util.customitems
+org.strassburger.lifestealz.util.geysermc
+org.strassburger.lifestealz.util.storage
+org.strassburger.lifestealz.util.worldguard
