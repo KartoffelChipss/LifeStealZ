@@ -34,3 +34,4 @@
 * [Modrinth](https://modrinth.com/plugin/lifestealz)
 * [SpigotMC](https://www.spigotmc.org/resources/lifestealz.111469/)
 * [Support Discord](https://strassburger.org/discord)
+* [JavaDoc](https://javadocs.lsz.strassburger.dev)

@@ -37,6 +37,7 @@ If you need further help with LifeStealZ, you can join in our [Discord Server](h
 * [Hangar](https://hangar.papermc.io/KartoffelChipss/LifestealZ)
 * [Support Discord](https://strassburger.org/discord)
 * [bStats](https://bstats.org/plugin/bukkit/LifeStealZ/18735)
+* [JavaDoc](https://javadocs.lsz.strassburger.dev)
 
 <figure><img src="https://bstats.org/signatures/bukkit/LifeStealZ.svg" alt=""><figcaption><p>Servers using LifeStealZ</p></figcaption></figure>
 
