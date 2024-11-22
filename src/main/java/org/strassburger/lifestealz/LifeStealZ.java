@@ -75,7 +75,7 @@ public final class LifeStealZ extends JavaPlugin {
         initializeBStats();
 
         if (hasPlaceholderApi()) {
-            PapiExpansion papiExpansion = new PapiExpansion();
+            PapiExpansion papiExpansion = new PapiExpansion(this);
             if (papiExpansion.canRegister()) {
                 papiExpansion.register();
                 getLogger().info("PlaceholderAPI found! Enabled PlaceholderAPI support!");

@@ -7,6 +7,12 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 public class PapiExpansion extends PlaceholderExpansion {
+    private final LifeStealZ plugin;
+
+    public PapiExpansion(LifeStealZ plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public @NotNull String getAuthor() {
         return "Kartoffelchipss";
@@ -19,7 +25,12 @@ public class PapiExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return LifeStealZ.getInstance().getDescription().getVersion();
+        return plugin.getDescription().getVersion();
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
     }
 
     @Override
@@ -31,28 +42,28 @@ public class PapiExpansion extends PlaceholderExpansion {
                 return player.getName();
             }
             case "hearts": {
-                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
                 return String.valueOf((int) playerData.getMaxHealth() / 2);
             }
             case "revived": {
-                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getHasbeenRevived());
             }
             case "health": {
                 return String.valueOf((int) (player.getPlayer().getHealth() / 2));
             }
             case "maxhearts": {
-                return String.valueOf(LifeStealZ.getInstance().getConfig().getInt("maxHearts"));
+                return String.valueOf(plugin.getConfig().getInt("maxHearts"));
             }
             case "maxrevives": {
-                return String.valueOf(LifeStealZ.getInstance().getConfig().getInt("maxRevives"));
+                return String.valueOf(plugin.getConfig().getInt("maxRevives"));
             }
             case "craftedhearts": {
-                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getCraftedHearts());
             }
             case "craftedrevives": {
-                PlayerData playerData = LifeStealZ.getInstance().getStorage().load(player.getUniqueId());
+                PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getCraftedRevives());
             }
         }
