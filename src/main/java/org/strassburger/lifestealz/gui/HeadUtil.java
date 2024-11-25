@@ -1,14 +1,22 @@
 package org.strassburger.lifestealz.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.customitems.CustomItem;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,7 +34,7 @@ public class HeadUtil {
      *            is null or invalid.
      * @return An {@link ItemStack} of type PLAYER_HEAD with the custom texture applied.
      */
-    public static ItemStack createCustomSkull(String url) {
+    public static ItemStack createCustomHead(String url) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         if (url == null || url.isEmpty()) return skull;
 
@@ -48,4 +56,53 @@ public class HeadUtil {
 
         return skull;
     }
+
+    /**
+     * Creates a player head item for a given UUID.
+     *
+     * @param uuid The UUID of the player whose head is to be created.
+     * @return An {@link ItemStack} of type PLAYER_HEAD with the player's skin.
+     */
+    public static ItemStack getPlayerHead(UUID uuid) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        if (offlinePlayer == null || offlinePlayer.getName() == null) return new CustomItem(Material.SKELETON_SKULL).setName("&dUnknown").setLore(new ArrayList<>(List.of("&8" + UUID.randomUUID()))).getItemStack();
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+        skullMeta.setOwningPlayer(offlinePlayer);
+        head.setItemMeta(skullMeta);
+        return head;
+    }
+
+    /**
+     * Gets a skeleton skull instead of a head
+     *
+     * @param uuid The uuid of the bedrock player
+     * @return A skeleton skull
+     */
+    public static ItemStack getBedrockPlayerHead(UUID uuid) {
+        ItemStack head = new ItemStack(Material.SKELETON_SKULL);
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+
+        skullMeta.displayName(Component.text("§d" + LifeStealZ.getInstance().getGeyserManager().getOfflineBedrockPlayerName(uuid)));
+
+        List<Component> lines = new ArrayList<>();
+        lines.add(MessageUtils.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"));
+        lines.add(MessageUtils.formatMsg("<dark_gray>" + uuid));
+        lines.add(MessageUtils.formatMsg("<dark_gray><i>This player is using the Bedrock Edition of Minecraft.</i>"));
+
+        skullMeta.lore(lines);
+
+        head.setItemMeta(skullMeta);
+        return head;
+    }
+
+    public static ItemStack getAmbiguousPlayerHead(UUID uuid) {
+        if(LifeStealZ.getInstance().hasGeyser() && LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(uuid)) {
+            return getBedrockPlayerHead(uuid);
+        } else {
+            return getPlayerHead(uuid);
+        }
+    }
+
 }

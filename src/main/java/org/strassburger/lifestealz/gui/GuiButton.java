@@ -25,7 +25,7 @@ public class GuiButton {
      * @param builder The builder containing the configuration for the button.
      */
     private GuiButton(Builder builder) {
-        this.skull = HeadUtil.createCustomSkull(builder.textureUrl);
+        this.skull = HeadUtil.createCustomHead(builder.textureUrl);
         this.title = builder.title;
         this.titleColor = builder.titleColor;
         this.lore = builder.lore;
