@@ -29,7 +29,6 @@ public class GuiButton {
         this.title = builder.title;
         this.titleColor = builder.titleColor;
         this.lore = builder.lore;
-
         setupItemMeta();
     }
 
