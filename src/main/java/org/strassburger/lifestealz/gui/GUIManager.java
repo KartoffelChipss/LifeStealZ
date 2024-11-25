@@ -194,7 +194,6 @@ public class GUIManager {
                 .withTexture(texture)
                 .withTitle(arrow + " " + title)
                 .withTitleColor(enabled ? Constants.Colors.TITLE : Constants.Colors.DISABLED)
-                .withLore(enabled ? "" : "Unavailable")
                 .build();
 
         return new GuiItem(button.getItemStack(), event -> {
