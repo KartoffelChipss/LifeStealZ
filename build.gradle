@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'xyz.jpenilla.run-paper' version '2.3.1'
+    id 'com.gradleup.shadow' version '8.3.5'
 }
 
 group = 'org.strassburger'
@@ -25,6 +26,10 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release.set(targetJavaVersion)
     }
+}
+
+shadowJar {
+    relocate 'com.github.stefvanschie.inventoryframework', "${project.group}.inventoryframework".toString()
 }
 
 repositories {
@@ -58,6 +63,8 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.45.3.0'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT'
     compileOnly 'org.geysermc.geyser:api:2.4.2-SNAPSHOT'
+    implementation 'com.github.stefvanschie.inventoryframework:IF:0.10.18'
+
 }
 
 tasks.withType(JavaCompile) {
@@ -71,7 +78,7 @@ tasks.named('processResources') {
 }
 
 tasks.runServer {
-    minecraftVersion("1.20.4")
+    minecraftVersion("1.21.1")
 }
 
 // USELESS KARTOFFELCHIPSS BULLSHIT
