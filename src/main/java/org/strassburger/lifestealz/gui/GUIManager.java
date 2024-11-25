@@ -84,6 +84,9 @@ public class GUIManager {
         List<UUID> eliminatedPlayers = plugin.getStorage().getEliminatedPlayers();
         int totalPages = (int) Math.ceil(eliminatedPlayers.size() / (double) Layout.Graveyard.ITEMS_PER_PAGE);
 
+        // Add the Revive All button at the top center
+        borderPane.addItem(createReviveAllButton(player), 4, 0);
+
         addGraveyardPagination(borderPane, player, page, totalPages);
         borderPane.addItem(createNavigationButton(player), Layout.COLUMNS - 5, Layout.Graveyard.ROWS - 1);
         populateGraveyardContent(contentPane, eliminatedPlayers, page, player);
@@ -91,6 +94,91 @@ public class GUIManager {
         gui.addPane(borderPane);
         gui.addPane(contentPane);
         gui.show(player);
+    }
+
+    private void openReviveAllConfirmationGui(Player player) {
+        ChestGui gui = createBaseGui("Confirm Revive All");
+        StaticPane pane = new StaticPane(0, 0, 9, 3);
+
+        // Confirmation message item
+        GuiButton warningButton = new GuiButton.Builder()
+                .withTexture(Constants.Textures.GHOST)
+                .withTitle("⚠ WARNING ⚠")
+                .withTitleColor(Constants.Colors.TITLE)
+                .withLore("This action will revive ALL players!")
+                .withHoverText("This action cannot be undone!")
+                .build();
+        pane.addItem(new GuiItem(warningButton.getItemStack()), 4, 0);
+
+        // Confirm button
+        GuiButton confirmButton = new GuiButton.Builder()
+                .withTexture(Constants.Textures.ACCEPT)
+                .withTitle("✓ Confirm Revive All")
+                .withTitleColor(TextColor.color(0x00FF00))
+                .withLore("Click to revive everyone")
+                .withHoverText("This cannot be undone!")
+                .build();
+        pane.addItem(new GuiItem(confirmButton.getItemStack(), event -> {
+            event.setCancelled(true);
+            reviveAllPlayers(player);
+            event.getInventory().close();
+        }), 3, 2);
+
+        // Cancel button
+        GuiButton cancelButton = new GuiButton.Builder()
+                .withTexture(Constants.Textures.DENY)
+                .withTitle("✗ Cancel")
+                .withTitleColor(Constants.Colors.BACK)
+                .withLore("Return to graveyard")
+                .build();
+        pane.addItem(new GuiItem(cancelButton.getItemStack(), event -> {
+            event.setCancelled(true);
+            openGraveyardGui(player, 0);
+        }), 5, 2);
+
+        gui.addPane(pane);
+        gui.show(player);
+    }
+
+    private GuiItem createReviveAllButton(Player player) {
+        GuiButton button = new GuiButton.Builder()
+                .withTexture(Constants.Textures.GHOST)
+                .withTitle("✧ Revive All Players ✧")
+                .withTitleColor(Constants.Colors.TITLE)
+                .withLore("Revive all eliminated players")
+                .withHoverText("Click to revive everyone! (Cannot be undone)")
+                .build();
+
+        return new GuiItem(button.getItemStack(), event -> {
+            event.setCancelled(true);
+            openReviveAllConfirmationGui(player);
+        });
+    }
+
+    private void reviveAllPlayers(Player reviver) {
+        List<UUID> eliminatedPlayers = plugin.getStorage().getEliminatedPlayers();
+
+        for (UUID targetUUID : eliminatedPlayers) {
+            OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
+            PlayerData targetData = plugin.getStorage().load(targetUUID);
+
+            // Update target's data
+            targetData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
+            targetData.setHasbeenRevived(targetData.getHasbeenRevived() + 1);
+            plugin.getStorage().save(targetData);
+
+            // Execute revival commands for each player
+            for (String command : plugin.getConfig().getStringList("reviveuseCommands")) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                        command.replace("&player&", reviver.getName())
+                                .replace("&target&", target.getName()));
+            }
+        }
+
+        // Notify reviver
+        reviver.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveAllSuccess",
+                "&7You successfully revived &call eliminated players&7!"));
+        reviver.playSound(reviver.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
     }
 
     private ChestGui createBaseGui(String title) {
@@ -227,7 +315,6 @@ public class GUIManager {
                 new MessageUtils.Replaceable("%player%", target.getName())));
         reviver.playSound(reviver.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
 
-        // Execute revival commands
         for (String command : plugin.getConfig().getStringList("reviveuseCommands")) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                     command.replace("&player&", reviver.getName())
