@@ -3,19 +3,16 @@ package org.strassburger.lifestealz.gui;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.OfflinePlayer;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -26,10 +23,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class GUIManager {
+public class GUIManager extends AbstractGUIManager {
     private static final class Layout {
         static final int ROWS = 3;
-        static final int COLUMNS = 9;
         static final int CONTENT_X = 1;
         static final int CONTENT_Y = 1;
         static final int CONTENT_WIDTH = 7;
@@ -49,13 +45,12 @@ public class GUIManager {
     }
 
     public void openGui(Player player) {
-        ChestGui gui = createBaseGui("Main Menu");
+        ChestGui gui = createBaseGui("Main Menu", Layout.ROWS);
         StaticPane borderPane = createBorderPane(Layout.ROWS);
         StaticPane contentPane = new StaticPane(Layout.CONTENT_X, Layout.CONTENT_Y, Layout.CONTENT_WIDTH, 1);
 
-        // Add main menu buttons
         contentPane.addItem(createGraveyardButton(player), 3, 0);
-        borderPane.addItem(createSupportButton(player), Layout.COLUMNS - 1, Layout.ROWS - 1);
+        borderPane.addItem(createSupportButton(player), COLUMNS - 1, Layout.ROWS - 1);
 
         gui.addPane(borderPane);
         gui.addPane(contentPane);
@@ -63,13 +58,13 @@ public class GUIManager {
     }
 
     public void openSupportGui(Player player) {
-        ChestGui gui = createBaseGui("Support");
+        ChestGui gui = createBaseGui("Support", Layout.ROWS);
         StaticPane borderPane = createBorderPane(Layout.ROWS);
         StaticPane contentPane = new StaticPane(Layout.SUPPORT_X, Layout.CONTENT_Y, Layout.SUPPORT_WIDTH, 1);
 
         addSupportButtons(contentPane);
         borderPane.addItem(createDeveloperButton(), 0, Layout.ROWS - 1);
-        borderPane.addItem(createNavigationButton(player), Layout.COLUMNS - 1, Layout.ROWS - 1);
+        borderPane.addItem(createNavigationItem(() -> openGui(player)), COLUMNS - 1, Layout.ROWS - 1);
 
         gui.addPane(borderPane);
         gui.addPane(contentPane);
@@ -77,18 +72,16 @@ public class GUIManager {
     }
 
     public void openGraveyardGui(Player player, int page) {
-        ChestGui gui = createBaseGui("Graveyard");
+        ChestGui gui = createBaseGui("Graveyard", Layout.Graveyard.ROWS);
         StaticPane borderPane = createBorderPane(Layout.Graveyard.ROWS);
-        StaticPane contentPane = new StaticPane(0, 1, Layout.COLUMNS, 4);
+        StaticPane contentPane = new StaticPane(0, 1, COLUMNS, 4);
 
         List<UUID> eliminatedPlayers = plugin.getStorage().getEliminatedPlayers();
         int totalPages = (int) Math.ceil(eliminatedPlayers.size() / (double) Layout.Graveyard.ITEMS_PER_PAGE);
 
-        // Add the Revive All button at the top center
         borderPane.addItem(createReviveAllButton(player), 4, 0);
-
         addGraveyardPagination(borderPane, player, page, totalPages);
-        borderPane.addItem(createNavigationButton(player), Layout.COLUMNS - 5, Layout.Graveyard.ROWS - 1);
+        borderPane.addItem(createNavigationItem(() -> openGui(player)), COLUMNS - 5, Layout.Graveyard.ROWS - 1);
         populateGraveyardContent(contentPane, eliminatedPlayers, page, player);
 
         gui.addPane(borderPane);
@@ -97,12 +90,11 @@ public class GUIManager {
     }
 
     private void openReviveAllConfirmationGui(Player player) {
-        ChestGui gui = createBaseGui("Confirm Revive All");
-        StaticPane pane = new StaticPane(0, 0, 9, 3);
+        ChestGui gui = createBaseGui("Confirm Revive All", Layout.ROWS);
+        StaticPane pane = new StaticPane(0, 0, COLUMNS, 3);
 
-        // Confirmation message item
         GuiButton warningButton = new GuiButton.Builder()
-                .withTexture(Constants.Textures.GHOST)
+                    .withTexture(Constants.Textures.GHOST)
                 .withTitle("⚠ WARNING ⚠")
                 .withTitleColor(Constants.Colors.TITLE)
                 .withLore("This action will revive ALL players!")
@@ -110,7 +102,6 @@ public class GUIManager {
                 .build();
         pane.addItem(new GuiItem(warningButton.getItemStack()), 4, 0);
 
-        // Confirm button
         GuiButton confirmButton = new GuiButton.Builder()
                 .withTexture(Constants.Textures.ACCEPT)
                 .withTitle("✓ Confirm Revive All")
@@ -124,7 +115,6 @@ public class GUIManager {
             event.getInventory().close();
         }), 3, 2);
 
-        // Cancel button
         GuiButton cancelButton = new GuiButton.Builder()
                 .withTexture(Constants.Textures.DENY)
                 .withTitle("✗ Cancel")
@@ -162,12 +152,10 @@ public class GUIManager {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
             PlayerData targetData = plugin.getStorage().load(targetUUID);
 
-            // Update target's data
             targetData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
             targetData.setHasbeenRevived(targetData.getHasbeenRevived() + 1);
             plugin.getStorage().save(targetData);
 
-            // Execute revival commands for each player
             for (String command : plugin.getConfig().getStringList("reviveuseCommands")) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                         command.replace("&player&", reviver.getName())
@@ -175,44 +163,9 @@ public class GUIManager {
             }
         }
 
-        // Notify reviver
         reviver.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveAllSuccess",
                 "&7You successfully revived &call eliminated players&7!"));
         reviver.playSound(reviver.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
-    }
-
-    private ChestGui createBaseGui(String title) {
-        Component titleComponent = Component.text(Constants.Icons.GUI_ICON)
-                .color(Constants.Colors.GREY)
-                .append(Component.text(Constants.Icons.SEPARATOR))
-                .append(Component.text(title)
-                        .color(Constants.Colors.TITLE)
-                        .decorate(TextDecoration.BOLD));
-
-        ChestGui gui = new ChestGui(title.equals("Graveyard") ? Layout.Graveyard.ROWS : Layout.ROWS,
-                ComponentHolder.of(titleComponent));
-        gui.setOnGlobalClick(event -> event.setCancelled(true));
-        return gui;
-    }
-
-    private StaticPane createBorderPane(int rows) {
-        StaticPane borderPane = new StaticPane(0, 0, Layout.COLUMNS, rows);
-        GuiItem borderItem = createBorderItem();
-
-        // Add top and bottom borders
-        for (int col = 0; col < Layout.COLUMNS; col++) {
-            borderPane.addItem(borderItem, col, 0);
-            borderPane.addItem(borderItem, col, rows - 1);
-        }
-        return borderPane;
-    }
-
-    private GuiItem createBorderItem() {
-        ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.empty());
-        item.setItemMeta(meta);
-        return new GuiItem(item, event -> event.setCancelled(true));
     }
 
     private void addSupportButtons(StaticPane pane) {
@@ -255,7 +208,7 @@ public class GUIManager {
         for (int i = startIndex; i < endIndex; i++) {
             int slot = i - startIndex;
             pane.addItem(createPlayerHeadItem(viewer, players.get(i)),
-                    slot % Layout.COLUMNS, slot / Layout.COLUMNS);
+                    slot % COLUMNS, slot / COLUMNS);
         }
     }
 
@@ -263,13 +216,11 @@ public class GUIManager {
         boolean hasNextPage = currentPage < totalPages - 1;
         boolean hasPrevPage = currentPage > 0;
 
-        // Previous page button
         pane.addItem(createPaginationButton("Previous Page", Constants.Icons.ARROW_LEFT,
                         hasPrevPage ? Constants.Textures.ARROW_LEFT : Constants.Textures.ARROW_LEFT_DISABLED,
                         hasPrevPage, () -> openGraveyardGui(player, currentPage - 1)),
                 0, Layout.Graveyard.ROWS - 1);
 
-        // Next page button
         pane.addItem(createPaginationButton("Next Page", Constants.Icons.ARROW_RIGHT,
                         hasNextPage ? Constants.Textures.ARROW_RIGHT : Constants.Textures.ARROW_RIGHT_DISABLED,
                         hasNextPage, () -> openGraveyardGui(player, currentPage + 1)),
@@ -304,12 +255,10 @@ public class GUIManager {
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
         PlayerData targetData = plugin.getStorage().load(targetUUID);
 
-        // Update target's data
         targetData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
         targetData.setHasbeenRevived(targetData.getHasbeenRevived() + 1);
         plugin.getStorage().save(targetData);
 
-        // Notify reviver
         reviver.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess",
                 "&7You successfully revived &c%player%&7!",
                 new MessageUtils.Replaceable("%player%", target.getName())));
@@ -331,11 +280,10 @@ public class GUIManager {
                 .withHoverText("Click to view eliminated players!")
                 .build();
 
-        return new GuiItem(button.getItemStack(),
-                event -> {
-                    event.setCancelled(true);
-                    openGraveyardGui(player, 0);
-                });
+        return new GuiItem(button.getItemStack(), event -> {
+            event.setCancelled(true);
+            openGraveyardGui(player, 0);
+        });
     }
 
     private GuiItem createSupportButton(Player player) {
@@ -347,26 +295,10 @@ public class GUIManager {
                 .withHoverText("Click to explore support options!")
                 .build();
 
-        return new GuiItem(button.getItemStack(),
-                event -> {
-                    event.setCancelled(true);
-                    openSupportGui(player);
-                });
-    }
-
-    private GuiItem createNavigationButton(Player player) {
-        GuiButton button = new GuiButton.Builder()
-                .withTexture(Constants.Textures.HOME)
-                .withTitle("« Return »")
-                .withTitleColor(Constants.Colors.TITLE)
-                .withLore("Go back to main menu")
-                .build();
-
-        return new GuiItem(button.getItemStack(),
-                event -> {
-                    event.setCancelled(true);
-                    openGui(player);
-                });
+        return new GuiItem(button.getItemStack(), event -> {
+            event.setCancelled(true);
+            openSupportGui(player);
+        });
     }
 
     private GuiItem createDeveloperButton() {

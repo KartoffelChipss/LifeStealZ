@@ -18,11 +18,11 @@ public abstract class AbstractGUIManager {
      * @return A configured ChestGui
      */
     protected ChestGui createBaseGui(String title, int rows) {
-        Component titleComponent = Component.text(Constants.Icons.GUI_ICON.getValue())
-                .color(Constants.Colors.GREY.getValue())
-                .append(Component.text(Constants.Icons.SEPARATOR.getValue()))
+        Component titleComponent = Component.text(Constants.Icons.GUI_ICON)
+                .color(Constants.Colors.GREY)
+                .append(Component.text(Constants.Icons.SEPARATOR))
                 .append(Component.text(title)
-                        .color(Constants.Colors.TITLE.getValue())
+                        .color(Constants.Colors.TITLE)
                         .decorate(TextDecoration.BOLD));
 
         ChestGui gui = new ChestGui(rows, title);
@@ -80,9 +80,9 @@ public abstract class AbstractGUIManager {
     protected GuiItem createNavigationItem(GuiNavigationCallback callback) {
         return new GuiItem(
                 new GuiButton.Builder()
-                        .withTexture(Constants.Textures.HOME.getValue())
+                        .withTexture(Constants.Textures.HOME)
                         .withTitle("« Return »")
-                        .withTitleColor(Constants.Colors.TITLE.getValue())
+                        .withTitleColor(Constants.Colors.TITLE)
                         .withLore("Go back to main menu")
                         .build().getItemStack(),
                 event -> {
