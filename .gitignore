@@ -2,8 +2,5 @@ target/
 .idea/
 .DS_Store
 .gradle
-gradlew
-gradlew.bat
-gradle/
 run/
 build/
