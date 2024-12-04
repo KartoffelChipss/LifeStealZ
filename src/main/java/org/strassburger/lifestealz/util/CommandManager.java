@@ -5,6 +5,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.*;
+import org.strassburger.lifestealz.gui.AdminGUICommand;
 
 public class CommandManager {
     private final LifeStealZ plugin;
@@ -22,6 +23,7 @@ public class CommandManager {
         registerCommand("withdrawheart", new WithdrawCommand(plugin), new WithdrawCommand(plugin));
         registerCommand("revive", new ReviveCommand(plugin), new ReviveCommand(plugin));
         registerCommand("eliminate", new EliminateCommand(plugin), new EliminateCommand(plugin));
+        registerCommand("lzgui", new AdminGUICommand(plugin), null);
     }
 
     /**

@@ -1,4 +1,4 @@
-name: Deploy Maven Javadocs to GitHub Pages
+name: Deploy Gradle Javadocs to GitHub Pages
 
 on:
   push:
@@ -21,27 +21,27 @@ jobs:
           distribution: 'temurin'  # Use the desired Java distribution
           java-version: '21'       # Use your project's Java version
 
-      # Step 3: Cache Maven dependencies
-      - name: Cache Maven repository
+      # Step 3: Cache Gradle dependencies
+      - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gradle-
 
-      # Step 4: Build Javadocs using Maven
+      # Step 4: Build Javadocs using Gradle
       - name: Build Javadocs
-        run: mvn clean javadoc:javadoc
+        run: ./gradlew javadoc
 
       # Step 5: Add the CNAME file
       - name: Add CNAME file
         run: |
-          echo "javadocs.lsz.strassburger.dev" > target/reports/apidocs/CNAME
+          echo "javadocs.lsz.strassburger.dev" > build/docs/javadoc/CNAME
 
       # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/reports/apidocs
+          publish_dir: build/docs/javadoc

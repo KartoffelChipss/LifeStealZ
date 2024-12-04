@@ -1,0 +1,139 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+    id 'xyz.jpenilla.run-paper' version '2.3.1'
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+group = 'org.strassburger'
+version = '2.7.3'
+description = 'LifeStealZ - The Ultimate LifeSteal SMP Plugin!'
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+shadowJar {
+    relocate 'com.github.stefvanschie.inventoryframework', "${project.group}.inventoryframework".toString()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'opencollab-snapshot'
+        url = 'https://repo.opencollab.dev/main/'
+    }
+    maven {
+        name = 'papermc-repo'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'placeholderapi'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = 'sk89q-repo'
+        url = 'https://maven.enginehub.org/repo/'
+    }
+}
+
+dependencies {
+    implementation 'org.apache.maven.plugins:maven-source-plugin:3.3.1'
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    implementation 'org.xerial:sqlite-jdbc:3.45.3.0'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT'
+    compileOnly 'org.geysermc.geyser:api:2.4.2-SNAPSHOT'
+    implementation 'com.github.stefvanschie.inventoryframework:IF:0.10.18'
+
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('processResources') {
+    filesMatching('**/*.yml') {
+        filter { String line -> line.replace('${project.version}', project.version) }
+    }
+}
+
+tasks.runServer {
+    minecraftVersion("1.21.1")
+}
+
+// USELESS KARTOFFELCHIPSS BULLSHIT
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = 'LifeStealZ'
+                description = project.description
+                url = 'https://github.com/KartoffelChipss/LifeStealZ'
+
+                licenses {
+                    license {
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://github.com/KartoffelChipss/LifeStealZ/blob/main/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'KartoffelChipss'
+                        name = 'Jan Strassburger'
+                        email = 'contact@strassburger.org'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/KartoffelChipss/LifeStealZ'
+                    connection = 'scm:git:git://github.com/KartoffelChipss/LifeStealZ.git'
+                    developerConnection = 'scm:git:ssh://github.com/KartoffelChipss/LifeStealZ.git'
+                }
+
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = 'https://github.com/KartoffelChipss/LifeStealZ/issues'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'GitHub'
+            url = "https://maven.pkg.github.com/KartoffelChipss/LifeStealZ"
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+}
+
+
+signing {
+    required = false
+}

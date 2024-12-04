@@ -33,8 +33,15 @@ commands:
         permission: lifestealz.viewhearts
         description: view other players max hearts
         permission-message: §cYou don't have permission to use this command!
+    lzgui:
+        permission: lifestealz.admin.gui
+        description: Open LSZ Admin Panel
+        permission-message: §cYou don't have permission to use this command!
 
 permissions:
+    lifestealz.admin.gui:
+        description: permission to open the admin panel
+        default: op
     lifestealz.managedata:
         description: permission to manage data
         default: op
