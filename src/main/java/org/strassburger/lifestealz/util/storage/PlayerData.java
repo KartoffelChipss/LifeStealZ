@@ -12,6 +12,7 @@ public class PlayerData {
     private int craftedRevives = 0;
     private int hasbeenRevived = 0;
     private int killedOtherPlayers = 0;
+    private long firstJoin = 0;
 
     public PlayerData(String name, UUID uuid) {
         this.name = name;
@@ -65,5 +66,13 @@ public class PlayerData {
 
     public void setKilledOtherPlayers(int killedOtherPlayers) {
         this.killedOtherPlayers = killedOtherPlayers;
+    }
+
+    public long getFirstJoin() {
+        return firstJoin;
+    }
+
+    public void setFirstJoin(long firstJoin) {
+        this.firstJoin = firstJoin;
     }
 }

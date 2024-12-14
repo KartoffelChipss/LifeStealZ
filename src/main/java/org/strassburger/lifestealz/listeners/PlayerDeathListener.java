@@ -61,13 +61,36 @@ public class PlayerDeathListener implements Listener {
         double healthToLoose = isDeathByPlayer ? healthPerKill : healthPerNaturalDeath;
 
         // Drop hearts or handle heart gain for the killer (if applicable)
-        if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
+        if (restrictedHeartLossByGracePeriod(player)) {
+            killer.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartGainFromPlayersInGracePeriod",
+                    "&cYou can't gain hearts from players during their grace period!"
+            ));
+        } else if (restrictedHeartGainByGracePeriod(killer)) {
+            killer.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartGainInGracePeriod",
+                    "&cYou can't gain hearts during the grace period!"
+            ));
+        } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
         } else if (isDeathByPlayer) {
             handleKillerHeartGain(player, killer, world, healthToLoose);
         } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
         }
+
+        if (restrictedHeartLossByGracePeriod(player)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartLossInGracePeriod",
+                    "&cYou can't lose hearts during the grace period!"
+            ));
+            return;
+        }
+
+        if (restrictedHeartGainByGracePeriod(killer)) return;
 
         // Check for elimination
         if (playerData.getMaxHealth() - healthToLoose <= minHearts) {
@@ -202,6 +225,16 @@ public class PlayerDeathListener implements Listener {
         for (int i = 0; i < amount; i++) {
             world.dropItemNaturally(location, CustomItemManager.createHeart());
         }
+    }
+
+    private boolean restrictedHeartLossByGracePeriod(Player player) {
+        GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+        return gracePeriodManager.isInGracePeriod(player) && !gracePeriodManager.getConfig().looseHearts();
+    }
+
+    private boolean restrictedHeartGainByGracePeriod(Player player) {
+        GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+        return gracePeriodManager.isInGracePeriod(player) && !gracePeriodManager.getConfig().gainHearts();
     }
 }
 

@@ -66,6 +66,16 @@ public class PapiExpansion extends PlaceholderExpansion {
                 PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
                 return String.valueOf(playerData.getCraftedRevives());
             }
+            case "isInGracePeriod": {
+                GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+                if (!gracePeriodManager.isEnabled()) return "false";
+                return String.valueOf(gracePeriodManager.isInGracePeriod(player.getPlayer()));
+            }
+            case "gracePeriodRemaining": {
+                GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+                if (!gracePeriodManager.isEnabled()) return "-1";
+                return String.valueOf(gracePeriodManager.getGracePeriodRemaining(player.getPlayer()).orElse(0));
+            }
         }
 
         return null;

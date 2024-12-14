@@ -192,6 +192,35 @@ heartuseCommands:
 reviveuseCommands:
 # - "say &player& revived &target&"
 
+gracePeriod:
+  # If a grace period should be enabled
+  enabled: false
+  # The time in seconds, the grace period should last
+  duration: 60
+  # If the end of the grace period should be announced
+  announce: true
+  # If a sound should be played, when the grace period ends
+  playSound: true
+
+  # Should a player be able to take damage from players during the grace period
+  damageFromPlayers: false
+  # Should a player be able to deal damage to players during the grace period
+  damageToPlayers: false
+  # Should a player be able to use hearts during the grace period
+  useHearts: false
+  # Should a player be able to loose hearts during the grace period (if set to false, the killer will also not gain a heart)
+  looseHearts: false
+  # Should a player be able to gain hearts during the grace period
+  gainHearts: false
+
+  # Custom commands to be executed when the grace period starts
+  startCommands:
+  # - "say The grace period for &player& has started"
+
+  # Custom commands to be executed when the grace period ends
+  endCommands:
+  # - "say The grace period for &player& has ended"
+
 heartGainCooldown:
   # A cooldown for how often people can gain a heart.
   enabled: false
@@ -345,6 +374,8 @@ If you are using [PlaceholderAPI](https://www.spigotmc.org/resources/placeholder
 - **%lifestealz_maxhearts%** - The maximum amount of hearts a user can have
 - **%lifestealz_health%** - The current health, that the player has (half hearts rounded up)
 - **%lifestealz_revived%** - The amount of times a player has been revived
+- **%lifestealz_isInGracePeriod%** - If the player is in the grace period
+- **%lifestealz_gracePeriodRemaining%** - The remaining time of the grace period in seconds
 
 <br>
 

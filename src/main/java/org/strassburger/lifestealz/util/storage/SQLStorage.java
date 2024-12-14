@@ -22,7 +22,7 @@ public abstract class SQLStorage extends Storage {
         try (Connection connection = createConnection()) {
             if (connection == null) return;
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER, firstJoin INTEGER)");
             } catch (SQLException e) {
                 getPlugin().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
             }
@@ -55,6 +55,7 @@ public abstract class SQLStorage extends Storage {
                     playerData.setCraftedHearts(resultSet.getInt("craftedHearts"));
                     playerData.setCraftedRevives(resultSet.getInt("craftedRevives"));
                     playerData.setKilledOtherPlayers(resultSet.getInt("killedOtherPlayers"));
+                    playerData.setFirstJoin(resultSet.getLong("firstJoin"));
 
                     return playerData;
                 } catch (SQLException e) {
@@ -122,7 +123,8 @@ public abstract class SQLStorage extends Storage {
                                 resultSet.getInt("hasbeenRevived") + CSV_SEPARATOR +
                                 resultSet.getInt("craftedHearts") + CSV_SEPARATOR +
                                 resultSet.getInt("craftedRevives") + CSV_SEPARATOR +
-                                resultSet.getInt("killedOtherPlayers");
+                                resultSet.getInt("killedOtherPlayers") + CSV_SEPARATOR +
+                                resultSet.getLong("firstJoin");
                         writer.write(line);
                         writer.newLine();
                     }
@@ -157,7 +159,7 @@ public abstract class SQLStorage extends Storage {
                 try (Connection connection = createConnection()) {
                     if (connection == null) return;
                     try (Statement statement = connection.createStatement()) {
-                        statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + data[0] + "', '" + data[1] + "', " + Double.parseDouble(data[2]) + ", " + Integer.parseInt(data[3]) + ", " + Integer.parseInt(data[4]) + ", " + Integer.parseInt(data[5]) + ", " + Integer.parseInt(data[6]) + ")");
+                        statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) VALUES ('" + data[0] + "', '" + data[1] + "', " + Double.parseDouble(data[2]) + ", " + Integer.parseInt(data[3]) + ", " + Integer.parseInt(data[4]) + ", " + Integer.parseInt(data[5]) + ", " + Integer.parseInt(data[6]) + ", " + Integer.parseInt(data[7]) + ")");
                     } catch (SQLException e) {
                         getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
                     }

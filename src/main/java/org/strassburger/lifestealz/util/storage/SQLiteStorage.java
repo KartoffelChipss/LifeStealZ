@@ -2,10 +2,7 @@ package org.strassburger.lifestealz.util.storage;
 
 import org.strassburger.lifestealz.LifeStealZ;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLiteStorage extends SQLStorage {
     public SQLiteStorage(LifeStealZ plugin) {
@@ -24,12 +21,20 @@ public class SQLiteStorage extends SQLStorage {
 
     @Override
     public void save(PlayerData playerData) {
+        String sql = "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = createConnection()) {
             if (connection == null) return;
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) VALUES ('" + playerData.getUuid() + "', '" + playerData.getName() + "', " + playerData.getMaxHealth() + ", " + playerData.getHasbeenRevived() + ", " + playerData.getCraftedHearts() + ", " + playerData.getCraftedRevives() + ", " + playerData.getKilledOtherPlayers() + ")");
-            } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, playerData.getUuid());
+                pstmt.setString(2, playerData.getName());
+                pstmt.setDouble(3, playerData.getMaxHealth());
+                pstmt.setInt(4, playerData.getHasbeenRevived());
+                pstmt.setInt(5, playerData.getCraftedHearts());
+                pstmt.setInt(6, playerData.getCraftedRevives());
+                pstmt.setInt(7, playerData.getKilledOtherPlayers());
+                pstmt.setLong(8, playerData.getFirstJoin());
+                pstmt.executeUpdate();
             }
         } catch (SQLException e) {
             getPlugin().getLogger().severe("Failed to save player data to SQL database: " + e.getMessage());

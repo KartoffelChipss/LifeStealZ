@@ -35,8 +35,8 @@ public class MariaDBStorage extends SQLStorage {
         try (Connection connection = createConnection()) {
             if (connection == null) return;
             try (PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                    "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE name = VALUES(name), maxhp = VALUES(maxhp), hasbeenRevived = VALUES(hasbeenRevived), " +
                             "craftedHearts = VALUES(craftedHearts), craftedRevives = VALUES(craftedRevives), killedOtherPlayers = VALUES(killedOtherPlayers)"
             )) {
@@ -47,6 +47,7 @@ public class MariaDBStorage extends SQLStorage {
                 statement.setInt(5, playerData.getCraftedHearts());
                 statement.setInt(6, playerData.getCraftedRevives());
                 statement.setInt(7, playerData.getKilledOtherPlayers());
+                statement.setLong(8, playerData.getFirstJoin());
 
                 statement.executeUpdate();
             } catch (SQLException e) {

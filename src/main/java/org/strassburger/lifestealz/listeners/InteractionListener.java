@@ -43,9 +43,6 @@ public class InteractionListener implements Listener {
                     !WhitelistManager.isWorldWhitelisted(player)
                     && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))
             ) {
-                System.out.println("Is heart item: " + CustomItemManager.isHeartItem(item));
-                System.out.println("Is revive item: " + CustomItemManager.isReviveItem(item));
-                System.out.println("World not whitelisted");
                 player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
                 return;
             }
@@ -59,6 +56,15 @@ public class InteractionListener implements Listener {
 
                 if (customItemData.requiresPermission() && !player.hasPermission(customItemData.getPermission()) && !player.isOp() && !player.hasPermission("lifestealz.item.*")) {
                     player.sendMessage(MessageUtils.getAndFormatMsg(false, "noPermissionError", "&cYou don't have permission to use this!"));
+                    return;
+                }
+
+                if (restrictedHeartByGracePeriod(player)) {
+                    player.sendMessage(MessageUtils.getAndFormatMsg(
+                            false,
+                            "noHeartUseInGracePeriod",
+                            "&cYou can't use hearts during the grace period!"
+                    ));
                     return;
                 }
 
@@ -134,5 +140,10 @@ public class InteractionListener implements Listener {
         if (updatedItem.getAmount() > 0) updatedItem.setItemMeta(item.getItemMeta());
 
         player.getInventory().setItem(slot, updatedItem);
+    }
+
+    private boolean restrictedHeartByGracePeriod(Player player) {
+        GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+        return gracePeriodManager.isInGracePeriod(player) && !gracePeriodManager.getConfig().useHearts();
     }
 }

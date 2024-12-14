@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.GracePeriodManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItem;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
@@ -374,6 +375,51 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (optionTwo.equals("isInGracePeriod")) {
+            if (args.length < 3 && !(sender instanceof Player)) {
+                throwUsageError(sender, "/lifestealz dev isInGracePeriod [player]");
+                return false;
+            }
+
+            Player player = args.length > 2 ? plugin.getServer().getPlayer(args[2]) : (Player) sender;
+            if (player == null) {
+                throwUsageError(sender, "/lifestealz dev isInGracePeriod [player]");
+                return false;
+            }
+
+            GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
+
+            String gracePeriodColor = gracePeriodManager.isInGracePeriod(player) ? "&a" : "&c";
+            String gracePeriodEnabledColor = gracePeriodManager.isEnabled() ? "&a" : "&c";
+
+            sender.sendMessage(MessageUtils.formatMsg(
+                    "&7Is &c" + player.getName() + " &7in grace period? "
+                            + gracePeriodColor + gracePeriodManager.isInGracePeriod(player)
+                            + (gracePeriodManager.isInGracePeriod(player) ? " &7(" + gracePeriodManager.getGracePeriodRemaining(player).orElse(-1) + "s remaining)" : "")
+                            + "\n&7Grace period enabled: " + gracePeriodEnabledColor + gracePeriodManager.isEnabled() + "&7"
+            ));
+        }
+
+        if (optionTwo.equals("setFirstJoinDate")) {
+            if (args.length < 3 && !(sender instanceof Player)) {
+                throwUsageError(sender, "/lifestealz dev setFirstJoinDate [player]");
+                return false;
+            }
+
+            Player player = args.length > 2 ? plugin.getServer().getPlayer(args[2]) : (Player) sender;
+            if (player == null) {
+                throwUsageError(sender, "/lifestealz dev setFirstJoinDate [player]");
+                return false;
+            }
+
+            final long newFirstJoin = System.currentTimeMillis();
+
+            PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
+            playerData.setFirstJoin(newFirstJoin);
+            plugin.getStorage().save(playerData);
+            plugin.getGracePeriodManager().startGracePeriod(player);
+        }
+
         return false;
     }
 
@@ -410,7 +456,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
             } else if (args[0].equals("data") && sender.hasPermission("lifestealz.managedata")) {
                 return List.of("export", "import");
             } else if (args[0].equals("dev")) {
-                return List.of("giveForbiddenitem");
+                return List.of("giveForbiddenitem", "isInGracePeriod", "setFirstJoinDate");
             }
         } else if (args.length == 3) {
             if (args[0].equals("hearts")) {

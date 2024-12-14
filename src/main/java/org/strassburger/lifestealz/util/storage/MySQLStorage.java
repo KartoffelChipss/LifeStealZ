@@ -33,8 +33,8 @@ public class MySQLStorage extends SQLStorage {
 
     @Override
     public void save(PlayerData playerData) {
-        String query = "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+        String query = "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE name = VALUES(name), maxhp = VALUES(maxhp), hasbeenRevived = VALUES(hasbeenRevived), " +
                 "craftedHearts = VALUES(craftedHearts), craftedRevives = VALUES(craftedRevives), killedOtherPlayers = VALUES(killedOtherPlayers)";
 
@@ -48,6 +48,7 @@ public class MySQLStorage extends SQLStorage {
             preparedStatement.setInt(5, playerData.getCraftedHearts());
             preparedStatement.setInt(6, playerData.getCraftedRevives());
             preparedStatement.setInt(7, playerData.getKilledOtherPlayers());
+            preparedStatement.setLong(8, playerData.getFirstJoin());
 
             preparedStatement.executeUpdate();
 
