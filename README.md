@@ -100,7 +100,7 @@ checkForUpdates: true
 # Set the language to any code found in the "lang" folder (don't add the .yml extension)
 # You can add your own language files. Use https://github.com/KartoffelChipss/LifeStealZ/tree/main/src/main/resources/lang/en-US.yml as a template
 # If you want to help translating the plugin, please refer to this article: https://lsz.strassburger.dev/contributing/localization
-#  | en-US | de-DE | es-ES | fr-FR | cs-CZ | vi-VN | zh-CN | pl-PL
+#  | en-US | de-DE | es-ES | fr-FR | cs-CZ | vi-VN | zh-CN | pl-PL | nl-NL | ru-RU
 lang: "en-US"
 
 
@@ -127,8 +127,12 @@ supressWhitelistMessage: false
 startHearts: 10
 # The maximal amount of hearts, a player can have
 maxHearts: 20
-# The amount of hp a player should have after getting eliminated
+# The amount of hp a player should have after getting reived
 reviveHearts: 1
+# The amount of hearts the killer should gain and the victim should loose
+heartsPerKill: 1
+# The amount of hearts a player should loose, when dying naturally
+heartsPerNaturalDeath: 1
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0
@@ -140,8 +144,10 @@ heartItem: "defaultheart"
 
 # === HEART BEHAVIOR SETTINGS ===
 
-# If hearts should be dropped instead of directly added to the killer
-dropHearts: false
+# If hearts should be dropped when killed by player
+dropHeartsPlayer: false
+# If hearts should be dropped when killed naturally
+dropHeartsNatural: true
 # If a heart should be dropped, when the killer already has the max amount of hearts
 dropHeartsIfMax: true
 # If a player should lose a heart, when dying to hostile mobs or falldamage, lava, etc
@@ -215,11 +221,11 @@ gracePeriod:
 
   # Custom commands to be executed when the grace period starts
   startCommands:
-  # - "say The grace period for &player& has started"
+    # - "say The grace period for &player& has started"
 
   # Custom commands to be executed when the grace period ends
   endCommands:
-  # - "say The grace period for &player& has ended"
+    # - "say The grace period for &player& has ended"
 
 heartGainCooldown:
   # A cooldown for how often people can gain a heart.
@@ -243,8 +249,16 @@ antiAlt:
   # Add custom comamnds, to be executed when a possible alt kill attempt is detected
   # You can use &player& to insert the player name (commands are executed for both players)
   commands:
-  # - "say Please don't kill alts"
-  # - "ban &player& 1h"
+    # - "say Please don't kill alts"
+    # - "ban &player& 1h"
+
+webhook:
+  # If a webhook should be sent, when a player is eliminated
+  elimination: false
+  # If a webhook should be sent, when a player is revived
+  revive: false
+  # The URL of the webhook
+  url: ""
 ```
 </details>
 
