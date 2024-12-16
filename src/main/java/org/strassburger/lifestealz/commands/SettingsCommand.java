@@ -100,6 +100,7 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
         addHelpEntry(helpMessage, sender, "lifestealz.admin.revive", "/revive", "- revive a player without a revive item");
         addHelpEntry(helpMessage, sender, "lifestealz.admin.eliminate", "/eliminate", "- eliminate a player");
         addHelpEntry(helpMessage, sender, "lifestealz.withdraw", "/withdrawheart", "- withdraw a heart");
+        addHelpEntry(helpMessage, sender, "lifestealz.viewhearts", "/hearts", "- view your hearts or the hearts of another player");
         helpMessage.append("\n&8----------------------------------------------------\n<reset><!i><!b> ");
 
         sender.sendMessage(MessageUtils.formatMsg(helpMessage.toString()));
