@@ -74,7 +74,16 @@ public class PapiExpansion extends PlaceholderExpansion {
             case "gracePeriodRemaining": {
                 GracePeriodManager gracePeriodManager = plugin.getGracePeriodManager();
                 if (!gracePeriodManager.isEnabled()) return "-1";
-                return String.valueOf(gracePeriodManager.getGracePeriodRemaining(player.getPlayer()).orElse(0));
+                return TimeFormatter.formatDuration(
+                        gracePeriodManager.getGracePeriodRemaining(player.getPlayer()).orElse(0)
+                );
+            }
+            case "heartCooldown": {
+                long heartCooldownTime = plugin.getConfig().getLong("heartCooldown");
+                final long now = System.currentTimeMillis();
+                long lastHeartUse = CooldownManager.lastHeartUse.getOrDefault(player.getUniqueId(), 0L);
+                long timeLeft = lastHeartUse + heartCooldownTime - now;
+                return TimeFormatter.formatDuration(timeLeft);
             }
         }
 

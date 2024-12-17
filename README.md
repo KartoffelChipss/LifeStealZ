@@ -389,7 +389,8 @@ If you are using [PlaceholderAPI](https://www.spigotmc.org/resources/placeholder
 - **%lifestealz_health%** - The current health, that the player has (half hearts rounded up)
 - **%lifestealz_revived%** - The amount of times a player has been revived
 - **%lifestealz_isInGracePeriod%** - If the player is in the grace period
-- **%lifestealz_gracePeriodRemaining%** - The remaining time of the grace period in seconds
+- **%lifestealz_gracePeriodRemaining%** - The remaining time of the grace period
+- **%lifestealz_heartCooldown%** - The remaining time of the heart cooldown
 
 <br>
 

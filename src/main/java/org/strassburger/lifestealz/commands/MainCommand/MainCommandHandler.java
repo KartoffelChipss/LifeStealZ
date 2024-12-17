@@ -25,6 +25,7 @@ public class MainCommandHandler implements CommandExecutor {
         commands.put("hearts", new HeartsSubCommand(plugin));
         commands.put("giveItem", new GiveItemSubCommand(plugin));
         commands.put("data", new DataSubCommand(plugin));
+        commands.put("dev", new DevSubCommand(plugin));
     }
 
     @Override

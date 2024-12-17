@@ -62,7 +62,7 @@ public class GracePeriodManager {
 
         long remaining = gracePeriodDuration - (now - firstJoin);
 
-        return remaining < 0 ? Optional.empty() : Optional.of((int) (remaining / 1000));
+        return remaining < 0 ? Optional.empty() : Optional.of((int) (remaining));
     }
 
     /**
