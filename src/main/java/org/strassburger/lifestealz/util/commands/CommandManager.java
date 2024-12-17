@@ -1,10 +1,13 @@
-package org.strassburger.lifestealz.util;
+package org.strassburger.lifestealz.util.commands;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.*;
+import org.strassburger.lifestealz.commands.MainCommand.MainCommandHandler;
+import org.strassburger.lifestealz.commands.MainCommand.MainTabCompleter;
+import org.strassburger.lifestealz.util.MessageUtils;
 
 public class CommandManager {
     private final LifeStealZ plugin;
@@ -17,7 +20,7 @@ public class CommandManager {
      * Registers all commands
      */
     public void registerCommands() {
-        registerCommand("lifestealz", new SettingsCommand(plugin), new SettingsCommand(plugin));
+        registerCommand("lifestealz", new MainCommandHandler(plugin), new MainTabCompleter(plugin));
         registerCommand("hearts", new HeartCommand(plugin), new HeartCommand(plugin));
         registerCommand("withdrawheart", new WithdrawCommand(plugin), new WithdrawCommand(plugin));
         registerCommand("revive", new ReviveCommand(plugin), new ReviveCommand(plugin));

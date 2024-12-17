@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.api.LifeStealZAPI;
 import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.commands.CommandManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.util.storage.MariaDBStorage;

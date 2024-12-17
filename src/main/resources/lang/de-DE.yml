@@ -21,6 +21,7 @@ setHeartsConfirm: "&7Die Herzen von &c%player%&7 wurden erfolgreich auf &c%amoun
 getHearts: "&c%player% &7hat derzeit &c%amount% &7Herzen!"
 reloadMsg: "&7Das Plugin wurde erfolgreich neu geladen!"
 versionMsg: "&7Du benutzt Version <red>%version%"
+newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://lsz.j4n.net/'>Dokumentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>\n"
 noWithdraw: "&cDu würdest eliminiert werden, wenn du so viele Herzen auszahlst!"
 withdrawConfirmmsg: "&8&oVerwende <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined>, wenn du wirklich Herzen auszahlen möchtest."
 maxHeartLimitReached: "&cDu hast bereits das Limit von %limit% Herzen erreicht!"
