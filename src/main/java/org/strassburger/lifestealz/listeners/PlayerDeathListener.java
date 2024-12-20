@@ -60,6 +60,8 @@ public class PlayerDeathListener implements Listener {
         double healthPerNaturalDeath = plugin.getConfig().getInt("heartsPerNaturalDeath") * 2;
         double healthToLoose = isDeathByPlayer ? healthPerKill : healthPerNaturalDeath;
 
+        plugin.getLogger().info("Death by player: " + isDeathByPlayer);
+
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (restrictedHeartLossByGracePeriod(player)) {
             killer.sendMessage(MessageUtils.getAndFormatMsg(
@@ -67,7 +69,7 @@ public class PlayerDeathListener implements Listener {
                     "noHeartGainFromPlayersInGracePeriod",
                     "&cYou can't gain hearts from players during their grace period!"
             ));
-        } else if (restrictedHeartGainByGracePeriod(killer)) {
+        } else if (isDeathByPlayer && restrictedHeartGainByGracePeriod(killer)) {
             killer.sendMessage(MessageUtils.getAndFormatMsg(
                     false,
                     "noHeartGainInGracePeriod",
@@ -90,7 +92,7 @@ public class PlayerDeathListener implements Listener {
             return;
         }
 
-        if (restrictedHeartGainByGracePeriod(killer)) return;
+        if (isDeathByPlayer && restrictedHeartGainByGracePeriod(killer)) return;
 
         // Check for elimination
         if (playerData.getMaxHealth() - healthToLoose <= minHearts) {
