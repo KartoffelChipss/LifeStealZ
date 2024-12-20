@@ -32,6 +32,8 @@ public class PlayerDeathListener implements Listener {
         final Player player = event.getEntity();
         final Player killer = player.getKiller();
 
+        plugin.getLogger().info("Player " + player.getName() + " died!");
+
         if (!WhitelistManager.isWorldWhitelisted(player)) return;
 
         // WorldGuard check
@@ -59,8 +61,6 @@ public class PlayerDeathListener implements Listener {
         double healthPerKill = plugin.getConfig().getInt("heartsPerKill") * 2;
         double healthPerNaturalDeath = plugin.getConfig().getInt("heartsPerNaturalDeath") * 2;
         double healthToLoose = isDeathByPlayer ? healthPerKill : healthPerNaturalDeath;
-
-        plugin.getLogger().info("Death by player: " + isDeathByPlayer);
 
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (restrictedHeartLossByGracePeriod(player)) {
