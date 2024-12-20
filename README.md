@@ -64,7 +64,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 - **lifestealz.revive** - Allow a player to revive others with a revive crystal (true by default)
 - **lifestealz.viewrecipes** - Allow a player to view the custom recipes (true by default)
 - **lifestealz.help** - Allow a player to access the help menu (true by default)
-- **lifestealz.viewhearts** - Allow a player to view the amount of hearts (`/hearts``) he has (true by default)
+- **lifestealz.viewhearts** - Allow a player to view the amount of hearts (`/hearts`) he has (true by default)
 
 <br>
 
