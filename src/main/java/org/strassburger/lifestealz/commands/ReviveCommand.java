@@ -1,7 +1,6 @@
 package org.strassburger.lifestealz.commands;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +12,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WebHookManager;
 import org.strassburger.lifestealz.util.WhitelistManager;
+import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.List;
@@ -25,50 +25,81 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
     }
 
     private static final String BYPASS_OPTION = "bypass";
-    WhitelistManager wm = new WhitelistManager();
+    WhitelistManager whitelistManager = new WhitelistManager();
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!wm.isWorldWhitelisted(sender)) return false;
+        if (!whitelistManager.isWorldWhitelisted(sender)) return false;
 
-        String targetPlayerName = args.length > 0 ? args[0] : null;
-        String bypassOption = args.length > 1 ? args[1] : null;
-
-        if (targetPlayerName == null) {
+        if (args.length < 1) {
             throwUsageError(sender);
             return false;
         }
 
-        PlayerData playerData = null;
+        String targetPlayersArg = args[0];
 
-        if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(targetPlayerName)) {
-            playerData = plugin.getStorage().load(plugin.getGeyserManager().getOfflineBedrockPlayerUniqueId(targetPlayerName));
-        } else {
-            OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
-            playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
+        String bypassOption = args.length > 1 ? args[1] : null;
 
-            if (playerData == null) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
-                return false;
-            }
+        return targetPlayersArg.equals("*") ?
+                handleReviveAll(sender, bypassOption) :
+                handleReviveOne(sender, targetPlayersArg, bypassOption);
+    }
 
-            playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
+    private boolean handleReviveAll(CommandSender sender, String bypassOption) {
+        try {
+            int revivedPlayers = plugin.getStorage().reviveAllPlayers(
+                    plugin.getConfig().getInt("minHearts"),
+                    plugin.getConfig().getInt("reviveHearts"),
+                    plugin.getConfig().getInt("maxRevives"),
+                    BYPASS_OPTION.equals(bypassOption) && sender.hasPermission("lifestealz.bypassrevivelimit")
+            );
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "massReviveSuccess",
+                    "&7You successfully revived &c%amount% &7player(s)!",
+                    new MessageUtils.Replaceable("%amount%", Integer.toString(revivedPlayers))
+            ));
+            return true;
+        } catch (Exception e) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "massReviveError",
+                    "&cAn error occurred while reviving all players: %error%",
+                    new MessageUtils.Replaceable("%error%", e.getMessage())
+            ));
+            plugin.getLogger().severe("An error occurred while reviving all players: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean handleReviveOne(CommandSender sender, String targetPlayerName, String bypassOption) {
+        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+        PlayerData playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
+
+        if (playerData == null) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
+            return false;
         }
 
-
+        playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
 
         // Check if the player has reached the revive limit or has the bypass permission
         if (!canRevive(sender, playerData, bypassOption)) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached",
+                    "&cThis player has already been revived %amount% times!",
+                    new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
             return false;
         }
 
         // Check if the player is eliminated
         if (!isEligibleForRevive(sender, playerData)) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
             return false;
         }
 
-        revivePlayer(sender, targetPlayerName, playerData);
+        revivePlayer(sender, targetPlayer.getName(), playerData);
 
-        return false;
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "reviveSuccess",
+                "&7You successfully revived &c%player%&7!",
+                new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
+
+        return true;
     }
 
     /**
@@ -82,15 +113,8 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         int maxRevives = plugin.getConfig().getInt("maxRevives");
         boolean hasBypassPermission = sender.hasPermission("lifestealz.bypassrevivelimit");
 
-        if (maxRevives != -1 && playerData.getHasbeenRevived() >= maxRevives &&
-                (!BYPASS_OPTION.equals(bypassOption) || !hasBypassPermission)) {
-
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached",
-                    "&cThis player has already been revived %amount% times!",
-                    new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
-            return false;
-        }
-        return true;
+        return maxRevives == -1 || playerData.getHasbeenRevived() < maxRevives ||
+                (BYPASS_OPTION.equals(bypassOption) && hasBypassPermission);
     }
 
     /**
@@ -102,11 +126,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
     private boolean isEligibleForRevive(CommandSender sender, PlayerData playerData) {
         int minHearts = plugin.getConfig().getInt("minHearts");
 
-        if (playerData.getMaxHealth() > minHearts * 2) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
-            return false;
-        }
-        return true;
+        return !(playerData.getMaxHealth() > minHearts * 2);
     }
 
     /**
@@ -120,10 +140,6 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
         plugin.getStorage().save(playerData);
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess",
-                "&7You successfully revived &c%player%&7!",
-                new MessageUtils.Replaceable("%player%", targetPlayerName)));
-
         plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, targetPlayerName, sender.getName());
     }
 
@@ -132,13 +148,16 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
      * @param sender The command sender
      */
     private void throwUsageError(CommandSender sender) {
-        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError",
+        Component usageMessage = MessageUtils.getAndFormatMsg(false, "usageError",
                 "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/revive <player>"));
         sender.sendMessage(usageMessage);
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (args.length == 1) {
+            return CommandUtils.getPlayersTabCompletion(true, plugin);
+        }
         if (args.length == 2 && sender.hasPermission("lifestealz.bypassrevivelimit")) {
             return List.of(BYPASS_OPTION);
         }

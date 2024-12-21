@@ -175,6 +175,41 @@ public abstract class SQLStorage extends Storage {
     }
 
     @Override
+    public int reviveAllPlayers(int minHearts, int reviveHearts, int maxRevives, boolean bypassReviveLimit) {
+        int affectedPlayers = 0;
+
+        String sql = "UPDATE hearts SET maxhp = ?, hasbeenRevived = hasbeenRevived + 1 WHERE maxhp <= ? AND (hasbeenRevived < ?)";
+
+        if (bypassReviveLimit || maxRevives < 0) {
+            sql = "UPDATE hearts SET maxhp = ?, hasbeenRevived = hasbeenRevived + 1 WHERE maxhp <= ?";
+        }
+
+        getPlugin().getLogger().info("Reviving all players with minHearts: " + minHearts + ", reviveHearts: " + reviveHearts + ", maxRevives: " + maxRevives + ", bypassReviveLimit: " + bypassReviveLimit);
+        getPlugin().getLogger().info("SQL: " + sql);
+
+        try (Connection connection = createConnection()) {
+            if (connection == null) return affectedPlayers;
+
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setDouble(1, reviveHearts * 2);
+                pstmt.setDouble(2, minHearts * 2);
+
+                if (!bypassReviveLimit && maxRevives >= 0) {
+                    pstmt.setInt(3, maxRevives);
+                }
+
+                affectedPlayers = pstmt.executeUpdate();
+            } catch (SQLException e) {
+                getPlugin().getLogger().severe("Failed to revive all players in SQL database: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to revive all players in SQL database: " + e.getMessage());
+        }
+
+        return affectedPlayers;
+    }
+
+    @Override
     public List<String> getPlayerNames() {
         List<String> playerNames = new ArrayList<>();
 

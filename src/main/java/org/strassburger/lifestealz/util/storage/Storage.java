@@ -62,6 +62,17 @@ public abstract class Storage {
     public abstract String export(String fileName);
 
     /**
+     * Set the amount of hearts for every eliminated player to the given amount.
+     *
+     * @param minHearts The amount of hearts a player has to be considered eliminated.
+     * @param reviveHearts The amount of hearts to set for every eliminated player.
+     * @param maxRevives The maximum amount of revives a player can have.
+     * @param bypassReviveLimit Whether the revive limit should be bypassed.
+     * @return The amount of players that were affected.
+     */
+    public abstract int reviveAllPlayers(int minHearts, int reviveHearts, int maxRevives, boolean bypassReviveLimit);
+
+    /**
      * Import the player data from a file.
      *
      * @param fileName The name of the file to import from.
