@@ -28,10 +28,15 @@
 
 * [🏳️ Localization](contributing/localization.md)
 
+## Developer
+
+* [Using the LifeStealZ API](developer/using-the-lifestealz-api.md)
+* [API methods](developer/api-methods.md)
+
 ***
 
 * [GitHub](https://github.com/KartoffelChipss/LifeStealZ)
 * [Modrinth](https://modrinth.com/plugin/lifestealz)
 * [SpigotMC](https://www.spigotmc.org/resources/lifestealz.111469/)
 * [Support Discord](https://strassburger.org/discord)
-* [JavaDoc](https://javadocs.lsz.strassburger.dev)
+* [JavaDoc](https://javadocs.lifestealz.com)
