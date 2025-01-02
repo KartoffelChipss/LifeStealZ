@@ -68,6 +68,8 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
             Bukkit.broadcast(elimAnnouncementMsg);
         }
 
+        plugin.getEliminatedPlayersCache().addEliminatedPlayer(targetPlayer.getName());
+
         plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.ELIMINATION, targetPlayer.getName(), sender.getName());
     }
 

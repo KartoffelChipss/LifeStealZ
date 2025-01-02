@@ -102,6 +102,8 @@ public class InventoryClickListener implements Listener {
                     targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
                     plugin.getStorage().save(targetPlayerData);
 
+                    plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayer.getName());
+
                     player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
@@ -156,6 +158,8 @@ public class InventoryClickListener implements Listener {
                     targetBedrockPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
                     targetBedrockPlayerData.setHasbeenRevived(targetBedrockPlayerData.getHasbeenRevived() + 1);
                     plugin.getStorage().save(targetBedrockPlayerData);
+
+                    plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetBedrockPlayer.getName());
 
                     player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetBedrockPlayer.getName())));
 

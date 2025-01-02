@@ -89,12 +89,17 @@ public class DevSubCommand implements SubCommand {
             plugin.getGracePeriodManager().startGracePeriod(player);
         }
 
+        if (optionTwo.equals("refreshCaches")) {
+            plugin.getEliminatedPlayersCache().reloadCache();
+            sender.sendMessage(MessageUtils.formatMsg("&7Caches reloaded!"));
+        }
+
         return false;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate>";
+        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches>";
     }
 
     @Override

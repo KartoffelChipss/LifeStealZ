@@ -234,6 +234,31 @@ public abstract class SQLStorage extends Storage {
         return playerNames;
     }
 
+    @Override
+    public List<String> getEliminatedPlayerNames() {
+        List<String> eliminatedPlayerNames = new ArrayList<>();
+
+        try (Connection connection = createConnection()) {
+            if (connection == null) return eliminatedPlayerNames;
+
+            try (Statement statement = connection.createStatement()) {
+                statement.setQueryTimeout(30);
+
+                ResultSet resultSet = statement.executeQuery("SELECT name FROM hearts WHERE maxhp <= 0.0");
+
+                while (resultSet.next()) {
+                    eliminatedPlayerNames.add(resultSet.getString("name"));
+                }
+            } catch (SQLException e) {
+                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+        }
+
+        return eliminatedPlayerNames;
+    }
+
     private void migrateDatabase(Connection connection) {
         try (Statement statement = connection.createStatement()) {
             boolean hasFirstJoin = false;

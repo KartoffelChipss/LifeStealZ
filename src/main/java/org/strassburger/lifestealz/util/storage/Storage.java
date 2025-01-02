@@ -83,4 +83,6 @@ public abstract class Storage {
      * Get all player names
      */
     public abstract List<String> getPlayerNames();
+
+    public abstract List<String> getEliminatedPlayerNames();
 }

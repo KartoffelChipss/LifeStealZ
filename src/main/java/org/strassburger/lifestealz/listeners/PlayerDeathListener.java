@@ -151,6 +151,7 @@ public class PlayerDeathListener implements Listener {
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         playerData.setMaxHealth(0.0);
         plugin.getStorage().save(playerData);
+        plugin.getEliminatedPlayersCache().addEliminatedPlayer(player.getName());
     }
 
     private void handleKillerHeartGain(Player player, Player killer, World world, double healthGain) {

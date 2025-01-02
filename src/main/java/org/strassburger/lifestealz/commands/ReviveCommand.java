@@ -15,7 +15,10 @@ import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
@@ -53,7 +56,8 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
                     plugin.getConfig().getInt("maxRevives"),
                     BYPASS_OPTION.equals(bypassOption) && sender.hasPermission("lifestealz.bypassrevivelimit")
             );
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "massReviveSuccess",
+            plugin.getEliminatedPlayersCache().reloadCache();
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "massReviveSuccess",
                     "&7You successfully revived &c%amount% &7player(s)!",
                     new MessageUtils.Replaceable("%amount%", Integer.toString(revivedPlayers))
             ));
@@ -139,6 +143,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         playerData.setMaxHealth(plugin.getConfig().getDouble("reviveHearts") * 2);
         playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
         plugin.getStorage().save(playerData);
+        plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayerName);
 
         plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, targetPlayerName, sender.getName());
     }
@@ -156,7 +161,9 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            return CommandUtils.getPlayersTabCompletion(true, plugin);
+            Set<String> eliminatedPlayers = plugin.getEliminatedPlayersCache().getEliminatedPlayers();
+            eliminatedPlayers.add("*");
+            return new ArrayList<>(eliminatedPlayers);
         }
         if (args.length == 2 && sender.hasPermission("lifestealz.bypassrevivelimit")) {
             return List.of(BYPASS_OPTION);
