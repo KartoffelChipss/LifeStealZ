@@ -132,7 +132,7 @@ public class PlayerDeathListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             Component kickMessage = MessageUtils.getAndFormatMsg(
                     false,
-                    "messages.eliminatedjoin",
+                    "eliminatedJoin",
                     "&cYou don't have any hearts left!");
             player.kick(kickMessage);
         }, 1L);

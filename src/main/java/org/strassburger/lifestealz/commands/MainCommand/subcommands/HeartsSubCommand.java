@@ -11,8 +11,9 @@ import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 import org.strassburger.lifestealz.util.storage.Storage;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.parsePlayerName;
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
@@ -76,13 +77,15 @@ public class HeartsSubCommand implements SubCommand {
             return false;
         }
 
-        int finalAmount = amount;
-
         List<Player> targetPlayers = parsePlayerName(args[2], true, plugin);
 
         for (Player targetPlayer : targetPlayers) {
             if (targetPlayer == null && targetPlayers.size() == 1) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "messages.playerNotFound",
+                        "&cPlayer not found!"
+                ));
                 return false;
             }
 
@@ -93,29 +96,31 @@ public class HeartsSubCommand implements SubCommand {
 
             switch (optionTwo) {
                 case "add": {
-                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && targetPlayerData.getMaxHealth() + (amount * 2) > config.getInt("maxHearts") * 2) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!",
-                                new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
-                        sender.sendMessage(maxHeartsMsg);
+                    if (
+                            config.getBoolean("enforceMaxHeartsOnAdminCommands")
+                            && targetPlayerData.getMaxHealth() + (amount * 2) > config.getInt("maxHearts") * 2
+                    ) {
+                        sendHeartLimitReachedMessage(sender);
                         return false;
                     }
 
                     targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() + (amount * 2));
                     storage.save(targetPlayerData);
                     LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
-                    finalAmount = (int) (targetPlayerData.getMaxHealth() / 2);
                     break;
                 }
                 case "set": {
                     if (amount == 0) {
-                        sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
+                        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                                false,
+                                "connotSetHeartsBelowOrToZero",
+                                "&cYou can't set a player's hearts below or to 0!"
+                        ));
                         return false;
                     }
 
                     if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
-                        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(true, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!",
-                                new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
-                        sender.sendMessage(maxHeartsMsg);
+                        sendHeartLimitReachedMessage(sender);
                         return false;
                     }
 
@@ -126,28 +131,81 @@ public class HeartsSubCommand implements SubCommand {
                 }
                 case "remove": {
                     if ((targetPlayerData.getMaxHealth() / 2) - (double) amount <= 0) {
-                        sender.sendMessage(Component.text("§cYou cannot set the lives below or to zero"));
+                        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                                false,
+                                "connotSetHeartsBelowOrToZero",
+                                "&cYou can't set a player's hearts below or to 0!"
+                        ));
                         return false;
                     }
 
                     targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() - (amount * 2));
                     storage.save(targetPlayerData);
                     LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
-                    finalAmount = (int) (targetPlayerData.getMaxHealth() / 2);
                     break;
                 }
             }
         }
 
-        String concatenatedPlayerNames = targetPlayers.stream()
-                .map(Player::getName)
-                .collect(Collectors.joining(", "));
-
-        Component setHeartsConfirmMessage = MessageUtils.getAndFormatMsg(true, "messages.setHeartsConfirm", "&7You successfully %option% &c%player%' hearts to &7%amount% hearts!",
-                new MessageUtils.Replaceable("%option%", optionTwo), new MessageUtils.Replaceable("%player%", concatenatedPlayerNames), new MessageUtils.Replaceable("%amount%", finalAmount + ""));
-        sender.sendMessage(setHeartsConfirmMessage);
-
+        sendConfirmMessage(sender, optionTwo, targetPlayers, amount);
         return true;
+    }
+
+    private void sendConfirmMessage(CommandSender sender, String optionTwo, List<Player> targetPlayers, int changedAmount) {
+        String messageKey;
+        String defaultMessage;
+        Map<String, String> replacements = new HashMap<>();
+
+        replacements.put("%amount%", String.valueOf(changedAmount));
+
+        if (targetPlayers.size() == 1) {
+            replacements.put("%player%", targetPlayers.get(0).getName());
+        } else {
+            replacements.put("%pamount%", String.valueOf(targetPlayers.size()));
+        }
+
+        switch (optionTwo) {
+            case "add":
+                messageKey = targetPlayers.size() == 1 ? "addHeartsConfirmSingle" : "addHeartsConfirmMultiple";
+                defaultMessage = targetPlayers.size() == 1
+                        ? "&7You successfully added &c%amount% &7hearts to &c%player%!"
+                        : "&7Successfully added &c%amount% &7hearts to &c%pamount% players";
+                break;
+            case "set":
+                messageKey = targetPlayers.size() == 1 ? "setHeartsConfirmSingle" : "setHeartsConfirmMultiple";
+                defaultMessage = targetPlayers.size() == 1
+                        ? "&7Successfully set &c%player%'s &7hearts to &c%amount% hearts"
+                        : "&7Successfully set &c%pamount% players' &7hearts to &c%amount% hearts";
+                break;
+            case "remove":
+                messageKey = targetPlayers.size() == 1 ? "removeHeartsConfirmSingle" : "removeHeartsConfirmMultiple";
+                defaultMessage = targetPlayers.size() == 1
+                        ? "&7Successfully removed &c%amount% &7hearts from &c%player%"
+                        : "&7Successfully removed &c%amount% &7hearts from &c%pamount% players";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid option: " + optionTwo);
+        }
+
+        Component confirmMessage = createConfirmMessage(messageKey, defaultMessage, replacements);
+        sender.sendMessage(confirmMessage);
+    }
+
+    private Component createConfirmMessage(String key, String defaultMessage, Map<String, String> replacements) {
+        MessageUtils.Replaceable[] replaceables = replacements.entrySet().stream()
+                .map(entry -> new MessageUtils.Replaceable(entry.getKey(), entry.getValue()))
+                .toArray(MessageUtils.Replaceable[]::new);
+
+        return MessageUtils.getAndFormatMsg(true, key, defaultMessage, replaceables);
+    }
+
+    private void sendHeartLimitReachedMessage(CommandSender sender) {
+        Component maxHeartsMsg = MessageUtils.getAndFormatMsg(
+                true,
+                "messages.maxHeartLimitReached",
+                "&cYou already reached the limit of %limit% hearts!",
+                new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
+        sender.sendMessage(maxHeartsMsg);
     }
 
     @Override
