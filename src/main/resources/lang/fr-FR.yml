@@ -1,9 +1,96 @@
-# LifeStealZ language file
-# fr-FR - by Kartoffelchipss
-
+---
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: |-
-  &7Une nouvelle version de LifeStealZ est disponible !
+  &7Une nouvelle version de LifeStealZ est disponible!
   &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
 usageError: "&cUtilisation : %utilisation%"
-noPermsError: "<red>Vous n'avez pas la permission d'exécuter cette commande !"
+noPermsError: "<red>Vous n'avez pas la permission d'exécuter cette commande!"
+playerNotFound: "&cJoueur non trouvé!"
+worldNotWhitelisted: "&cCe monde n'est pas whitelist de LifeStealZ!"
+specifyPlayerOrBePlayer: "&cVous devez soit spécifier un joueur, soit être vous-même
+  un joueur!"
+noPermissionError: "&cVous n'avez pas la permission d'utiliser ceci!"
+noPlayerData: "&cCe joueur n’a pas encore joué sur ce serveur!"
+eliminateSuccess: "&7Vous avez éliminer &c%player%&7!"
+reviveSuccess: "&7Vous avez réussi à ressusciter &c%player%!"
+massReviveSuccess: "&7Vous avez ressusciter avec succès &c%amount% &7joueur(s)!"
+massReviveError: "&cUne erreur s'est produite lors de la réanimation de tous les joueurs :
+  %error%"
+reviveMaxReached: "&cCe joueur a déjà été ressusciter %amount% fois!"
+onlyReviveElimPlayers: "&cVous ne pouvez ressusciter que les joueurs éliminés!"
+eliminatedJoin: "&cIl ne vous reste plus de cœur!"
+eliminationAnnouncement: "&c%player% &7a été éliminé par &c%killer%&7!"
+eliminateionAnnouncementNature: "&c%player% &7a été éliminé!"
+setHeartsConfirmSingle: "&c%player% a maintenant &c%amount% cœurs avec succès"
+setHeartsConfirmMultiple: "&c%pamount% joueurs ont maintenant &c%amount% cœur(s) avec
+  succès"
+addHeartsConfirmSingle: "&7&c%amount% &7cœurs ont été ajoutés avec succès à &c%player%"
+addHeartsConfirmMultiple: "&7Ajout réussi de &c%amount% &7cœurs à &c%pamount% joueurs"
+removeHeartsConfirmSingle: "&7Suppression réussie de &c%amount% &7coeurs de &c%player%"
+removeHeartsConfirmMultiple: "&7Suppression réussie de &c%amount% &7cœurs de &c%pamount%
+  joueurs"
+connotSetHeartsBelowOrToZero: "&cVous ne pouvez pas mettre le cœur d'un joueur en
+  dessous ou à 0!"
+getHearts: "&c%player% &7possède actuellement &c%amount% &7coeurs!"
+reloadMsg: "&7Le plugin a été rechargé avec succès!"
+versionMsg: "&7Vous utilisez la version <red>%version%"
+newVersionMsg: |2
+
+  &c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>
+
+  &c <u><click:open_url:'https://lsz.j4n.net/'>Documentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
+noWithdraw: "&cVous serez éliminé si vous retirez un cœur!"
+withdrawConfirmmsg: "&8&oUtilisez <underlined><click:SUGGEST_COMMAND:/withdrawheart
+  %amount% confirm>/withdrawheart %amount% confirm</click></underlined> si vous voulez
+  vraiment retirer un cœur"
+maxHeartLimitReached: "&cVous avez déjà atteint la limite de %limit% cœurs!"
+closeBtn: "&cFermer"
+backBtn: "&cRetour"
+nextBtn: "&cSuivant"
+reviveTitle: "&8Ressusciter un joueur"
+revivePlayerDesc: "&7Cliquez pour ressusciter ce joueur"
+viewheartsYou: "&7Vous avez actuellement &c%amount% &7coeurs!"
+viewheartsOther: "&c%player% &7possède actuellement &c%amount% &7coeurs!"
+heartconsume: "&7Vous avez obtenu &c%amount% &7cœurs!"
+heartconsumeCooldown: "&cVous devez attendre avant d’utiliser un autre cœur!"
+recipeNotCraftable: "&cCet objet ne peut pas être crafter!"
+altKill: "&cS'il vous plaît, ne tuez pas les compte secondaire! Cette tentative a
+  été enregistrée !"
+withdrawMin: "&cVous ne pouvez pas retirer moins d'un cœur!"
+noInventorySpace: "&cVous n'avez pas assez d'espace dans votre inventaire pour retirer
+  autant de cœurs!"
+giveItem: "&7Vous avez reçu %amount%x &c%item%&7!"
+heartGainCooldown: "&cIl faut attendre avant de pouvoir gagner un autre cœur!"
+exportData: "&7Les données du joueur ont été exportées avec succès vers &c%file%.csv"
+importData: |-
+  &7Importation réussie du &c%file%.csv&7 !
+  &cVeuillez redémarrer le serveur pour garantir une migration sans problème!
+unwhitelistedWorld: |2
+
+  <red><b><grey>></grey> World Whitelist</b></red>
+
+  <gray>Vous jouez actuellement sur le monde <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7copier dans le presse papier'>&world&</hover></click></red>.
+  Ce monde n'est pas whitelist. LSZ ne s’activera pas ici.</gray>
+
+  <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentation</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u></red>   <u><hover:show_text:'<gray>Pour ignorer: mettre 'supressWhitelistMessage' a <b>true</b>dans le fichier de configuration.</gray>'><red>Cacher le message</red></hover></u>
+itemFramesDisabled: "&cVous ne pouvez pas mettre d’éléments personnalisés dans des
+  cadres!"
+itemMinHearts: "&cVous avez besoin d’au moins %amount% cœurs pour utiliser cet objet!"
+itemMaxHearts: "&cVous avez atteint le nombre maximum de cœurs pour cet objet!"
+webhookEliminationTitle: Joueur éliminé
+webhookElimination: "**%player%** a été éliminé par **%killer%** !"
+webhookEliminationColor: ea3323
+webhookReviveTitle: Joueur ressuscité
+webhookRevive: "**%player%** a été ressuscité par **%reviver%**!"
+webhookReviveColor: b094ee
+gracePeriodEnd: "&7Votre période de grâce est terminée!"
+noDamageInGracePeriod: "&cVous ne pouvez pas faire de dégâts au joueurs pendant la
+  période de grâce !"
+noHeartUseInGracePeriod: "&cVous ne pouvez pas utiliser de cœurs pendant la période
+  de grâce!"
+noHeartGainInGracePeriod: "&cVous ne pouvez pas gagner de cœurs pendant la période
+  de grâce!"
+noHeartGainFromPlayersInGracePeriod: "&cVous ne pouvez pas perdre de cœurs pendant
+  la période de grâce!"
+noHeartLossInGracePeriod: "&cVous ne pouvez pas perdre de cœurs pendant la période
+  de grâce!"
