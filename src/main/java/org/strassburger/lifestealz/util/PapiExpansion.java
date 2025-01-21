@@ -35,7 +35,7 @@ public class PapiExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String identifier) {
-        if (player.getPlayer() == null) return null;
+        if (player.getPlayer() == null) return "";
 
         switch (identifier) {
             case "name": {
