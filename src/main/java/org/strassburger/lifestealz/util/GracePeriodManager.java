@@ -114,6 +114,41 @@ public class GracePeriodManager {
         }
     }
 
+    /**
+     * Skips the grace period for the player.
+     * @param player The player to skip the grace period for.
+     * @return True if the grace period was skipped, false otherwise.
+     */
+    public boolean skipGracePeriod(Player player) {
+        if (!isEnabled()) return false;
+        if (!isInGracePeriod(player)) return false;
+
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
+        if (playerData == null) return false;
+
+        playerData.setFirstJoin(System.currentTimeMillis() - getConfig().getDuration() * 1000L);// Subtract the duration of the grace period
+        plugin.getStorage().save(playerData);
+
+        return true;
+    }
+
+    /**
+     * Resets the grace period for the player.
+     * @param player The player to reset the grace period for.
+     * @return True if the grace period was reset, false otherwise.
+     */
+    public boolean resetGracePeriod(Player player) {
+        if (!isEnabled()) return false;
+
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
+        if (playerData == null) return false;
+
+        playerData.setFirstJoin(System.currentTimeMillis());
+        plugin.getStorage().save(playerData);
+
+        return true;
+    }
+
     public static class GracePeriodConfig {
         private final LifeStealZ plugin;
 

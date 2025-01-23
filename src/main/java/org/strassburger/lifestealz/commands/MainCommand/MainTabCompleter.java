@@ -38,6 +38,7 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission("lifestealz.viewrecipes")) options.add("recipe");
         if (sender.hasPermission("lifestealz.help")) options.add("help");
         if (sender.hasPermission("lifestealz.managedata")) options.add("data");
+        if (sender.hasPermission("lifestealz.graceperiod")) options.add("graceperiod");
         return options;
     }
 
@@ -46,6 +47,7 @@ public class MainTabCompleter implements TabCompleter {
             case "hearts":
                 return List.of("add", "set", "remove", "get");
             case "giveItem":
+            case "graceperiod":
                 return getPlayersTabCompletion(true, plugin);
             case "recipe":
                 return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
@@ -63,6 +65,8 @@ public class MainTabCompleter implements TabCompleter {
             case "hearts":
                 if ("get".equals(args[1])) return getPlayersTabCompletion(false, plugin);
                 return getPlayersTabCompletion(true, plugin);
+            case "graceperiod":
+                return List.of("skip", "reset");
             case "giveItem":
                 return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
             case "data":

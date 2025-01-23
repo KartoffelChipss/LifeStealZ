@@ -63,7 +63,7 @@ public class PlayerDeathListener implements Listener {
         double healthToLoose = isDeathByPlayer ? healthPerKill : healthPerNaturalDeath;
 
         // Drop hearts or handle heart gain for the killer (if applicable)
-        if (restrictedHeartLossByGracePeriod(player)) {
+        if (restrictedHeartLossByGracePeriod(player) && isDeathByPlayer) {
             killer.sendMessage(MessageUtils.getAndFormatMsg(
                     false,
                     "noHeartGainFromPlayersInGracePeriod",
