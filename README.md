@@ -46,12 +46,13 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * Spanish (`es-ES`)
 * French (`fr-FR`)
 * Czech (`cs-CZ`)
-* Polnish (`pl-PL`)
+* Polish (`pl-PL`)
 * Vietnamese (`vi-VN`)
 * Chinese (Simplified) (`zh-CN`)
 * Russian (`ru-RU`)
 * Dutch (`nl-NL`)
 * Portuguese (`pt-BR`)
+* Japanese (`ja-JP`)
 
 <br>
 
@@ -164,6 +165,8 @@ announceElimination: true
 
 # Allows players to withdraw a heart, even if they only have one left
 allowDyingFromWithdraw: true
+# If a player should also heal the appropriate amount of hearts, when using a heart item
+healOnHeartUse: false
 # If the totem effect should be played, when you use a heart
 playTotemEffect: false
 # The time you have to wait, before you can use another heart in Milliseconds
@@ -226,11 +229,11 @@ gracePeriod:
 
   # Custom commands to be executed when the grace period starts
   startCommands:
-    # - "say The grace period for &player& has started"
+  # - "say The grace period for &player& has started"
 
   # Custom commands to be executed when the grace period ends
   endCommands:
-    # - "say The grace period for &player& has ended"
+  # - "say The grace period for &player& has ended"
 
 heartGainCooldown:
   # A cooldown for how often people can gain a heart.
@@ -254,8 +257,8 @@ antiAlt:
   # Add custom comamnds, to be executed when a possible alt kill attempt is detected
   # You can use &player& to insert the player name (commands are executed for both players)
   commands:
-    # - "say Please don't kill alts"
-    # - "ban &player& 1h"
+  # - "say Please don't kill alts"
+  # - "ban &player& 1h"
 
 webhook:
   # If a webhook should be sent, when a player is eliminated
@@ -295,7 +298,7 @@ password: "password"
 # Here you can modify everything about the custom items
 # You can change which item is dropped on death in the main config.yml
 
-defaultheart:
+defaultheart: # <- This is the item id that can be used in recipes and for permissions
   name: "&cHeart"
   lore:
     - "&7Rightclick to use"
@@ -312,6 +315,8 @@ defaultheart:
   minHearts: 0
   # The maximum amount of hearts a player can have to use this item (-1 for infinite) (only relevant if customItemType is "heart")
   maxHearts: -1
+  # If this item requires a permission to be used (lifestealz.item.defaultheart)
+  requirePermission: false
   # true if this item should be craftable
   craftable: true
   recipe:
@@ -348,6 +353,7 @@ revive:
   customHeartValue: 0
   minHearts: 0
   maxHearts: -1
+  requirePermission: false # (lifestealz.item.revive)
   craftable: true
   recipe:
     rowOne:
