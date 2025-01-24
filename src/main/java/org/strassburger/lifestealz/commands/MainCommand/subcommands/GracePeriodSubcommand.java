@@ -40,37 +40,67 @@ public class GracePeriodSubcommand implements SubCommand {
 
         String secondArg = args[2].toLowerCase();
 
-        int successCount = 0;
-
         switch (secondArg) {
-            case "skip": {
-                for (Player targetPlayer : targetPlayers) {
-                    boolean success = plugin.getGracePeriodManager().skipGracePeriod(targetPlayer);
-                    if (success) successCount++;
-                }
+            case "skip":
+                handleGracePeriod(sender, targetPlayers, GracePeriodAction.SKIP);
                 break;
-            }
             case "reset":
-                for (Player targetPlayer : targetPlayers) {
-                    boolean success = plugin.getGracePeriodManager().resetGracePeriod(targetPlayer);
-                    if (success) successCount++;
-                }
+                handleGracePeriod(sender, targetPlayers, GracePeriodAction.RESET);
                 break;
             default:
                 throwUsageError(sender, getUsage());
                 return false;
         }
 
-        sender.sendMessage(
-                MessageUtils.getAndFormatMsg(
-                        true,
-                        "gracePeriodSkipSuccess",
-                        "&7Successfully skipped the grace period for &c%playerCount% &7players.",
-                        new MessageUtils.Replaceable("%playerCount%", String.valueOf(successCount))
-                )
-        );
-
         return true;
+    }
+
+    private void handleGracePeriod(CommandSender sender, List<Player> targetPlayers, GracePeriodAction gracePeriodAction) {
+        int successCount = 0;
+        Player lastSucessfulPlayer = null;
+
+        for (Player targetPlayer : targetPlayers) {
+            boolean success = gracePeriodAction == GracePeriodAction.SKIP ?
+                    plugin.getGracePeriodManager().skipGracePeriod(targetPlayer) :
+                    plugin.getGracePeriodManager().resetGracePeriod(targetPlayer);
+
+            if (success) {
+                successCount++;
+                lastSucessfulPlayer = targetPlayer;
+            }
+        }
+
+        if (successCount == 0 || successCount > 1) {
+            sender.sendMessage(
+                    gracePeriodAction == GracePeriodAction.SKIP ?
+                            MessageUtils.getAndFormatMsg(
+                                    true,
+                                    "gracePeriodSkipSuccess",
+                                    "&7Successfully skipped the grace period for &c%playerCount% &7players.",
+                                    new MessageUtils.Replaceable("%playerCount%", String.valueOf(successCount))
+                            ) : MessageUtils.getAndFormatMsg(
+                            true,
+                                "gracePeriodResetSuccess",
+                                "&7Successfully reset the grace period for &c%playerCount% &7players.",
+                                new MessageUtils.Replaceable("%playerCount%", String.valueOf(successCount))
+                            )
+            );
+        } else {
+            sender.sendMessage(
+                    gracePeriodAction == GracePeriodAction.SKIP ?
+                            MessageUtils.getAndFormatMsg(
+                                    true,
+                                    "gracePeriodSkipSuccessOnePlayer",
+                                    "&7Successfully skipped the grace period for &c%player%&7.",
+                                    new MessageUtils.Replaceable("%player%", lastSucessfulPlayer.getName())
+                            ) : MessageUtils.getAndFormatMsg(
+                            true,
+                                "gracePeriodResetSuccessOnePlayer",
+                                "&7Successfully reset the grace period for &c%player%&7.",
+                                new MessageUtils.Replaceable("%player%", lastSucessfulPlayer.getName())
+                            )
+            );
+        }
     }
 
     @Override
@@ -81,5 +111,10 @@ public class GracePeriodSubcommand implements SubCommand {
     @Override
     public boolean hasPermission(CommandSender sender) {
         return sender.hasPermission("lifestealz.admin.graceperiod");
+    }
+
+    private enum GracePeriodAction {
+        SKIP,
+        RESET
     }
 }

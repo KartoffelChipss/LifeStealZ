@@ -66,3 +66,7 @@ noHeartUseInGracePeriod: "&cDu kannst während der Schutzzeit keine Herzen benut
 noHeartGainInGracePeriod: "&cDu kannst während der Schutzzeit keine Herzen erhalten!"
 noHeartGainFromPlayersInGracePeriod: "&cDu kannst während der Schutzzeit keine Herzen von Spielern erhalten!"
 noHeartLossInGracePeriod: "&cDu kannst während der Schutzzeit keine Herzen verlieren!"
+gracePeriodSkipSuccess: "&7Erfolgreich die Schutzzeit für &c%playerCount% &7Spieler übersprungen."
+gracePeriodResetSuccess: "&7Erfolgreich die Schutzzeit für &c%playerCount% &7Spieler zurückgesetzt."
+gracePeriodSkipSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7übersprungen."
+gracePeriodResetSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7zurückgesetzt."
