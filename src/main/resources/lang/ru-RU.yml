@@ -64,7 +64,7 @@ gracePeriodEnd: "&7Ваш период защиты закончился!"
 noDamageInGracePeriod: "&cВы не можете атаковать игроков во время активной защиты!"
 noHeartUseInGracePeriod: "&cВы не можете использовать сердца во время периода активной защиты!"
 noHeartGainInGracePeriod: "&cВы не можете получить сердца во время периода активной защиты!"
-noHeartGainFromPlayersInGracePeriod: "&cВы не можете получить сердца от других игроков во время периода активной защиты!
+noHeartGainFromPlayersInGracePeriod: "&cВы не можете получить сердца от других игроков во время периода активной защиты!"
 noHeartLossInGracePeriod: "&cВы не можете потерять сердца во время периода активной защиты!"
 gracePeriodSkipSuccess: "&7Период активной защиты для &c%playerCount% &7пропущен."
 gracePeriodResetSuccess: "&7Период активной защиты для &c%playerCount% &7сброшен."
