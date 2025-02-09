@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.strassburger.lifestealz.util.commands.CommandUtils.getDisplayOptions;
 import static org.strassburger.lifestealz.util.commands.CommandUtils.getPlayersTabCompletion;
 
 public class MainTabCompleter implements TabCompleter {
@@ -22,15 +23,17 @@ public class MainTabCompleter implements TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (args.length == 1) return getFirstArgOptions(sender);
+        if (args.length == 1) return getFirstArgOptions(sender, args);
         if (args.length == 2) return getSecondArgOptions(sender, args);
         if (args.length == 3) return getThirdArgOptions(sender, args);
         if (args.length == 4) return getFourthArgOptions(args);
         if (args.length == 5) return getFifthArgOptions(args);
-        return null;
+        return List.of();
     }
 
-    private List<String> getFirstArgOptions(CommandSender sender) {
+    private List<String> getFirstArgOptions(CommandSender sender, String[] args) {
+        String input = args[0].toLowerCase();
+
         List<String> options = new ArrayList<>();
         if (sender.hasPermission("lifestealz.admin.reload")) options.add("reload");
         if (sender.hasPermission("lifestealz.admin.setlife")) options.add("hearts");
@@ -39,57 +42,63 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission("lifestealz.help")) options.add("help");
         if (sender.hasPermission("lifestealz.managedata")) options.add("data");
         if (sender.hasPermission("lifestealz.graceperiod")) options.add("graceperiod");
-        return options;
+
+        return getDisplayOptions(options, input);
     }
 
     private List<String> getSecondArgOptions(CommandSender sender, String[] args) {
+        String input = args[1].toLowerCase();
         switch (args[0]) {
             case "hearts":
-                return List.of("add", "set", "remove", "get");
+                return getDisplayOptions(List.of("add", "set", "remove", "get"), input);
             case "giveItem":
             case "graceperiod":
                 return getPlayersTabCompletion(true, plugin);
             case "recipe":
-                return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
+                return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
             case "data":
-                if (sender.hasPermission("lifestealz.managedata")) return List.of("export", "import");
+                if (sender.hasPermission("lifestealz.managedata")) return getDisplayOptions(List.of("import", "export"), input);
                 break;
             case "dev":
-                return List.of("giveForbiddenitem", "isInGracePeriod", "setFirstJoinDate", "refreshCaches");
+                return getDisplayOptions(List.of("giveForbiddenitem", "isInGracePeriod", "setFirstJoinDate", "refreshCaches"), input);
         }
-        return null;
+        return List.of();
     }
 
     private List<String> getThirdArgOptions(CommandSender sender, String[] args) {
+        String input = args[2].toLowerCase();
         switch (args[0]) {
             case "hearts":
                 if ("get".equals(args[1])) return getPlayersTabCompletion(false, plugin);
                 return getPlayersTabCompletion(true, plugin);
             case "graceperiod":
-                return List.of("skip", "reset");
+                return getDisplayOptions(List.of("skip", "reset"), input);
             case "giveItem":
-                return new ArrayList<>(plugin.getRecipeManager().getRecipeIds());
+                return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
             case "data":
                 if ("import".equals(args[1]) && sender.hasPermission("lifestealz.managedata")) {
-                    return getCSVFiles();
+                    return getDisplayOptions(getCSVFiles(), input);
                 }
         }
-        return null;
+        return List.of();
     }
 
     private List<String> getFourthArgOptions(String[] args) {
         if ("hearts".equals(args[0]) || "giveItem".equals(args[0])) {
             return List.of("1", "32", "64");
         }
-        return null;
+        return List.of();
     }
 
     private List<String> getFifthArgOptions(String[] args) {
+        String input = args[4].toLowerCase();
         if ("giveItem".equals(args[0])) {
-            return List.of("silent");
+            return getDisplayOptions(List.of("silent"), input);
         }
-        return null;
+        return List.of("");
     }
+
+
 
     private List<String> getCSVFiles() {
         List<String> csvFiles = new ArrayList<>();

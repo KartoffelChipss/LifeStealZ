@@ -9,6 +9,7 @@ import org.strassburger.lifestealz.api.LifeStealZAPI;
 import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.commands.CommandManager;
+import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.util.storage.MariaDBStorage;
@@ -30,6 +31,7 @@ public final class LifeStealZ extends JavaPlugin {
     private WebHookManager webHookManager;
     private GracePeriodManager gracePeriodManager;
     private EliminatedPlayersCache eliminatedPlayersCache;
+    private CommandUtils commandUtils;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
@@ -65,6 +67,7 @@ public final class LifeStealZ extends JavaPlugin {
         recipeManager = new RecipeManager(this);
         recipeManager.registerRecipes();
 
+        commandUtils = new CommandUtils(this);
         versionChecker = new VersionChecker();
         gracePeriodManager = new GracePeriodManager(this);
         webHookManager = new WebHookManager(this);
@@ -155,6 +158,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public CommandUtils getCommandUtils() {
+        return commandUtils;
     }
 
     private Storage createPlayerDataStorage() {
