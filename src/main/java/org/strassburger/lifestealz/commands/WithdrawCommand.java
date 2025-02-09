@@ -30,7 +30,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player && !WhitelistManager.isWorldWhitelisted((Player) sender)) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
             return false;
         }
 
@@ -40,7 +40,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         try {
             withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
         } catch (NumberFormatException e) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/withdrawheart <amount> [confirm]")));
             return false;
         }
 
@@ -52,7 +52,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         boolean withdrawtoDeath = plugin.getConfig().getBoolean("allowDyingFromWithdraw");
 
         if (withdrawHearts < 1) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawMin", "&cYou can't withdraw less than 1 heart!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "withdrawMin", "&cYou can't withdraw less than 1 heart!"));
             return false;
         }
 
@@ -72,7 +72,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         }
 
         if (availableSpace < heartsToWithdraw) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noInventorySpace", "&cYou don't have enough inventory space to withdraw that many hearts!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "noInventorySpace", "&cYou don't have enough inventory space to withdraw that many hearts!"));
             return false;
         }
 
@@ -81,14 +81,14 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
         if (resultingHealth < minHealth) {
             if (confirmOption == null || !confirmOption.equals("confirm")) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
                 if (withdrawtoDeath)
-                    sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new MessageUtils.Replaceable("%amount%", withdrawHearts + "")));
+                    sender.sendMessage(MessageUtils.getAndFormatMsg(false, "withdrawConfirmmsg", "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> if you really want to withdraw a heart", new MessageUtils.Replaceable("%amount%", withdrawHearts + "")));
                 return false;
             }
 
             if (!withdrawtoDeath) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "noWithdraw", "&cYou would be eliminated if you withdraw a heart!"));
                 return false;
             }
 
@@ -99,11 +99,11 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             playerdata.setMaxHealth(0.0);
             plugin.getStorage().save(playerdata);
 
-            Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+            Component kickmsg = MessageUtils.getAndFormatMsg(false, "eliminatedjoin", "&cYou don't have any hearts left!");
             player.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
             if (plugin.getConfig().getBoolean("announceElimination")) {
-                Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName()));
+                Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "eliminateionAnnouncementNature", "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName()));
                 Bukkit.broadcast(elimAnnouncementMsg);
             }
 

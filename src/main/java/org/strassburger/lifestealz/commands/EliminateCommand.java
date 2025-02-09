@@ -56,14 +56,14 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
 
         dropPlayerInventory(targetPlayer);
 
-        Component kickmsg = MessageUtils.getAndFormatMsg(false, "messages.eliminatedjoin", "&cYou don't have any hearts left!");
+        Component kickmsg = MessageUtils.getAndFormatMsg(false, "eliminatedjoin", "&cYou don't have any hearts left!");
         targetPlayer.kick(kickmsg, PlayerKickEvent.Cause.BANNED);
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.eliminateSuc", "&7You successfully eliminated &c%player%&7!",
+        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "eliminateSuc", "&7You successfully eliminated &c%player%&7!",
                 new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
         if (plugin.getConfig().getBoolean("announceElimination")) {
-            Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "messages.eliminateionAnnouncementNature", "&c%player% &7has been eliminated!",
+            Component elimAnnouncementMsg = MessageUtils.getAndFormatMsg(true, "eliminateionAnnouncementNature", "&c%player% &7has been eliminated!",
                     new MessageUtils.Replaceable("%player%", targetPlayer.getName()));
             Bukkit.broadcast(elimAnnouncementMsg);
         }
@@ -81,7 +81,7 @@ public class EliminateCommand implements CommandExecutor, TabCompleter {
     }
 
     private void throwUsageError(CommandSender sender) {
-        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/eliminate <player>"));
+        Component usageMessage = MessageUtils.getAndFormatMsg(false, "usageError", "&cUsage: %usage%", new MessageUtils.Replaceable("%usage%", "/eliminate <player>"));
         sender.sendMessage(usageMessage);
     }
 

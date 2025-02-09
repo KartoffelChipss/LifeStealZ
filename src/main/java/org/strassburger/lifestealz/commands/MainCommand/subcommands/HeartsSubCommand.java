@@ -53,14 +53,14 @@ public class HeartsSubCommand implements SubCommand {
             Player player = parsePlayerName(args[2], false, plugin).get(0);
 
             if (player == null) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
                 return false;
             }
 
             PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
 
             int hearts = (int) (playerData.getMaxHealth() / 2);
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.getHearts", "&c%player% &7currently has &c%amount% &7hearts!",
+            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "getHearts", "&c%player% &7currently has &c%amount% &7hearts!",
                     new MessageUtils.Replaceable("%player%", player.getName()), new MessageUtils.Replaceable("%amount%", hearts + "")));
             return true;
         }
@@ -83,7 +83,7 @@ public class HeartsSubCommand implements SubCommand {
             if (targetPlayer == null && targetPlayers.size() == 1) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(
                         false,
-                        "messages.playerNotFound",
+                        "playerNotFound",
                         "&cPlayer not found!"
                 ));
                 return false;
@@ -202,7 +202,7 @@ public class HeartsSubCommand implements SubCommand {
     private void sendHeartLimitReachedMessage(CommandSender sender) {
         Component maxHeartsMsg = MessageUtils.getAndFormatMsg(
                 true,
-                "messages.maxHeartLimitReached",
+                "maxHeartLimitReached",
                 "&cYou already reached the limit of %limit% hearts!",
                 new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
         sender.sendMessage(maxHeartsMsg);

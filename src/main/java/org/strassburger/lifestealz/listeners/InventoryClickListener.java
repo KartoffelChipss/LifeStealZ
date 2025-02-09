@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
@@ -89,12 +90,12 @@ public class InventoryClickListener implements Listener {
                     PlayerData targetPlayerData = plugin.getStorage().load(playerUUID);
 
                     if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
                         return;
                     }
 
                     if (targetPlayerData.getMaxHealth() > minHearts * 2) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
                     }
 
@@ -104,7 +105,7 @@ public class InventoryClickListener implements Listener {
 
                     plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayer.getName());
 
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
+                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
 
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
 
@@ -145,13 +146,13 @@ public class InventoryClickListener implements Listener {
 
 
                     if (reviveMaximum != -1 && targetBedrockPlayerData.getHasbeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasbeenRevived() + "")));
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasbeenRevived() + "")));
                         return;
                     }
 
 
                     if (targetBedrockPlayerData.getMaxHealth() > minHearts * 2) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
                         return;
                     }
 
@@ -161,7 +162,7 @@ public class InventoryClickListener implements Listener {
 
                     plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetBedrockPlayer.getName());
 
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetBedrockPlayer.getName())));
+                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetBedrockPlayer.getName())));
 
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
 
@@ -186,8 +187,7 @@ public class InventoryClickListener implements Listener {
     }
 
     private void throwPermissionError(HumanEntity player) {
-        Component usageMessage = MessageUtils.getAndFormatMsg(false, "messages.noPermissionError", "&cYou don't have permission to use this!");
-        player.sendMessage(usageMessage);
+        CommandUtils.throwPermissionError(player);
     }
 
     private String getLastLineOfLore(ItemStack item, boolean bedrock) {

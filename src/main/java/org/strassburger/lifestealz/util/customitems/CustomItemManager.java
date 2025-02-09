@@ -197,7 +197,7 @@ public class CustomItemManager {
         skullMeta.displayName(Component.text("§d" + offlinePlayer.getName()));
 
         List<Component> lines = new ArrayList<>();
-        lines.add(MessageUtils.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"));
+        lines.add(MessageUtils.getAndFormatMsg(false, "revivePlayerDesc", "&7Click to revive this player"));
         lines.add(MessageUtils.formatMsg("<dark_gray>" + offlinePlayer.getUniqueId()));
 
         skullMeta.lore(lines);
@@ -220,7 +220,7 @@ public class CustomItemManager {
         skullMeta.displayName(Component.text("§d" + LifeStealZ.getInstance().getGeyserManager().getOfflineBedrockPlayerName(uuid)));
 
         List<Component> lines = new ArrayList<>();
-        lines.add(MessageUtils.getAndFormatMsg(false, "messages.revivePlayerDesc", "&7Click to revive this player"));
+        lines.add(MessageUtils.getAndFormatMsg(false, "revivePlayerDesc", "&7Click to revive this player"));
         lines.add(MessageUtils.formatMsg("<dark_gray>" + uuid));
         lines.add(MessageUtils.formatMsg("<dark_gray><i>This player is using the Bedrock Edition of Minecraft.</i>"));
 

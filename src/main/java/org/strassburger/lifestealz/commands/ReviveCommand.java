@@ -77,7 +77,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         PlayerData playerData = plugin.getStorage().load(targetPlayer.getUniqueId());
 
         if (playerData == null) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.noPlayerData", "&cThis player has not played on this server yet!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "noPlayerData", "&cThis player has not played on this server yet!"));
             return false;
         }
 

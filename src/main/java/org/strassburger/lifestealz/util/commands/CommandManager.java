@@ -40,7 +40,7 @@ public class CommandManager {
         if (command != null) {
             command.setExecutor(executor);
             command.setTabCompleter(tabCompleter);
-            command.permissionMessage(MessageUtils.getAndFormatMsg(false, "messages.noPermsError", "<red>You do not have permission to execute this command!"));
+            command.permissionMessage(MessageUtils.getAndFormatMsg(false, "noPermsError", "<red>You do not have permission to execute this command!"));
         }
     }
 }

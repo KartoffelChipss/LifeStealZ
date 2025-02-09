@@ -67,7 +67,7 @@ public class GiveItemSubCommand implements SubCommand {
 
         for (Player targetPlayer : targetPlayers) {
             if (targetPlayer == null && targetPlayers.size() == 1) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.playerNotFound", "&cPlayer not found!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
                 return false;
             }
 

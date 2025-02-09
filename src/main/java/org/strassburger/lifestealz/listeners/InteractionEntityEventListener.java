@@ -36,7 +36,7 @@ public class InteractionEntityEventListener implements Listener {
                 && targetEntity.getType().equals(EntityType.ITEM_FRAME)
         ) {
             event.setCancelled(true);
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.itemFramesDisabled", "&cYou cannot put custom items in itemframes!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "itemFramesDisabled", "&cYou cannot put custom items in itemframes!"));
         }
     }
 }

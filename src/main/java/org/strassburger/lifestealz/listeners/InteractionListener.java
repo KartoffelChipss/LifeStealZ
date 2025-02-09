@@ -49,7 +49,7 @@ public class InteractionListener implements Listener {
                     !WhitelistManager.isWorldWhitelisted(player)
                     && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))
             ) {
-                player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
+                player.sendMessage(MessageUtils.getAndFormatMsg(false, "worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
                 return;
             }
 
@@ -86,7 +86,7 @@ public class InteractionListener implements Listener {
 
         long heartCooldown = plugin.getConfig().getLong("heartCooldown");
         if (CooldownManager.lastHeartUse.get(player.getUniqueId()) != null && CooldownManager.lastHeartUse.get(player.getUniqueId()) + heartCooldown > System.currentTimeMillis()) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.heartconsumeCooldown", "&cYou have to wait before using another heart!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "heartconsumeCooldown", "&cYou have to wait before using another heart!"));
             return;
         }
 
@@ -100,7 +100,7 @@ public class InteractionListener implements Listener {
         double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
 
         if (newHearts > maxHearts) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));
             return;
         }
 
@@ -138,7 +138,7 @@ public class InteractionListener implements Listener {
 
         if (plugin.getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
 
-        player.sendMessage(MessageUtils.getAndFormatMsg(true, "messages.heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", savedHeartAmount + "")));
+        player.sendMessage(MessageUtils.getAndFormatMsg(true, "heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", savedHeartAmount + "")));
         CooldownManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
     }
 

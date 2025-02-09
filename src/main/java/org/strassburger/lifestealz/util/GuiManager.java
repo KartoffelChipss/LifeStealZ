@@ -22,7 +22,7 @@ public class GuiManager {
     public static void openReviveGui(Player player, int page) {
         List<UUID> eliminatedPlayers = LifeStealZ.getInstance().getStorage().getEliminatedPlayers();
 
-        Inventory inventory = Bukkit.createInventory(null, 6 * 9, MessageUtils.getAndFormatMsg(false, "messages.reviveTitle", "&8Revive a player"));
+        Inventory inventory = Bukkit.createInventory(null, 6 * 9, MessageUtils.getAndFormatMsg(false, "reviveTitle", "&8Revive a player"));
 
         int itemsPerPage = 5 * 9;
 

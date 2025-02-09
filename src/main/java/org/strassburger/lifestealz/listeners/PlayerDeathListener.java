@@ -138,7 +138,7 @@ public class PlayerDeathListener implements Listener {
         }, 1L);
 
         if (announceElimination) {
-            String messageKey = isDeathByPlayer ? "messages.eliminationAnnouncement" : "messages.eliminateionAnnouncementNature";
+            String messageKey = isDeathByPlayer ? "eliminationAnnouncement" : "eliminateionAnnouncementNature";
             Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, messageKey,
                     isDeathByPlayer ? "&c%player% &7has been eliminated by &c%killer%&7!" : "&c%player% &7has been eliminated!",
                     new MessageUtils.Replaceable("%player%", player.getName()),
@@ -178,7 +178,7 @@ public class PlayerDeathListener implements Listener {
                 if (dropHeartsIfMax) {
                     dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
                 } else {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.maxHeartLimitReached",
+                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "maxHeartLimitReached",
                             "&cYou already reached the limit of %limit% hearts!",
                             new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                 }
@@ -204,7 +204,7 @@ public class PlayerDeathListener implements Listener {
                         + player.getName() + " with the same IP address! (Probably an alt account)");
             }
             if (plugin.getConfig().getBoolean("antiAlt.sendMessage")) {
-                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.altKill",
+                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "altKill",
                         "&cPlease don't kill alts! This attempt has been logged!"));
             }
             for (String command : plugin.getConfig().getStringList("antiAlt.commands")) {

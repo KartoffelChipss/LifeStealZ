@@ -38,7 +38,7 @@ public class RecipeSubCommand implements SubCommand {
         }
 
         if (!plugin.getRecipeManager().isCraftable(recipe)) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "messages.recipeNotCraftable", "&cThis item is not craftable!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotCraftable", "&cThis item is not craftable!"));
             return false;
         }
 
