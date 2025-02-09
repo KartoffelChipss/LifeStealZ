@@ -16,11 +16,13 @@ public class PlayerJoinListener implements Listener {
 
     private final LifeStealZ plugin;
 
-    private GeyserManager geyserManager = LifeStealZ.getInstance().getGeyserManager();
-    private GeyserPlayerFile geyserPlayerFile = LifeStealZ.getInstance().getGeyserPlayerFile();
+    private final GeyserManager geyserManager;
+    private final GeyserPlayerFile geyserPlayerFile;
 
     public PlayerJoinListener(LifeStealZ plugin) {
         this.plugin = plugin;
+        this.geyserManager = plugin.getGeyserManager();
+        this.geyserPlayerFile = plugin.getGeyserPlayerFile();
     }
 
     @EventHandler
@@ -28,7 +30,7 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         Storage storage = plugin.getStorage();
 
-        if(LifeStealZ.getInstance().hasGeyser()) {
+        if(plugin.hasGeyser()) {
             if(geyserManager.isBedrockPlayer(player)) {
                 geyserPlayerFile.savePlayer(player.getUniqueId(), player.getName());
             }

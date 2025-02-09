@@ -19,7 +19,6 @@ import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
 public final class LifeStealZ extends JavaPlugin {
 
-    static LifeStealZ instance;
     private VersionChecker versionChecker;
     private Storage storage;
     private WorldGuardManager worldGuardManager;
@@ -48,8 +47,6 @@ public final class LifeStealZ extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-
         if (hasGeyser()) {
             getLogger().info("Geyser found, enabling Bedrock player support.");
             geyserPlayerFile = new GeyserPlayerFile();
@@ -97,7 +94,7 @@ public final class LifeStealZ extends JavaPlugin {
     }
 
     public static LifeStealZ getInstance() {
-        return instance;
+        return JavaPlugin.getPlugin(LifeStealZ.class);
     }
 
     public static LifeStealZAPI getAPI() {
