@@ -129,6 +129,11 @@ public class GracePeriodManager {
         playerData.setFirstJoin(System.currentTimeMillis() - getConfig().getDuration() * 1000L);// Subtract the duration of the grace period
         plugin.getStorage().save(playerData);
 
+        for (String command : getConfig().getEndCommands()) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                    command.replace("&player&", player.getName()));
+        }
+
         return true;
     }
 
@@ -145,6 +150,11 @@ public class GracePeriodManager {
 
         playerData.setFirstJoin(System.currentTimeMillis());
         plugin.getStorage().save(playerData);
+
+        for (String command : getConfig().getStartCommands()) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                    command.replace("&player&", player.getName()));
+        }
 
         return true;
     }
