@@ -5,6 +5,7 @@ org.strassburger.lifestealz.commands.MainCommand
 org.strassburger.lifestealz.commands.MainCommand.subcommands
 org.strassburger.lifestealz.listeners
 org.strassburger.lifestealz.util
+org.strassburger.lifestealz.util.caches
 org.strassburger.lifestealz.util.commands
 org.strassburger.lifestealz.util.customitems
 org.strassburger.lifestealz.util.geysermc
