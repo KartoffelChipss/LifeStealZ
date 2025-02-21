@@ -1,9 +1,11 @@
 package org.strassburger.lifestealz.listeners;
 
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +30,19 @@ public class InteractionListener implements Listener {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
+
+        // Prevent using respawn anchors in the overworld
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && plugin.getConfig().getBoolean("preventRespawnAnchors")) {
+            Block block = event.getClickedBlock();
+            if (
+                    block != null
+                    && block.getType() == Material.RESPAWN_ANCHOR
+                    && player.getWorld().getEnvironment() == World.Environment.NORMAL
+            ) {
+                event.setCancelled(true);
+                return;
+            }
+        }
 
         if (event.getAction().isRightClick() && item != null) {
             if (CustomItemManager.isForbiddenItem(item)) {
