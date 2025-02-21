@@ -1,5 +1,6 @@
 package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -9,8 +10,7 @@ import org.strassburger.lifestealz.util.commands.CommandUtils;
 
 import java.util.List;
 
-import static org.strassburger.lifestealz.util.commands.CommandUtils.parsePlayerName;
-import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
+import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
 public class GracePeriodSubcommand implements SubCommand {
     private final LifeStealZ plugin;
@@ -31,7 +31,7 @@ public class GracePeriodSubcommand implements SubCommand {
             return false;
         }
 
-        List<Player> targetPlayers = parsePlayerName(args[1], true, plugin);
+        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[1], true, plugin);
 
         if (targetPlayers.isEmpty()) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
@@ -55,11 +55,11 @@ public class GracePeriodSubcommand implements SubCommand {
         return true;
     }
 
-    private void handleGracePeriod(CommandSender sender, List<Player> targetPlayers, GracePeriodAction gracePeriodAction) {
+    private void handleGracePeriod(CommandSender sender, List<OfflinePlayer> targetPlayers, GracePeriodAction gracePeriodAction) {
         int successCount = 0;
-        Player lastSucessfulPlayer = null;
+        OfflinePlayer lastSucessfulPlayer = null;
 
-        for (Player targetPlayer : targetPlayers) {
+        for (OfflinePlayer targetPlayer : targetPlayers) {
             boolean success = gracePeriodAction == GracePeriodAction.SKIP ?
                     plugin.getGracePeriodManager().skipGracePeriod(targetPlayer) :
                     plugin.getGracePeriodManager().resetGracePeriod(targetPlayer);

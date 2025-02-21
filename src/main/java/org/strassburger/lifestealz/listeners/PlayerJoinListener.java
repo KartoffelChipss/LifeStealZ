@@ -63,7 +63,7 @@ public class PlayerJoinListener implements Listener {
         if (playerData == null) {
             playerData = new PlayerData(player.getName(), player.getUniqueId());
             storage.save(playerData);
-            storage.save(playerData);
+            plugin.getOfflinePlayerCache().addItem(player.getName());
         }
         return playerData;
     }

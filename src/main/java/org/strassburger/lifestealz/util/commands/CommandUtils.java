@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.util.commands;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
@@ -64,6 +65,34 @@ public class CommandUtils {
      */
     public static List<String> getPlayersTabCompletion(boolean allowStar) {
         return getPlayersTabCompletion(allowStar, LifeStealZ.getInstance());
+    }
+
+    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar, LifeStealZ plugin) {
+        List<OfflinePlayer> players = new ArrayList<>();
+
+        if (playerName.equals("*") && allowStar) {
+            players.addAll(
+                    plugin.getOfflinePlayerCache().getCachedData().stream()
+                            .map(name -> plugin.getServer().getOfflinePlayer(name))
+                            .collect(Collectors.toList())
+            );
+        } else {
+            OfflinePlayer player = plugin.getServer().getOfflinePlayer(playerName);
+            players.add(player);
+        }
+
+        return players;
+    }
+
+    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar) {
+        return parseOfflinePlayer(playerName, allowStar, LifeStealZ.getInstance());
+    }
+
+    public static List<String> getOfflinePlayersTabCompletion(boolean allowStar, LifeStealZ plugin) {
+        List<String> playerNames = new ArrayList<>();
+        if (allowStar) playerNames.add("*");
+        playerNames.addAll(plugin.getOfflinePlayerCache().getCachedData());
+        return playerNames;
     }
 
     public static void throwUsageError(CommandSender sender, String usage) {

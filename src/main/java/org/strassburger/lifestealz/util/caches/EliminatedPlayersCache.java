@@ -1,32 +1,26 @@
-package org.strassburger.lifestealz.util;
+package org.strassburger.lifestealz.util.caches;
 
 import org.strassburger.lifestealz.LifeStealZ;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EliminatedPlayersCache {
-    private final Set<String> eliminatedPlayers;
-    private final LifeStealZ plugin;
-
+public class EliminatedPlayersCache extends Cache<String> {
     /**
      * A cache for eliminated players to avoid unnecessary database queries on tab completion
      */
     public EliminatedPlayersCache(LifeStealZ plugin) {
-        this.plugin = plugin;
-        this.eliminatedPlayers = Collections.synchronizedSet(new HashSet<>());
-        reloadCache();
+        super(plugin);
     }
 
     /**
      * Reload the cache from the database
      */
+    @Override
     public void reloadCache() {
-        synchronized (eliminatedPlayers) {
-            eliminatedPlayers.clear();
-            eliminatedPlayers.addAll(plugin.getStorage().getEliminatedPlayerNames());
-        }
+        clearCache();
+        Set<String> eliminatedPlayerNames = new HashSet<>(getPlugin().getStorage().getEliminatedPlayerNames());
+        addAllItems(eliminatedPlayerNames);
     }
 
     /**
@@ -34,9 +28,7 @@ public class EliminatedPlayersCache {
      * @return A set of all eliminated players
      */
     public Set<String> getEliminatedPlayers() {
-        synchronized (eliminatedPlayers) {
-            return new HashSet<>(eliminatedPlayers);
-        }
+        return getCachedData();
     }
 
     /**
@@ -44,9 +36,7 @@ public class EliminatedPlayersCache {
      * @param username The username of the player to add
      */
     public void addEliminatedPlayer(String username) {
-        synchronized (eliminatedPlayers) {
-            eliminatedPlayers.add(username);
-        }
+        addItem(username);
     }
 
     /**
@@ -54,8 +44,6 @@ public class EliminatedPlayersCache {
      * @param username The username of the player to remove
      */
     public void removeEliminatedPlayer(String username) {
-        synchronized (eliminatedPlayers) {
-            eliminatedPlayers.remove(username);
-        }
+        removeItem(username);
     }
 }

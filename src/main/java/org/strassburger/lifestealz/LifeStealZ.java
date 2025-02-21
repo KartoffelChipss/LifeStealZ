@@ -8,8 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.strassburger.lifestealz.api.LifeStealZAPI;
 import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.caches.EliminatedPlayersCache;
+import org.strassburger.lifestealz.util.caches.OfflinePlayerCache;
 import org.strassburger.lifestealz.util.commands.CommandManager;
-import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.util.storage.MariaDBStorage;
@@ -31,6 +32,7 @@ public final class LifeStealZ extends JavaPlugin {
     private WebHookManager webHookManager;
     private GracePeriodManager gracePeriodManager;
     private EliminatedPlayersCache eliminatedPlayersCache;
+    private OfflinePlayerCache offlinePlayerCache;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
@@ -71,6 +73,7 @@ public final class LifeStealZ extends JavaPlugin {
         webHookManager = new WebHookManager(this);
 
         eliminatedPlayersCache = new EliminatedPlayersCache(this);
+        offlinePlayerCache = new OfflinePlayerCache(this);
 
         new CommandManager(this).registerCommands();
 
@@ -112,6 +115,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public EliminatedPlayersCache getEliminatedPlayersCache() {
         return eliminatedPlayersCache;
+    }
+
+    public OfflinePlayerCache getOfflinePlayerCache() {
+        return offlinePlayerCache;
     }
 
     public WorldGuardManager getWorldGuardManager() {

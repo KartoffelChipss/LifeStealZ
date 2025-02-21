@@ -12,13 +12,11 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WebHookManager;
 import org.strassburger.lifestealz.util.WhitelistManager;
-import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ReviveCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;

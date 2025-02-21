@@ -11,8 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.strassburger.lifestealz.util.commands.CommandUtils.getDisplayOptions;
-import static org.strassburger.lifestealz.util.commands.CommandUtils.getPlayersTabCompletion;
+import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
 public class MainTabCompleter implements TabCompleter {
     private final LifeStealZ plugin;
@@ -53,7 +52,7 @@ public class MainTabCompleter implements TabCompleter {
                 return getDisplayOptions(List.of("add", "set", "remove", "get"), input);
             case "giveItem":
             case "graceperiod":
-                return getPlayersTabCompletion(true, plugin);
+                return getOfflinePlayersTabCompletion(true, plugin);
             case "recipe":
                 return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
             case "data":

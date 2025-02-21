@@ -39,6 +39,7 @@ public class PlayerLoginListener implements Listener {
             playerData.setFirstJoin(System.currentTimeMillis());
             storage.save(playerData);
             plugin.getGracePeriodManager().startGracePeriod(player);
+            plugin.getOfflinePlayerCache().addItem(player.getName());
         }
         return playerData;
     }

@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.util;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,7 +31,7 @@ public class GracePeriodManager {
      * @param player The player to check.
      * @return True if the player is in the grace period, false otherwise.
      */
-    public boolean isInGracePeriod(Player player) {
+    public boolean isInGracePeriod(OfflinePlayer player) {
         if (!isEnabled()) return false;
 
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
@@ -119,7 +120,7 @@ public class GracePeriodManager {
      * @param player The player to skip the grace period for.
      * @return True if the grace period was skipped, false otherwise.
      */
-    public boolean skipGracePeriod(Player player) {
+    public boolean skipGracePeriod(OfflinePlayer player) {
         if (!isEnabled()) return false;
         if (!isInGracePeriod(player)) return false;
 
@@ -142,7 +143,7 @@ public class GracePeriodManager {
      * @param player The player to reset the grace period for.
      * @return True if the grace period was reset, false otherwise.
      */
-    public boolean resetGracePeriod(Player player) {
+    public boolean resetGracePeriod(OfflinePlayer player) {
         if (!isEnabled()) return false;
 
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
