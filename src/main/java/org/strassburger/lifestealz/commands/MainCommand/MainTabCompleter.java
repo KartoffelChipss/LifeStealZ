@@ -52,7 +52,7 @@ public class MainTabCompleter implements TabCompleter {
                 return getDisplayOptions(List.of("add", "set", "remove", "get"), input);
             case "giveItem":
             case "graceperiod":
-                return getOfflinePlayersTabCompletion(true, plugin);
+                return getDisplayOptions(getOfflinePlayersTabCompletion(true, plugin), input);
             case "recipe":
                 return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
             case "data":
@@ -68,8 +68,8 @@ public class MainTabCompleter implements TabCompleter {
         String input = args[2].toLowerCase();
         switch (args[0]) {
             case "hearts":
-                if ("get".equals(args[1])) return getPlayersTabCompletion(false, plugin);
-                return getPlayersTabCompletion(true, plugin);
+                if ("get".equals(args[1])) return getDisplayOptions(getOfflinePlayersTabCompletion(false, plugin), input);
+                return getDisplayOptions(getOfflinePlayersTabCompletion(true, plugin), input);
             case "graceperiod":
                 return getDisplayOptions(List.of("skip", "reset"), input);
             case "giveItem":

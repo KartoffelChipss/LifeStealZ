@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -15,8 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.strassburger.lifestealz.util.commands.CommandUtils.parsePlayerName;
-import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
+import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
 public class HeartsSubCommand implements SubCommand {
     private final LifeStealZ plugin;
@@ -50,7 +50,7 @@ public class HeartsSubCommand implements SubCommand {
         }
 
         if (optionTwo.equals("get")) {
-            Player player = parsePlayerName(args[2], false, plugin).get(0);
+            OfflinePlayer player = parseOfflinePlayer(args[2], false, plugin).get(0);
 
             if (player == null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
@@ -77,9 +77,9 @@ public class HeartsSubCommand implements SubCommand {
             return false;
         }
 
-        List<Player> targetPlayers = parsePlayerName(args[2], true, plugin);
+        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[2], true, plugin);
 
-        for (Player targetPlayer : targetPlayers) {
+        for (OfflinePlayer targetPlayer : targetPlayers) {
             if (targetPlayer == null && targetPlayers.size() == 1) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(
                         false,
@@ -106,7 +106,7 @@ public class HeartsSubCommand implements SubCommand {
 
                     targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() + (amount * 2));
                     storage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
+                    if (targetPlayer instanceof Player) LifeStealZ.setMaxHealth((Player) targetPlayer, targetPlayerData.getMaxHealth());
                     break;
                 }
                 case "set": {
@@ -126,7 +126,7 @@ public class HeartsSubCommand implements SubCommand {
 
                     targetPlayerData.setMaxHealth(amount * 2);
                     storage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
+                    if (targetPlayer instanceof Player) LifeStealZ.setMaxHealth((Player) targetPlayer, targetPlayerData.getMaxHealth());
                     break;
                 }
                 case "remove": {
@@ -141,7 +141,7 @@ public class HeartsSubCommand implements SubCommand {
 
                     targetPlayerData.setMaxHealth(targetPlayerData.getMaxHealth() - (amount * 2));
                     storage.save(targetPlayerData);
-                    LifeStealZ.setMaxHealth(targetPlayer, targetPlayerData.getMaxHealth());
+                    if (targetPlayer instanceof Player) LifeStealZ.setMaxHealth((Player) targetPlayer, targetPlayerData.getMaxHealth());
                     break;
                 }
             }
@@ -151,7 +151,7 @@ public class HeartsSubCommand implements SubCommand {
         return true;
     }
 
-    private void sendConfirmMessage(CommandSender sender, String optionTwo, List<Player> targetPlayers, int changedAmount) {
+    private void sendConfirmMessage(CommandSender sender, String optionTwo, List<OfflinePlayer> targetPlayers, int changedAmount) {
         String messageKey;
         String defaultMessage;
         Map<String, String> replacements = new HashMap<>();
