@@ -16,6 +16,7 @@ import org.strassburger.lifestealz.util.customitems.CustomItemData;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.storage.PlayerData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InteractionListener implements Listener {
@@ -34,10 +35,11 @@ public class InteractionListener implements Listener {
         // Prevent using respawn anchors in the overworld
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && plugin.getConfig().getBoolean("preventRespawnAnchors")) {
             Block block = event.getClickedBlock();
+            List<World.Environment> disabledEnvironments = List.of(World.Environment.NORMAL, World.Environment.THE_END);
             if (
                     block != null
                     && block.getType() == Material.RESPAWN_ANCHOR
-                    && player.getWorld().getEnvironment() == World.Environment.NORMAL
+                    && disabledEnvironments.contains(player.getWorld().getEnvironment())
             ) {
                 event.setCancelled(true);
                 return;
