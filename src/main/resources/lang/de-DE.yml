@@ -70,3 +70,4 @@ gracePeriodSkipSuccess: "&7Erfolgreich die Schutzzeit für &c%playerCount% &7Spi
 gracePeriodResetSuccess: "&7Erfolgreich die Schutzzeit für &c%playerCount% &7Spieler zurückgesetzt."
 gracePeriodSkipSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7übersprungen."
 gracePeriodResetSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7zurückgesetzt."
+interactionNotAllowed: "&cDamit darfst du nicht interagieren!"

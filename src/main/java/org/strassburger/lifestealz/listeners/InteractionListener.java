@@ -32,18 +32,14 @@ public class InteractionListener implements Listener {
         Player player = event.getPlayer();
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
-        // Prevent using respawn anchors in the overworld
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && plugin.getConfig().getBoolean("preventRespawnAnchors")) {
-            Block block = event.getClickedBlock();
-            List<World.Environment> disabledEnvironments = List.of(World.Environment.NORMAL, World.Environment.THE_END);
-            if (
-                    block != null
-                    && block.getType() == Material.RESPAWN_ANCHOR
-                    && disabledEnvironments.contains(player.getWorld().getEnvironment())
-            ) {
-                event.setCancelled(true);
-                return;
-            }
+        if (shouldCancelRespawnAnchorUsage(event) || shouldCancelBedInteraction(event)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "interactionNotAllowed",
+                    "&cYou are not allowed to interact with this!"
+            ));
+            event.setCancelled(true);
+            return;
         }
 
         if (event.getAction().isRightClick() && item != null) {
@@ -78,6 +74,33 @@ public class InteractionListener implements Listener {
                 handleReviveItem(item, player, hand, event);
             }
         }
+    }
+
+    /**
+     * Checks if the event should be cancelled when a player interacts with a respawn anchor
+     * @param event PlayerInteractEvent
+     * @return wether the event needs to be cancelled
+     */
+    private boolean shouldCancelRespawnAnchorUsage(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !plugin.getConfig().getBoolean("preventRespawnAnchors")) {
+            return false;
+        }
+
+        Block block = event.getClickedBlock();
+        List<World.Environment> disabledEnvironments = List.of(World.Environment.NORMAL, World.Environment.THE_END);
+
+        return block != null && block.getType() == Material.RESPAWN_ANCHOR &&
+                disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment());
+    }
+
+    private boolean shouldCancelBedInteraction(PlayerInteractEvent event) {
+        List<World.Environment> disabledEnvironments = List.of(World.Environment.NETHER, World.Environment.THE_END);
+        List<Material> disabledMaterials = List.of(Material.BLACK_BED, Material.BLUE_BED, Material.BROWN_BED, Material.CYAN_BED, Material.GRAY_BED, Material.GREEN_BED, Material.LIGHT_BLUE_BED, Material.LIGHT_GRAY_BED, Material.LIME_BED, Material.MAGENTA_BED, Material.ORANGE_BED, Material.PINK_BED, Material.PURPLE_BED, Material.RED_BED, Material.WHITE_BED, Material.YELLOW_BED);
+        Block block = event.getClickedBlock();
+        if (block == null || !plugin.getConfig().getBoolean("preventBeds")) return false;
+        return event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment())
+                && disabledMaterials.contains(block.getType());
     }
 
     private void handleHeartItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {

@@ -70,3 +70,4 @@ gracePeriodSkipSuccess: "&7Successfully skipped the grace period for &c%playerCo
 gracePeriodResetSuccess: "&7Successfully reset the grace period for &c%playerCount% &7players."
 gracePeriodSkipSuccessOnePlayer: "&7Successfully skipped the grace period for &c%player%&7."
 gracePeriodResetSuccessOnePlayer: "&7Successfully reset the grace period for &c%player%&7."
+interactionNotAllowed: "&cYou are not allowed to interact with this!"
