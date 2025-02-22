@@ -2,7 +2,6 @@ package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.SubCommand;
 import org.strassburger.lifestealz.util.MessageUtils;
@@ -31,7 +30,7 @@ public class GracePeriodSubcommand implements SubCommand {
             return false;
         }
 
-        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[1], true, plugin);
+        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[1], true, true, plugin);
 
         if (targetPlayers.isEmpty()) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));

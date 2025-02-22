@@ -50,7 +50,7 @@ public class HeartsSubCommand implements SubCommand {
         }
 
         if (optionTwo.equals("get")) {
-            OfflinePlayer player = parseOfflinePlayer(args[2], false, plugin).get(0);
+            OfflinePlayer player = parseOfflinePlayer(args[2], false, true, plugin).get(0);
 
             if (player == null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
@@ -77,7 +77,7 @@ public class HeartsSubCommand implements SubCommand {
             return false;
         }
 
-        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[2], true, plugin);
+        List<OfflinePlayer> targetPlayers = parseOfflinePlayer(args[2], true, true, plugin);
 
         for (OfflinePlayer targetPlayer : targetPlayers) {
             if (targetPlayer == null && targetPlayers.size() == 1) {

@@ -16,14 +16,14 @@ public class CommandUtils {
     /**
      * Parses a player name (or a star) to a list of players
      * @param playerName The name of the player
-     * @param allowStar If true, the star will be allowed as a wildcard
+     * @param allowPlus If true, the plus will be allowed as a wildcard for all online players
      * @param plugin The plugin instance
      * @return A list of players (or an empty list if the player is not online)
      */
-    public static List<Player> parsePlayerName(String playerName, boolean allowStar, LifeStealZ plugin) {
+    public static List<Player> parsePlayerName(String playerName, boolean allowPlus, LifeStealZ plugin) {
         List<Player> players = new ArrayList<>();
 
-        if (playerName.equals("*") && allowStar) {
+        if (playerName.equals("+") && allowPlus) {
             players.addAll(plugin.getServer().getOnlinePlayers());
         } else {
             Player player = plugin.getServer().getPlayer(playerName);
@@ -36,22 +36,22 @@ public class CommandUtils {
     /**
      * Parses a player name (or a star) to a list of players
      * @param playerName The name of the player
-     * @param allowStar If true, the star will be allowed as a wildcard
+     * @param allowPlus If true, the plus will be allowed as a wildcard for all online players
      * @return A list of players (or an empty list if the player is not online)
      */
-    public static List<Player> parsePlayerName(String playerName, boolean allowStar) {
-        return parsePlayerName(playerName, allowStar, LifeStealZ.getInstance());
+    public static List<Player> parsePlayerName(String playerName, boolean allowPlus) {
+        return parsePlayerName(playerName, allowPlus, LifeStealZ.getInstance());
     }
 
     /**
      * Gets a list of player names for tab completion
-     * @param allowStar If true, the star will be allowed as a wildcard
+     * @param allowPlus If true, the plus will be allowed as a wildcard for all online players
      * @param plugin The plugin instance
      * @return A list of player names
      */
-    public static List<String> getPlayersTabCompletion(boolean allowStar, LifeStealZ plugin) {
+    public static List<String> getPlayersTabCompletion(boolean allowPlus, LifeStealZ plugin) {
         List<String> playerNames = new ArrayList<>();
-        if (allowStar) playerNames.add("*");
+        if (allowPlus) playerNames.add("+");
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             playerNames.add(player.getName());
         }
@@ -67,7 +67,7 @@ public class CommandUtils {
         return getPlayersTabCompletion(allowStar, LifeStealZ.getInstance());
     }
 
-    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar, LifeStealZ plugin) {
+    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar, boolean allowPlus, LifeStealZ plugin) {
         List<OfflinePlayer> players = new ArrayList<>();
 
         if (playerName.equals("*") && allowStar) {
@@ -76,6 +76,8 @@ public class CommandUtils {
                             .map(name -> plugin.getServer().getOfflinePlayer(name))
                             .collect(Collectors.toList())
             );
+        } else if (playerName.equals("+") && allowPlus) {
+            players.addAll(plugin.getServer().getOnlinePlayers());
         } else {
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(playerName);
             players.add(player);
@@ -84,13 +86,14 @@ public class CommandUtils {
         return players;
     }
 
-    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar) {
-        return parseOfflinePlayer(playerName, allowStar, LifeStealZ.getInstance());
+    public static List<OfflinePlayer> parseOfflinePlayer(String playerName, boolean allowStar, boolean allowPlus) {
+        return parseOfflinePlayer(playerName, allowStar, allowPlus, LifeStealZ.getInstance());
     }
 
-    public static List<String> getOfflinePlayersTabCompletion(boolean allowStar, LifeStealZ plugin) {
+    public static List<String> getOfflinePlayersTabCompletion(boolean allowStar, boolean allowPlus, LifeStealZ plugin) {
         List<String> playerNames = new ArrayList<>();
         if (allowStar) playerNames.add("*");
+        if (allowPlus) playerNames.add("+");
         playerNames.addAll(plugin.getOfflinePlayerCache().getCachedData());
         return playerNames;
     }
