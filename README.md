@@ -181,8 +181,12 @@ maxRevives: -1
 preventTotems: false
 # If crystalpvp should be disabled
 preventCrystalPVP: false
+# If the use of respawn anchors in the overworld should be prevented
+preventRespawnAnchors: false
+# If the use of beds in the nether and end should be prevented
+preventBeds: false
 # If the use of custom items in item frames should be prevented
-# It is recommended to leave this enabled, as people can dupe items otherwise
+# It is recommended to leave this enabled, as people may be able to duplicate items otherwise
 preventCustomItemsInItemFrames: true
 
 
