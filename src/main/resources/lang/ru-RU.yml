@@ -70,3 +70,4 @@ gracePeriodSkipSuccess: "&7Период активной защиты для &c%
 gracePeriodResetSuccess: "&7Период активной защиты для &c%playerCount% &7сброшен."
 gracePeriodSkipSuccessOnePlayer: "&7Период активной защиты для &c%player%&7 пропущен."
 gracePeriodResetSuccessOnePlayer: "&7Период активной защиты для &c%player%&7 сброшен."
+interactionNotAllowed: "&cВам запрещено взаимодействовать с этим!"
