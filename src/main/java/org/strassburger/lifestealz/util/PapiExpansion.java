@@ -2,6 +2,9 @@ package org.strassburger.lifestealz.util;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.storage.PlayerData;
@@ -42,8 +45,19 @@ public class PapiExpansion extends PlaceholderExpansion {
                 return player.getName();
             }
             case "hearts": {
+                Player onlinePlayer = player.getPlayer();
+
+                // Try to get max health attribute from player as LSZ always updates it and it's faster
+                if (onlinePlayer != null) {
+                    AttributeInstance attribute = onlinePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                    if (attribute != null) {
+                        return String.valueOf((int) (attribute.getBaseValue() / 2));
+                    }
+                }
+
+                // Fallback to stored data
                 PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
-                return String.valueOf((int) playerData.getMaxHealth() / 2);
+                return String.valueOf((int) (playerData.getMaxHealth() / 2));
             }
             case "revived": {
                 PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
