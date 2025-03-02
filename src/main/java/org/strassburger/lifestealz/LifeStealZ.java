@@ -191,7 +191,6 @@ public final class LifeStealZ extends JavaPlugin {
         }
     }
 
-
     private void initializeBStats() {
         int pluginId = 18735;
         Metrics metrics = new Metrics(this, pluginId);

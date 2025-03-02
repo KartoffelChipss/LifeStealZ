@@ -17,12 +17,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -184,7 +182,7 @@ public class DebugSubCommand implements SubCommand {
                 String line = logLines.get(i);
                 Matcher matcher = logPattern.matcher(line);
                 if (matcher.matches() || line.contains(pluginName)) {
-                    logContent.append(line + "\n");
+                    logContent.append(line).append("\n");
                     linesAdded++;
                 }
 
