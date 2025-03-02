@@ -35,6 +35,7 @@ public class MainTabCompleter implements TabCompleter {
 
         List<String> options = new ArrayList<>();
         if (sender.hasPermission("lifestealz.admin.reload")) options.add("reload");
+        if (sender.hasPermission("lifestealz.admin.reload")) options.add("debug"); // debug doesnt need its own perm.
         if (sender.hasPermission("lifestealz.admin.setlife")) options.add("hearts");
         if (sender.hasPermission("lifestealz.admin.giveitem")) options.add("giveItem");
         if (sender.hasPermission("lifestealz.viewrecipes")) options.add("recipe");

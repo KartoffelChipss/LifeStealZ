@@ -19,6 +19,8 @@ import org.strassburger.lifestealz.util.storage.Storage;
 import org.strassburger.lifestealz.util.storage.SQLiteStorage;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
+import java.io.File;
+
 public final class LifeStealZ extends JavaPlugin {
 
     private VersionChecker versionChecker;
@@ -196,5 +198,9 @@ public final class LifeStealZ extends JavaPlugin {
 
         metrics.addCustomChart(new Metrics.SimplePie("storage_type", () -> getConfigManager().getStorageConfig().getString("type")));
         metrics.addCustomChart(new Metrics.SimplePie("language", () -> getConfig().getString("lang")));
+    }
+
+    public File getPluginFile() {
+        return this.getFile();
     }
 }
