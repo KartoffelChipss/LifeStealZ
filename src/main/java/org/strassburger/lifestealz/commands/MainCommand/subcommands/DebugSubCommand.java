@@ -38,7 +38,11 @@ public class DebugSubCommand implements SubCommand {
             return false;
         }
 
-        sender.sendMessage(MessageUtils.formatMsg("&7Generating debug report..."));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                false,
+                "generatingDebugReport",
+                "&7Generating debug report..."
+        ));
 
         // Run asynchronously
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -51,20 +55,36 @@ public class DebugSubCommand implements SubCommand {
                     pasteUrl = pasteUrl.replace("\\/", "/");
 
                     // Create a formatted message with a clickable link
-                    Component message = MessageUtils.formatMsg("&aDebug report uploaded: ")
+                    Component message = MessageUtils.getAndFormatMsg(
+                            false,
+                            "debugReportUploaded",
+                            "&aDebug report uploaded: "
+                            )
                             .append(
                                     MessageUtils.formatMsg("&7" + pasteUrl)
                                             .clickEvent(ClickEvent.openUrl(pasteUrl))
-                                            .hoverEvent(HoverEvent.showText(MessageUtils.formatMsg("&eClick to open debug report")))
+                                            .hoverEvent(HoverEvent.showText(MessageUtils.getAndFormatMsg(
+                                                    false,
+                                                    "clickToOpenDebugReport",
+                                                    "&eClick to open the debug report"
+                                            )))
                             );
 
                     sender.sendMessage(message);
                 } else {
-                    sender.sendMessage(MessageUtils.formatMsg("&cFailed to upload debug report. Please try again later."));
+                    sender.sendMessage(MessageUtils.getAndFormatMsg(
+                            false,
+                            "failedToUploadDebugReport",
+                            "&cFailed to upload debug report. Please try again later."
+                    ));
                 }
             } catch (Exception e) {
                 plugin.getLogger().log(Level.SEVERE, "Error generating debug report", e);
-                sender.sendMessage(MessageUtils.formatMsg("&cAn error occurred while generating the debug report."));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "errorWhileGeneratingDebugReport",
+                        "&cAn error occurred while generating the debug report."
+                ));
             }
         });
 

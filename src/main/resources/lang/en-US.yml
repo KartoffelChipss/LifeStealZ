@@ -71,3 +71,8 @@ gracePeriodResetSuccess: "&7Successfully reset the grace period for &c%playerCou
 gracePeriodSkipSuccessOnePlayer: "&7Successfully skipped the grace period for &c%player%&7."
 gracePeriodResetSuccessOnePlayer: "&7Successfully reset the grace period for &c%player%&7."
 interactionNotAllowed: "&cYou are not allowed to interact with this!"
+generatingDebugReport: "&7Generating debug report..."
+debugReportUploaded: "&aDebug report uploaded: "
+clickToOpenDebugReport: "&eClick to open the debug report"
+failedToUploadDebugReport: "&cFailed to upload debug report. Please try again later."
+errorWhileGeneratingDebugReport: "&cAn error occurred while generating the debug report."

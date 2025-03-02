@@ -71,3 +71,8 @@ gracePeriodResetSuccess: "&7Erfolgreich die Schutzzeit für &c%playerCount% &7Sp
 gracePeriodSkipSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7übersprungen."
 gracePeriodResetSuccessOnePlayer: "&7Erfolgreich die Schutzzeit für &c%player% &7zurückgesetzt."
 interactionNotAllowed: "&cDamit darfst du nicht interagieren!"
+generatingDebugReport: "&7Dubug Bericht wird generiert..."
+debugReportUploaded: "&aDebug Bericht hochgeladen: "
+clickToOpenDebugReport: "&eKlicke hier, um den Debug Bericht zu öffnen"
+failedToUploadDebugReport: "&cFehler beim Hochladen des Debug Berichts. Bitte versuche es später erneut."
+errorWhileGeneratingDebugReport: "&cBeim Generieren des Debug Berichts ist ein Fehler aufgetreten."
