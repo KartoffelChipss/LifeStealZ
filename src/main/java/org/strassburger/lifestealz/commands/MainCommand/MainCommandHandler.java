@@ -27,6 +27,7 @@ public class MainCommandHandler implements CommandExecutor {
         commands.put("data", new DataSubCommand(plugin));
         commands.put("graceperiod", new GracePeriodSubcommand(plugin));
         commands.put("dev", new DevSubCommand(plugin));
+        commands.put("debug", new DebugSubCommand(plugin));
     }
 
     @Override
