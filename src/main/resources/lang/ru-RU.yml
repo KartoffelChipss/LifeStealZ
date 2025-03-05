@@ -71,3 +71,8 @@ gracePeriodResetSuccess: "&7Период активной защиты для &c
 gracePeriodSkipSuccessOnePlayer: "&7Период активной защиты для &c%player%&7 пропущен."
 gracePeriodResetSuccessOnePlayer: "&7Период активной защиты для &c%player%&7 сброшен."
 interactionNotAllowed: "&cВам запрещено взаимодействовать с этим!"
+generatingDebugReport: "&7Создание отчёта отладки..."
+debugReportUploaded: "&aОтчёт отладки был загружен: "
+clickToOpenDebugReport: "&eНажмите, чтобы открыть отчёт отладки"
+failedToUploadDebugReport: "&cОшибка загрузки отчёта отладки. Пожалуйста, попробуйте позже."
+errorWhileGeneratingDebugReport: "&cПроизошла ошибка во время создания отчёта отладки."
