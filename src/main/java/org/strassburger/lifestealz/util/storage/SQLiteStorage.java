@@ -1,21 +1,19 @@
 package org.strassburger.lifestealz.util.storage;
 
 import org.strassburger.lifestealz.LifeStealZ;
-
-import java.sql.*;
+import org.strassburger.lifestealz.util.storage.connectionPool.ConnectionPool;
+import org.strassburger.lifestealz.util.storage.connectionPool.SQLiteConnectionPool;
 
 public final class SQLiteStorage extends SQLStorage {
+    private final SQLiteConnectionPool connectionPool;
+
     public SQLiteStorage(LifeStealZ plugin) {
         super(plugin);
+        connectionPool = new SQLiteConnectionPool(getPlugin().getDataFolder().getPath() + "/userData.db");
     }
 
-    Connection createConnection() {
-        try {
-            String pluginFolderPath = getPlugin().getDataFolder().getPath();
-            return DriverManager.getConnection("jdbc:sqlite:" + pluginFolderPath + "/userData.db");
-        } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to create connection to SQLite database: " + e.getMessage());
-            return null;
-        }
+    @Override
+    public ConnectionPool getConnectionPool() {
+        return connectionPool;
     }
 }

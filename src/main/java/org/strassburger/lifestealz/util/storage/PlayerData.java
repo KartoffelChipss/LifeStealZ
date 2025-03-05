@@ -7,7 +7,7 @@ import java.util.UUID;
 public class PlayerData {
     private final String name;
     private final String uuid;
-    private double maxHealth;
+    private double maxHealth = 20;
     private int craftedHearts;
     private int craftedRevives;
     private int hasBeenRevived;

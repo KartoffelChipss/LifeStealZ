@@ -3,6 +3,7 @@ package org.strassburger.lifestealz.util.storage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.storage.connectionPool.ConnectionPool;
 
 import java.io.*;
 import java.sql.*;
@@ -19,10 +20,10 @@ public abstract class SQLStorage extends Storage {
 
     @Override
     public void init() {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return;
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER, firstJoin INTEGER)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER, firstJoin BIGINT)");
 
                 migrateDatabase(connection);
             } catch (SQLException e) {
@@ -33,11 +34,15 @@ public abstract class SQLStorage extends Storage {
         }
     }
 
-    abstract Connection createConnection() throws SQLException;
+    public abstract ConnectionPool getConnectionPool();
+
+    public Connection getConnection() throws SQLException {
+        return getConnectionPool().getConnection();
+    }
 
     @Override
     public PlayerData load(UUID uuid) {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return null;
 
             try (Statement statement = connection.createStatement()) {
@@ -82,7 +87,7 @@ public abstract class SQLStorage extends Storage {
         // This uses standard SQL syntax to work with all SQL databases, but may not be optimal for all (e.g. H2 or MySQL)
         if (!playerData.hasChanges()) return;
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return;
 
             boolean exists = checkIfEntryExists(connection, playerData.getUuid());
@@ -210,7 +215,7 @@ public abstract class SQLStorage extends Storage {
 
         int minHearts = getPlugin().getConfig().getInt("minHearts");
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return eliminatedPlayers;
 
             try (Statement statement = connection.createStatement()) {
@@ -236,7 +241,7 @@ public abstract class SQLStorage extends Storage {
     public String export(String fileName) {
         String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName + ".csv";
         getPlugin().getLogger().info("Exporting player data to " + filePath);
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return null;
 
             try (Statement statement = connection.createStatement()) {
@@ -283,7 +288,7 @@ public abstract class SQLStorage extends Storage {
                     continue;
                 }
 
-                try (Connection connection = createConnection()) {
+                try (Connection connection = getConnection()) {
                     if (connection == null) return;
                     try (Statement statement = connection.createStatement()) {
                         statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) VALUES ('" + data[0] + "', '" + data[1] + "', " + Double.parseDouble(data[2]) + ", " + Integer.parseInt(data[3]) + ", " + Integer.parseInt(data[4]) + ", " + Integer.parseInt(data[5]) + ", " + Integer.parseInt(data[6]) + ", " + Integer.parseInt(data[7]) + ")");
@@ -312,7 +317,7 @@ public abstract class SQLStorage extends Storage {
         getPlugin().getLogger().info("Reviving all players with minHearts: " + minHearts + ", reviveHearts: " + reviveHearts + ", maxRevives: " + maxRevives + ", bypassReviveLimit: " + bypassReviveLimit);
         getPlugin().getLogger().info("SQL: " + sql);
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return affectedPlayers;
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -338,7 +343,7 @@ public abstract class SQLStorage extends Storage {
     public List<String> getPlayerNames() {
         List<String> playerNames = new ArrayList<>();
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return playerNames;
 
             try (Statement statement = connection.createStatement()) {
@@ -363,7 +368,7 @@ public abstract class SQLStorage extends Storage {
     public List<String> getEliminatedPlayerNames() {
         List<String> eliminatedPlayerNames = new ArrayList<>();
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return eliminatedPlayerNames;
 
             try (Statement statement = connection.createStatement()) {

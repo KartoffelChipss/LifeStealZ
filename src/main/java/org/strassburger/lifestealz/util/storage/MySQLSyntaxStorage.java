@@ -27,7 +27,7 @@ public abstract class MySQLSyntaxStorage extends SQLStorage {
                 "killedOtherPlayers = VALUES(killedOtherPlayers), " +
                 "firstJoin = VALUES(firstJoin)";
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = getConnection()) {
             if (connection == null) return;
 
             try (PreparedStatement stmt = connection.prepareStatement(insertOrUpdateQuery)) {
