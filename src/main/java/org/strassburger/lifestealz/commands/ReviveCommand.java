@@ -85,7 +85,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         if (!canRevive(sender, playerData, bypassOption)) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached",
                     "&cThis player has already been revived %amount% times!",
-                    new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasbeenRevived()))));
+                    new MessageUtils.Replaceable("%amount%", Integer.toString(playerData.getHasBeenRevived()))));
             return false;
         }
 
@@ -115,7 +115,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
         int maxRevives = plugin.getConfig().getInt("maxRevives");
         boolean hasBypassPermission = sender.hasPermission("lifestealz.bypassrevivelimit");
 
-        return maxRevives == -1 || playerData.getHasbeenRevived() < maxRevives ||
+        return maxRevives == -1 || playerData.getHasBeenRevived() < maxRevives ||
                 (BYPASS_OPTION.equals(bypassOption) && hasBypassPermission);
     }
 
@@ -139,7 +139,7 @@ public class ReviveCommand implements CommandExecutor, TabCompleter {
      */
     private void revivePlayer(CommandSender sender, String targetPlayerName, PlayerData playerData) {
         playerData.setMaxHealth(plugin.getConfig().getDouble("reviveHearts") * 2);
-        playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
+        playerData.setHasBeenRevived(playerData.getHasBeenRevived() + 1);
         plugin.getStorage().save(playerData);
         plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayerName);
 

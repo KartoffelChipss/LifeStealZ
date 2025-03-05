@@ -52,7 +52,7 @@ public class LifeStealZAPIImpl implements LifeStealZAPI {
         PlayerData playerData = plugin.getStorage().load(uuid);
         if (playerData == null) return false;
         playerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
-        playerData.setHasbeenRevived(playerData.getHasbeenRevived() + 1);
+        playerData.setHasBeenRevived(playerData.getHasBeenRevived() + 1);
         plugin.getStorage().save(playerData);
         return true;
     }

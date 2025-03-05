@@ -89,8 +89,8 @@ public class InventoryClickListener implements Listener {
 
                     PlayerData targetPlayerData = plugin.getStorage().load(playerUUID);
 
-                    if (reviveMaximum != -1 && targetPlayerData.getHasbeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasbeenRevived() + "")));
+                    if (reviveMaximum != -1 && targetPlayerData.getHasBeenRevived() >= reviveMaximum) {
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasBeenRevived() + "")));
                         return;
                     }
 
@@ -100,7 +100,7 @@ public class InventoryClickListener implements Listener {
                     }
 
                     targetPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
-                    targetPlayerData.setHasbeenRevived(targetPlayerData.getHasbeenRevived() + 1);
+                    targetPlayerData.setHasBeenRevived(targetPlayerData.getHasBeenRevived() + 1);
                     plugin.getStorage().save(targetPlayerData);
 
                     plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayer.getName());
@@ -145,8 +145,8 @@ public class InventoryClickListener implements Listener {
                     PlayerData targetBedrockPlayerData = plugin.getStorage().load(bedrockPlayerUUID);
 
 
-                    if (reviveMaximum != -1 && targetBedrockPlayerData.getHasbeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasbeenRevived() + "")));
+                    if (reviveMaximum != -1 && targetBedrockPlayerData.getHasBeenRevived() >= reviveMaximum) {
+                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasBeenRevived() + "")));
                         return;
                     }
 
@@ -157,7 +157,7 @@ public class InventoryClickListener implements Listener {
                     }
 
                     targetBedrockPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
-                    targetBedrockPlayerData.setHasbeenRevived(targetBedrockPlayerData.getHasbeenRevived() + 1);
+                    targetBedrockPlayerData.setHasBeenRevived(targetBedrockPlayerData.getHasBeenRevived() + 1);
                     plugin.getStorage().save(targetBedrockPlayerData);
 
                     plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetBedrockPlayer.getName());

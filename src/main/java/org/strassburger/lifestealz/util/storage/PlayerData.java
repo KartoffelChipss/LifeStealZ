@@ -1,18 +1,20 @@
 package org.strassburger.lifestealz.util.storage;
 
-import org.strassburger.lifestealz.LifeStealZ;
-
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerData {
     private final String name;
     private final String uuid;
-    private double maxHealth = (LifeStealZ.getInstance().getConfig().getInt("startHearts") * 2);
-    private int craftedHearts = 0;
-    private int craftedRevives = 0;
-    private int hasbeenRevived = 0;
-    private int killedOtherPlayers = 0;
-    private long firstJoin = 0;
+    private double maxHealth;
+    private int craftedHearts;
+    private int craftedRevives;
+    private int hasBeenRevived;
+    private int killedOtherPlayers;
+    private long firstJoin;
+
+    private final Set<String> modifiedFields = new HashSet<>(); // Track modified fields
 
     public PlayerData(String name, UUID uuid) {
         this.name = name;
@@ -31,9 +33,11 @@ public class PlayerData {
         return maxHealth;
     }
 
-    public void setMaxHealth(double maxHealth) throws IllegalArgumentException {
-        if (maxHealth < 0.0) throw new IllegalArgumentException("maxHealth cannot be negative");
-        this.maxHealth = maxHealth;
+    public void setMaxHealth(double maxHealth) {
+        if (this.maxHealth != maxHealth) {
+            this.maxHealth = maxHealth;
+            modifiedFields.add("maxhp");
+        }
     }
 
     public int getCraftedHearts() {
@@ -41,7 +45,10 @@ public class PlayerData {
     }
 
     public void setCraftedHearts(int craftedHearts) {
-        this.craftedHearts = craftedHearts;
+        if (this.craftedHearts != craftedHearts) {
+            this.craftedHearts = craftedHearts;
+            modifiedFields.add("craftedHearts");
+        }
     }
 
     public int getCraftedRevives() {
@@ -49,15 +56,21 @@ public class PlayerData {
     }
 
     public void setCraftedRevives(int craftedRevives) {
-        this.craftedRevives = craftedRevives;
+        if (this.craftedRevives != craftedRevives) {
+            this.craftedRevives = craftedRevives;
+            modifiedFields.add("craftedRevives");
+        }
     }
 
-    public int getHasbeenRevived() {
-        return hasbeenRevived;
+    public int getHasBeenRevived() {
+        return hasBeenRevived;
     }
 
-    public void setHasbeenRevived(int hasbeenRevived) {
-        this.hasbeenRevived = hasbeenRevived;
+    public void setHasBeenRevived(int hasBeenRevived) {
+        if (this.hasBeenRevived != hasBeenRevived) {
+            this.hasBeenRevived = hasBeenRevived;
+            modifiedFields.add("hasbeenRevived");
+        }
     }
 
     public int getKilledOtherPlayers() {
@@ -65,7 +78,10 @@ public class PlayerData {
     }
 
     public void setKilledOtherPlayers(int killedOtherPlayers) {
-        this.killedOtherPlayers = killedOtherPlayers;
+        if (this.killedOtherPlayers != killedOtherPlayers) {
+            this.killedOtherPlayers = killedOtherPlayers;
+            modifiedFields.add("killedOtherPlayers");
+        }
     }
 
     public long getFirstJoin() {
@@ -73,6 +89,21 @@ public class PlayerData {
     }
 
     public void setFirstJoin(long firstJoin) {
-        this.firstJoin = firstJoin;
+        if (this.firstJoin != firstJoin) {
+            this.firstJoin = firstJoin;
+            modifiedFields.add("firstJoin");
+        }
+    }
+
+    public boolean hasChanges() {
+        return !modifiedFields.isEmpty();
+    }
+
+    public Set<String> getModifiedFields() {
+        return new HashSet<>(modifiedFields);
+    }
+
+    public void clearModifiedFields() {
+        modifiedFields.clear();
     }
 }

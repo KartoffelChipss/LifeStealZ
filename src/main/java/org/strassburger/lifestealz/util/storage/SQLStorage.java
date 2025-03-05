@@ -33,14 +33,16 @@ public abstract class SQLStorage extends Storage {
         }
     }
 
-    abstract Connection createConnection();
+    abstract Connection createConnection() throws SQLException;
 
     @Override
     public PlayerData load(UUID uuid) {
         try (Connection connection = createConnection()) {
             if (connection == null) return null;
+
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(30);
+
                 try (ResultSet resultSet = statement.executeQuery("SELECT * FROM hearts WHERE uuid = '" + uuid + "'")) {
 
                     if (!resultSet.next()) {
@@ -53,11 +55,12 @@ public abstract class SQLStorage extends Storage {
 
                     PlayerData playerData = new PlayerData(resultSet.getString("name"), uuid);
                     playerData.setMaxHealth(resultSet.getDouble("maxhp"));
-                    playerData.setHasbeenRevived(resultSet.getInt("hasbeenRevived"));
+                    playerData.setHasBeenRevived(resultSet.getInt("hasbeenRevived"));
                     playerData.setCraftedHearts(resultSet.getInt("craftedHearts"));
                     playerData.setCraftedRevives(resultSet.getInt("craftedRevives"));
                     playerData.setKilledOtherPlayers(resultSet.getInt("killedOtherPlayers"));
                     playerData.setFirstJoin(resultSet.getLong("firstJoin"));
+                    playerData.clearModifiedFields();
 
                     return playerData;
                 } catch (SQLException e) {
@@ -71,6 +74,128 @@ public abstract class SQLStorage extends Storage {
         } catch (SQLException e) {
             getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public void save(PlayerData playerData) {
+        // This uses standard SQL syntax to work with all SQL databases, but may not be optimal for all (e.g. H2 or MySQL)
+        if (!playerData.hasChanges()) return;
+
+        try (Connection connection = createConnection()) {
+            if (connection == null) return;
+
+            boolean exists = checkIfEntryExists(connection, playerData.getUuid());
+
+            if (exists) {
+                updatePlayerData(connection, playerData);
+            } else {
+                insertPlayerData(connection, playerData);
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to save player data: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Check if a player entry exists in the database
+     * @param connection Connection to the database
+     * @param uuid UUID of the player to check
+     * @return True if the player entry exists, false otherwise
+     */
+    private boolean checkIfEntryExists(Connection connection, String uuid) {
+        final String selectQuery = "SELECT 1 FROM hearts WHERE uuid = ?";
+
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);) {
+            selectStmt.setString(1, uuid);
+            try (ResultSet resultSet = selectStmt.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to check if player entry exists: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Insert player data into the database
+     * @param connection Connection to the database
+     * @param playerData Player data to insert
+     * @return True if the insert was successful, false otherwise
+     */
+    private boolean insertPlayerData(Connection connection, PlayerData playerData) {
+        final String insertQuery = "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
+            insertStmt.setString(1, playerData.getUuid());
+            insertStmt.setString(2, playerData.getName());
+            insertStmt.setDouble(3, playerData.getMaxHealth());
+            insertStmt.setInt(4, playerData.getHasBeenRevived());
+            insertStmt.setInt(5, playerData.getCraftedHearts());
+            insertStmt.setInt(6, playerData.getCraftedRevives());
+            insertStmt.setInt(7, playerData.getKilledOtherPlayers());
+            insertStmt.setLong(8, playerData.getFirstJoin());
+            insertStmt.executeUpdate();
+
+            playerData.clearModifiedFields();
+
+            return true;
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to insert player data: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update player data in the database
+     * @param connection Connection to the database
+     * @param playerData Player data to update
+     * @return True if the update was successful, false otherwise
+     */
+    private boolean updatePlayerData(Connection connection, PlayerData playerData) {
+        StringBuilder updateQuery = new StringBuilder("UPDATE hearts SET ");
+        List<Object> params = new ArrayList<>();
+
+        for (String field : playerData.getModifiedFields()) {
+            updateQuery.append(field).append(" = ?, ");
+            switch (field) {
+                case "maxhp":
+                    params.add(playerData.getMaxHealth());
+                    break;
+                case "hasbeenRevived":
+                    params.add(playerData.getHasBeenRevived());
+                    break;
+                case "craftedHearts":
+                    params.add(playerData.getCraftedHearts());
+                    break;
+                case "craftedRevives":
+                    params.add(playerData.getCraftedRevives());
+                    break;
+                case "killedOtherPlayers":
+                    params.add(playerData.getKilledOtherPlayers());
+                    break;
+                case "firstJoin":
+                    params.add(playerData.getFirstJoin());
+                    break;
+            }
+        }
+
+        updateQuery.setLength(updateQuery.length() - 2); // Remove the last comma and space
+        updateQuery.append(" WHERE uuid = ?");
+        params.add(playerData.getUuid());
+
+        try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                updateStmt.setObject(i + 1, params.get(i));
+            }
+            updateStmt.executeUpdate();
+
+            playerData.clearModifiedFields();
+            return true;
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to update player data: " + e.getMessage());
+            return false;
         }
     }
 

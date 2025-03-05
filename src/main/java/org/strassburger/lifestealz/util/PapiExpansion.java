@@ -61,7 +61,7 @@ public class PapiExpansion extends PlaceholderExpansion {
             }
             case "revived": {
                 PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
-                return String.valueOf(playerData.getHasbeenRevived());
+                return String.valueOf(playerData.getHasBeenRevived());
             }
             case "health": {
                 return String.valueOf((int) (player.getPlayer().getHealth() / 2));
