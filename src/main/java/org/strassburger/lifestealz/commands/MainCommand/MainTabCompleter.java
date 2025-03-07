@@ -61,7 +61,7 @@ public class MainTabCompleter implements TabCompleter {
                 if (sender.hasPermission("lifestealz.managedata")) return getDisplayOptions(List.of("import", "export"), input);
                 break;
             case "dev":
-                return getDisplayOptions(List.of("giveForbiddenitem", "isInGracePeriod", "setFirstJoinDate", "refreshCaches"), input);
+                return getDisplayOptions(List.of("giveForbiddenitem", "isInGracePeriod", "setFirstJoinDate", "refreshCaches", "crash"), input);
         }
         return List.of();
     }

@@ -94,12 +94,16 @@ public class DevSubCommand implements SubCommand {
             sender.sendMessage(MessageUtils.formatMsg("&7Caches reloaded!"));
         }
 
+        if (optionTwo.equals("crash")) {
+            throw new RuntimeException("Crash test");
+        }
+
         return false;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches>";
+        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash>";
     }
 
     @Override
