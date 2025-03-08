@@ -11,9 +11,11 @@ import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageE
 
 public class DataSubCommand implements SubCommand {
     private final Storage storage;
+    private final LifeStealZ plugin;
 
     public DataSubCommand(LifeStealZ plugin) {
         this.storage = plugin.getStorage();
+        this.plugin = plugin;
     }
 
     @Override
@@ -32,16 +34,56 @@ public class DataSubCommand implements SubCommand {
         String fileName = args[2];
 
         if (optionTwo.equals("export")) {
-            storage.export(fileName);
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "exportData", "&7Successfully exported player data to &c%file%.csv",
-                    new MessageUtils.Replaceable("%file%", fileName)));
+            return handleExport(sender, fileName);
         } else if (optionTwo.equals("import")) {
-            storage.importData(fileName);
-            sender.sendMessage(MessageUtils.getAndFormatMsg(true, "importData", "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
-                    new MessageUtils.Replaceable("%file%", fileName)));
+            return handleImport(sender, fileName);
         } else {
             throwUsageError(sender, getUsage());
         }
+        return true;
+    }
+
+    private boolean handleExport(CommandSender sender, String fileName) {
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "exportingData",
+                "&7Exporting player data..."
+        ));
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            String filePath = storage.export(fileName);
+            if (filePath != null) {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        true,
+                        "exportData",
+                        "&7Successfully exported player data to &c%file%",
+                        new MessageUtils.Replaceable("%file%", filePath)
+                ));
+            } else {
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "exportDataError",
+                        "&cFailed to export data! Check console for details."
+                ));
+            }
+        });
+        return true;
+    }
+
+    private boolean handleImport(CommandSender sender, String fileName) {
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "importingData",
+                "&7Importing player data..."
+        ));
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            storage.importData(fileName);
+            sender.sendMessage(MessageUtils.getAndFormatMsg(
+                    true,
+                    "importData",
+                    "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
+                    new MessageUtils.Replaceable("%file%", fileName)
+            ));
+        });
         return true;
     }
 

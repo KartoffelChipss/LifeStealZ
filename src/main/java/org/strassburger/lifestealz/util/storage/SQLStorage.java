@@ -240,7 +240,6 @@ public abstract class SQLStorage extends Storage {
     @Override
     public String export(String fileName) {
         String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName + ".csv";
-        getPlugin().getLogger().info("Exporting player data to " + filePath);
         try (Connection connection = getConnection()) {
             if (connection == null) return null;
 
@@ -261,8 +260,6 @@ public abstract class SQLStorage extends Storage {
                         writer.newLine();
                     }
                 }
-
-                getPlugin().getLogger().info("Successfully exported player data to " + filePath);
             } catch (SQLException | IOException e) {
                 getPlugin().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
                 return null;
@@ -283,17 +280,27 @@ public abstract class SQLStorage extends Storage {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(CSV_SEPARATOR);
 
-                if (data.length != 7) {
-                    getPlugin().getLogger().severe("Invalid CSV format.");
+                if (data.length != 8) {
+                    getPlugin().getLogger().severe("Invalid CSV format. Expected 8 columns, but got " + data.length);
                     continue;
                 }
 
                 try (Connection connection = getConnection()) {
                     if (connection == null) return;
-                    try (Statement statement = connection.createStatement()) {
-                        statement.executeUpdate("INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) VALUES ('" + data[0] + "', '" + data[1] + "', " + Double.parseDouble(data[2]) + ", " + Integer.parseInt(data[3]) + ", " + Integer.parseInt(data[4]) + ", " + Integer.parseInt(data[5]) + ", " + Integer.parseInt(data[6]) + ", " + Integer.parseInt(data[7]) + ")");
-                    } catch (SQLException e) {
-                        getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
+
+                    String sql = "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setString(1, data[0]);  // uuid
+                        statement.setString(2, data[1]);  // name
+                        statement.setDouble(3, Double.parseDouble(data[2])); // maxhp
+                        statement.setInt(4, Integer.parseInt(data[3])); // hasbeenRevived
+                        statement.setInt(5, Integer.parseInt(data[4])); // craftedHearts
+                        statement.setInt(6, Integer.parseInt(data[5])); // craftedRevives
+                        statement.setInt(7, Integer.parseInt(data[6])); // killedOtherPlayers
+                        statement.setLong(8, Long.parseLong(data[7])); // firstJoin
+
+                        statement.executeUpdate();
                     }
                 } catch (SQLException e) {
                     getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
@@ -313,9 +320,6 @@ public abstract class SQLStorage extends Storage {
         if (bypassReviveLimit || maxRevives < 0) {
             sql = "UPDATE hearts SET maxhp = ?, hasbeenRevived = hasbeenRevived + 1 WHERE maxhp <= ?";
         }
-
-        getPlugin().getLogger().info("Reviving all players with minHearts: " + minHearts + ", reviveHearts: " + reviveHearts + ", maxRevives: " + maxRevives + ", bypassReviveLimit: " + bypassReviveLimit);
-        getPlugin().getLogger().info("SQL: " + sql);
 
         try (Connection connection = getConnection()) {
             if (connection == null) return affectedPlayers;
