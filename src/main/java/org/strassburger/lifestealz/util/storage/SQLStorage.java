@@ -23,7 +23,18 @@ public abstract class SQLStorage extends Storage {
         try (Connection connection = getConnection()) {
             if (connection == null) return;
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, name VARCHAR(255), maxhp REAL, hasbeenRevived INTEGER, craftedHearts INTEGER, craftedRevives INTEGER, killedOtherPlayers INTEGER, firstJoin BIGINT)");
+                StringBuilder sql = new StringBuilder();
+                sql.append("CREATE TABLE IF NOT EXISTS hearts (")
+                        .append("uuid CHAR(36) PRIMARY KEY, ")
+                        .append("name VARCHAR(64) NOT NULL, ")
+                        .append("maxhp FLOAT NOT NULL DEFAULT 20.0, ")
+                        .append("hasbeenRevived SMALLINT NOT NULL DEFAULT 0, ")
+                        .append("craftedHearts SMALLINT UNSIGNED NOT NULL DEFAULT 0, ")
+                        .append("craftedRevives SMALLINT UNSIGNED NOT NULL DEFAULT 0, ")
+                        .append("killedOtherPlayers MEDIUMINT UNSIGNED NOT NULL DEFAULT 0, ")
+                        .append("firstJoin BIGINT UNSIGNED NOT NULL")
+                        .append(");");
+                statement.executeUpdate(sql.toString());
 
                 migrateDatabase(connection);
             } catch (SQLException e) {
