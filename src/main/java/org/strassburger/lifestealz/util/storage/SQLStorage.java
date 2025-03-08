@@ -274,39 +274,64 @@ public abstract class SQLStorage extends Storage {
     @Override
     public void importData(String fileName) {
         String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName;
+        long startTime = System.currentTimeMillis();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(CSV_SEPARATOR);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
+             Connection connection = getConnection()) {
 
-                if (data.length != 8) {
-                    getPlugin().getLogger().severe("Invalid CSV format. Expected 8 columns, but got " + data.length);
-                    continue;
-                }
+            if (connection == null) return;
 
-                try (Connection connection = getConnection()) {
-                    if (connection == null) return;
+            // We are disabling auto-commit to insert all data in a single transaction to improve performance
+            connection.setAutoCommit(false);
 
-                    String sql = "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setString(1, data[0]);  // uuid
-                        statement.setString(2, data[1]);  // name
-                        statement.setDouble(3, Double.parseDouble(data[2])); // maxhp
-                        statement.setInt(4, Integer.parseInt(data[3])); // hasbeenRevived
-                        statement.setInt(5, Integer.parseInt(data[4])); // craftedHearts
-                        statement.setInt(6, Integer.parseInt(data[5])); // craftedRevives
-                        statement.setInt(7, Integer.parseInt(data[6])); // killedOtherPlayers
-                        statement.setLong(8, Long.parseLong(data[7])); // firstJoin
+            String sql = "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                String line;
+                int batchSize = 0;
+                int totalRows = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(CSV_SEPARATOR);
 
-                        statement.executeUpdate();
+                    if (data.length != 8) {
+                        getPlugin().getLogger().severe("Invalid CSV format. Expected 8 columns, but got " + data.length);
+                        continue;
                     }
-                } catch (SQLException e) {
-                    getPlugin().getLogger().severe("Failed to import player data from CSV file: " + e.getMessage());
+
+                    totalRows++;
+
+                    statement.setString(1, data[0]);  // uuid
+                    statement.setString(2, data[1]);  // name
+                    statement.setDouble(3, Double.parseDouble(data[2])); // maxhp
+                    statement.setInt(4, Integer.parseInt(data[3])); // hasbeenRevived
+                    statement.setInt(5, Integer.parseInt(data[4])); // craftedHearts
+                    statement.setInt(6, Integer.parseInt(data[5])); // craftedRevives
+                    statement.setInt(7, Integer.parseInt(data[6])); // killedOtherPlayers
+                    statement.setLong(8, Long.parseLong(data[7])); // firstJoin
+
+                    statement.addBatch();
+                    batchSize++;
+
+                    // Execute batch every 500 inserts
+                    if (batchSize % 500 == 0) {
+                        statement.executeBatch();
+                    }
                 }
+                statement.executeBatch();
+
+                connection.commit();
+
+                long endTime = System.currentTimeMillis();
+                getPlugin().getLogger().info("Imported " + totalRows + " player data entries in " + (endTime - startTime) + "ms");
+
+            } catch (SQLException e) {
+                connection.rollback();
+                getPlugin().getLogger().severe("Failed to import player data: " + e.getMessage());
+            } finally {
+                connection.setAutoCommit(true);
             }
-        } catch (IOException e) {
+
+        } catch (IOException | SQLException e) {
             getPlugin().getLogger().severe("Failed to read CSV file: " + e.getMessage());
         }
     }
