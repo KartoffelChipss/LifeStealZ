@@ -53,13 +53,16 @@ public abstract class SQLStorage extends Storage {
 
     @Override
     public PlayerData load(UUID uuid) {
+        final String sql = "SELECT * FROM hearts WHERE uuid = ?";
+
         try (Connection connection = getConnection()) {
             if (connection == null) return null;
 
-            try (Statement statement = connection.createStatement()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, uuid.toString());
                 statement.setQueryTimeout(30);
 
-                try (ResultSet resultSet = statement.executeQuery("SELECT * FROM hearts WHERE uuid = '" + uuid + "'")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
 
                     if (!resultSet.next()) {
                         Player player = Bukkit.getPlayer(uuid);
@@ -69,18 +72,10 @@ public abstract class SQLStorage extends Storage {
                         return newPlayerData;
                     }
 
-                    PlayerData playerData = new PlayerData(resultSet.getString("name"), uuid);
-                    playerData.setMaxHealth(resultSet.getDouble("maxhp"));
-                    playerData.setHasBeenRevived(resultSet.getInt("hasbeenRevived"));
-                    playerData.setCraftedHearts(resultSet.getInt("craftedHearts"));
-                    playerData.setCraftedRevives(resultSet.getInt("craftedRevives"));
-                    playerData.setKilledOtherPlayers(resultSet.getInt("killedOtherPlayers"));
-                    playerData.setFirstJoin(resultSet.getLong("firstJoin"));
-                    playerData.clearModifiedFields();
-
-                    return playerData;
+                    return mapResultSetToPlayerData(resultSet, uuid);
                 } catch (SQLException e) {
                     getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                    e.printStackTrace();
                     return null;
                 }
             } catch (SQLException e) {
@@ -91,6 +86,18 @@ public abstract class SQLStorage extends Storage {
             getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
             return null;
         }
+    }
+
+    private PlayerData mapResultSetToPlayerData(ResultSet resultSet, UUID uuid) throws SQLException {
+        PlayerData playerData = new PlayerData(resultSet.getString("name"), uuid);
+        playerData.setMaxHealth(resultSet.getDouble("maxhp"));
+        playerData.setHasBeenRevived(resultSet.getInt("hasbeenRevived"));
+        playerData.setCraftedHearts(resultSet.getInt("craftedHearts"));
+        playerData.setCraftedRevives(resultSet.getInt("craftedRevives"));
+        playerData.setKilledOtherPlayers(resultSet.getInt("killedOtherPlayers"));
+        playerData.setFirstJoin(resultSet.getLong("firstJoin"));
+        playerData.clearModifiedFields();
+        return playerData;
     }
 
     @Override
