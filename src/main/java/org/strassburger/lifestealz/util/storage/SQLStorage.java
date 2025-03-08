@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public abstract class SQLStorage extends Storage {
     private static final String CSV_SEPARATOR = ",";
@@ -38,10 +39,10 @@ public abstract class SQLStorage extends Storage {
 
                 migrateDatabase(connection);
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to initialize SQL database:", e);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to initialize SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to initialize SQL database:", e);
         }
     }
 
@@ -74,16 +75,15 @@ public abstract class SQLStorage extends Storage {
 
                     return mapResultSetToPlayerData(resultSet, uuid);
                 } catch (SQLException e) {
-                    getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
-                    e.printStackTrace();
+                    getPlugin().getLogger().log(Level.SEVERE, "Failed to load player data from SQL database:", e);
                     return null;
                 }
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to load player data from SQL database:", e);
                 return null;
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to load player data from SQL database:", e);
             return null;
         }
     }
@@ -116,7 +116,7 @@ public abstract class SQLStorage extends Storage {
                 insertPlayerData(connection, playerData);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to save player data: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to save player data:", e);
         }
     }
 
@@ -135,7 +135,7 @@ public abstract class SQLStorage extends Storage {
                 return resultSet.next();
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to check if player entry exists: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to check if player entry exists:", e);
             return false;
         }
     }
@@ -165,7 +165,7 @@ public abstract class SQLStorage extends Storage {
 
             return true;
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to insert player data: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to insert player data:", e);
             return false;
         }
     }
@@ -217,7 +217,7 @@ public abstract class SQLStorage extends Storage {
             playerData.clearModifiedFields();
             return true;
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to update player data: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to update player data:", e);
             return false;
         }
     }
@@ -245,10 +245,10 @@ public abstract class SQLStorage extends Storage {
                     eliminatedPlayers.add(UUID.fromString(resultSet.getString("uuid")));
                 }
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to get eliminated players from SQL database:", e);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to get eliminated players from SQL database:", e);
         }
 
         return eliminatedPlayers;
@@ -279,11 +279,11 @@ public abstract class SQLStorage extends Storage {
                     }
                 }
             } catch (SQLException | IOException e) {
-                getPlugin().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to export player data to CSV file:", e);
                 return null;
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to export player data to CSV file: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to export player data to CSV file:", e);
             return null;
         }
         return filePath;
@@ -344,13 +344,13 @@ public abstract class SQLStorage extends Storage {
 
             } catch (SQLException e) {
                 connection.rollback();
-                getPlugin().getLogger().severe("Failed to import player data: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to import player data:", e);
             } finally {
                 connection.setAutoCommit(true);
             }
 
         } catch (IOException | SQLException e) {
-            getPlugin().getLogger().severe("Failed to read CSV file: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to read CSV file:", e);
         }
     }
 
@@ -377,10 +377,10 @@ public abstract class SQLStorage extends Storage {
 
                 affectedPlayers = pstmt.executeUpdate();
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to revive all players in SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to revive all players in SQL database:", e);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to revive all players in SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to revive all players in SQL database:", e);
         }
 
         return affectedPlayers;
@@ -402,10 +402,10 @@ public abstract class SQLStorage extends Storage {
                     playerNames.add(resultSet.getString("name"));
                 }
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to load player names from SQL database:", e);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to load player names from SQL database:", e);
         }
 
         return playerNames;
@@ -427,10 +427,10 @@ public abstract class SQLStorage extends Storage {
                     eliminatedPlayerNames.add(resultSet.getString("name"));
                 }
             } catch (SQLException e) {
-                getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to get eliminated players from SQL database:", e);
             }
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to load player data from SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to get eliminated players from SQL database:", e);
         }
 
         return eliminatedPlayerNames;
@@ -465,7 +465,7 @@ public abstract class SQLStorage extends Storage {
             }
 
         } catch (SQLException e) {
-            getPlugin().getLogger().severe("Failed to migrate SQL database: " + e.getMessage());
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to migrate SQL database:", e);
         }
     }
 }
