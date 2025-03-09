@@ -1,5 +1,5 @@
-# LifeStealZ russian language file
-# ru-RU - by Wondarkus. With woof, straight to your heart! <3 
+# LifeStealZ language file
+# en-US - by Kartoffelchipss
 
 prefix: "&8[&cLifeStealZ&8]"
 newVersionAvailable: "&7Доступна новая версия LifeStealZ!\n&c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>"
@@ -49,7 +49,11 @@ noInventorySpace: "&cУ вас недостаточно места в инвен
 giveItem: "&7Вы получили %amount%x &c%item%&7!"
 heartGainCooldown: "&cВам необходимо подождать перед использованием сердца!"
 exportData: "&7Данные игрока успешно экспортированы в &c%file%.csv"
+exportDataError: "&cНе удалось экспортировать данные! Проверьте консоль."
+exportingData: "&7Экспорт данных игрока..."
 importData: "&7Успешно импортирован файл &c%file%.csv&7!\n&cПожалуйста, перезапустите сервер, чтобы обеспечить лучшую миграцию!"
+importDataError: "&cНе удалось импортировать данные! Проверьте консоль."
+importingData: "&7Импорт данных игрока..."
 unwhitelistedWorld: "\n<red><b><grey>></grey> Белый список мира</b></red>\n\n<gray>Вы играете в мире <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Копировать'>&world&</hover></click></red>.\nЭтот мир не в белом списке. LSZ невозможно использовать здесь.</gray>\n\n<red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Документация</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Сервер поддержки</click></u></red>   <u><hover:show_text:'<gray>Для игнорирования: установите 'supressWhitelistMessage' значение <b>true</b> в файле конфигурации.</gray>'><red>Скрыть сообщение</red></hover></u>\n"
 itemFramesDisabled: "&cВы не можете засунуть особые предметы в рамку!"
 itemMinHearts: "&cВам необходимо минимум %amount% сердец для использования этого предмета!"
