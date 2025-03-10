@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitTask;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.SubCommand;
 import org.strassburger.lifestealz.util.MessageUtils;
@@ -49,7 +50,7 @@ public class DataSubCommand implements SubCommand {
                 "exportingData",
                 "&7Exporting player data..."
         ));
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+        BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             String filePath = storage.export(fileName);
             if (filePath != null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(
@@ -66,6 +67,7 @@ public class DataSubCommand implements SubCommand {
                 ));
             }
         });
+        plugin.getAsyncTaskManager().addTask(task);
         return true;
     }
 
@@ -75,7 +77,7 @@ public class DataSubCommand implements SubCommand {
                 "importingData",
                 "&7Importing player data..."
         ));
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+        BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             storage.importData(fileName);
             sender.sendMessage(MessageUtils.getAndFormatMsg(
                     true,
@@ -84,6 +86,7 @@ public class DataSubCommand implements SubCommand {
                     new MessageUtils.Replaceable("%file%", fileName)
             ));
         });
+        plugin.getAsyncTaskManager().addTask(task);
         return true;
     }
 

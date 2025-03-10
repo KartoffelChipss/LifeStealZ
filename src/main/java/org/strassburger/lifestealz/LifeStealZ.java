@@ -35,6 +35,7 @@ public final class LifeStealZ extends JavaPlugin {
     private GracePeriodManager gracePeriodManager;
     private EliminatedPlayersCache eliminatedPlayersCache;
     private OfflinePlayerCache offlinePlayerCache;
+    private AsyncTaskManager asyncTaskManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
@@ -60,6 +61,8 @@ public final class LifeStealZ extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+
+        asyncTaskManager = new AsyncTaskManager();
 
         languageManager = new LanguageManager(this);
         configManager = new ConfigManager(this);
@@ -96,6 +99,8 @@ public final class LifeStealZ extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        getLogger().info("Canceling all running tasks...");
+        asyncTaskManager.cancelAllTasks();
         getLogger().info("LifeStealZ disabled!");
     }
 
@@ -105,6 +110,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public static LifeStealZAPI getAPI() {
         return new LifeStealZAPIImpl(getInstance());
+    }
+
+    public AsyncTaskManager getAsyncTaskManager() {
+        return asyncTaskManager;
     }
 
     public VersionChecker getVersionChecker() {
