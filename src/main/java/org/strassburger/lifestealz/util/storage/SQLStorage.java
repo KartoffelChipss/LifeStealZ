@@ -289,6 +289,8 @@ public abstract class SQLStorage extends Storage {
         return filePath;
     }
 
+    protected abstract String getInserOrReplaceStatement();
+
     @Override
     public void importData(String fileName) {
         String filePath = getPlugin().getDataFolder().getPath() + "/" + fileName;
@@ -302,8 +304,7 @@ public abstract class SQLStorage extends Storage {
             // We are disabling auto-commit to insert all data in a single transaction to improve performance
             connection.setAutoCommit(false);
 
-            String sql = "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = getInserOrReplaceStatement();// use db specific insert or replace statement
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 String line;
                 int batchSize = 0;
@@ -332,6 +333,7 @@ public abstract class SQLStorage extends Storage {
 
                     // Execute batch every 500 inserts
                     if (batchSize % 500 == 0) {
+                        getPlugin().getLogger().info("Imported " + totalRows + " player data entries. Committing batch...");
                         statement.executeBatch();
                     }
                 }
@@ -466,6 +468,21 @@ public abstract class SQLStorage extends Storage {
 
         } catch (SQLException e) {
             getPlugin().getLogger().log(Level.SEVERE, "Failed to migrate SQL database:", e);
+        }
+    }
+
+    @Override
+    public void clearDatabase() {
+        try (Connection connection = getConnection()) {
+            if (connection == null) return;
+
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("DELETE FROM hearts");
+            } catch (SQLException e) {
+                getPlugin().getLogger().log(Level.SEVERE, "Failed to clear SQL database:", e);
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to clear SQL database:", e);
         }
     }
 }

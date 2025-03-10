@@ -51,4 +51,18 @@ public abstract class MySQLSyntaxStorage extends SQLStorage {
             getPlugin().getLogger().severe("Failed to save player data to database: " + e.getMessage());
         }
     }
+
+    @Override
+    protected String getInserOrReplaceStatement() {
+        return "INSERT INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "name = VALUES(name), " +
+                "maxhp = VALUES(maxhp), " +
+                "hasbeenRevived = VALUES(hasbeenRevived), " +
+                "craftedHearts = VALUES(craftedHearts), " +
+                "craftedRevives = VALUES(craftedRevives), " +
+                "killedOtherPlayers = VALUES(killedOtherPlayers), " +
+                "firstJoin = VALUES(firstJoin)";
+    }
 }

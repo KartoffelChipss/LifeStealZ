@@ -16,4 +16,10 @@ public final class SQLiteStorage extends SQLStorage {
     public ConnectionPool getConnectionPool() {
         return connectionPool;
     }
+
+    @Override
+    protected String getInserOrReplaceStatement() {
+        return "INSERT OR REPLACE INTO hearts (uuid, name, maxhp, hasbeenRevived, craftedHearts, craftedRevives, killedOtherPlayers, firstJoin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    }
 }

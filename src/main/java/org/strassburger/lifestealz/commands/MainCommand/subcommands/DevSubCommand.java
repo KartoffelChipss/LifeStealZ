@@ -98,12 +98,17 @@ public class DevSubCommand implements SubCommand {
             throw new RuntimeException("Crash test");
         }
 
+        if (optionTwo.equals("cleardatabase")) {
+            plugin.getStorage().clearDatabase();
+            sender.sendMessage(MessageUtils.formatMsg("&7Database cleared!"));
+        }
+
         return false;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash>";
+        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash | cleardatabase>";
     }
 
     @Override

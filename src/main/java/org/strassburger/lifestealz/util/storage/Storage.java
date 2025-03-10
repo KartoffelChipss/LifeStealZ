@@ -85,4 +85,9 @@ public abstract class Storage {
     public abstract List<String> getPlayerNames();
 
     public abstract List<String> getEliminatedPlayerNames();
+
+    /**
+     * Clear all player data from the storage system.
+     */
+    public abstract void clearDatabase();
 }
