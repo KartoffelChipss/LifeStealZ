@@ -133,16 +133,20 @@ public class PlayerDeathListener implements Listener {
             Component kickMessage = MessageUtils.getAndFormatMsg(
                     false,
                     "eliminatedJoin",
-                    "&cYou don't have any hearts left!");
+                    "&cYou don't have any hearts left!"
+            );
             player.kick(kickMessage);
         }, 1L);
 
         if (announceElimination) {
             String messageKey = isDeathByPlayer ? "eliminationAnnouncement" : "eliminateionAnnouncementNature";
-            Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, messageKey,
+            Bukkit.broadcast(MessageUtils.getAndFormatMsg(
+                    false,
+                    messageKey,
                     isDeathByPlayer ? "&c%player% &7has been eliminated by &c%killer%&7!" : "&c%player% &7has been eliminated!",
                     new MessageUtils.Replaceable("%player%", player.getName()),
-                    new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")));
+                    new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")
+            ));
             event.setDeathMessage(null);
         }
 
@@ -169,7 +173,13 @@ public class PlayerDeathListener implements Listener {
         if (heartGainCooldownEnabled
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
                 && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!"));
+            long timeLeft = (CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown - System.currentTimeMillis()) / 1000;
+            killer.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "heartGainCooldown",
+                    "&cYou have to wait before gaining another heart!",
+                    new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))
+            ));
             if (heartGainCooldownDropOnCooldown) {
                 dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
             }
@@ -178,9 +188,11 @@ public class PlayerDeathListener implements Listener {
                 if (dropHeartsIfMax) {
                     dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
                 } else {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "maxHeartLimitReached",
+                    killer.sendMessage(MessageUtils.getAndFormatMsg(
+                            false, "maxHeartLimitReached",
                             "&cYou already reached the limit of %limit% hearts!",
-                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
+                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")
+                    ));
                 }
             } else {
                 killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + healthGain);

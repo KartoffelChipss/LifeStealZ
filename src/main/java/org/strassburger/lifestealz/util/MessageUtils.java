@@ -88,6 +88,28 @@ public class MessageUtils {
         return mm.deserialize(msg);
     }
 
+    public static String formatTime(long seconds) {
+        if (seconds < 0) return "0s";
+
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        StringBuilder result = new StringBuilder();
+
+        if (hours > 0) {
+            result.append(hours).append("h ");
+        }
+        if (minutes > 0 || (hours > 0 && secs > 0)) {
+            result.append(minutes).append("m ");
+        }
+        if (secs > 0 || seconds == 0) {
+            result.append(secs).append("s");
+        }
+
+        return result.toString().trim();
+    }
+
     public static class Replaceable {
         private final String placeholder;
         private final String value;
