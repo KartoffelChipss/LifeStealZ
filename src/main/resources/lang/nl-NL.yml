@@ -12,15 +12,34 @@ noPermissionError: "&cJe hebt geen toegang om dit te gebruiken!!"
 noPlayerData: "&cDeze speler heeft nog niet op deze server gespeeld!"
 eliminateSuccess: "&7Je hebt &c%player%&7 succesvol uitgeschakeld!"
 reviveSuccess: "&7Je hebt &c%player% succesvol tot leven gewekt!"
+massReviveSuccess: "&7Je hebt &c%amount% &7speler(s) succesvol tot leven gewekt!"
+massReviveError: "&cEr is een fout opgetreden bij het tot leven wekken van alle spelers:
+  %error%"
 reviveMaxReached: "&cDeze speler is al %amount% keer tot leven gewekt!"
 onlyReviveElimPlayers: "&cJe kunt alleen uitgeschakelde spelers tot leven wekken!"
 eliminatedJoin: "&cJe hebt geen hartjes meer over!"
 eliminationAnnouncement: "&c%player% &7 is uitgeschakeld door &c%killer%&7!"
 eliminateionAnnouncementNature: "&c%player% &7 is uitgeschakeld!"
-setHeartsConfirm: "&7Succesvol de hartjes van &c%player%&7 ingesteld op &c%amount%"
+setHeartsConfirmSingle: "&7Succesvol &c%player%'s &7hartjes ingesteld op &c%amount%
+  hartjes"
+setHeartsConfirmMultiple: "&7Succesvol &c%pamount% spelers &7hartjes ingesteld op
+  &c%amount%"
+addHeartsConfirmSingle: "&7Succesvol &c%amount% &7hartjes toegevoegd aan &c%player%"
+addHeartsConfirmMultiple: "&7Succesvol &c%amount% &7hartjes toegevoegd aan &c%pamount%
+  spelers"
+removeHeartsConfirmSingle: "&7Succesvol &c%amount% &7hartjes verwijderd van &c%player%"
+removeHeartsConfirmMultiple: "&7Succesvol &c%amount% &7hartjes verwijderd van &c%pamount%
+  spelers"
+connotSetHeartsBelowOrToZero: "&cJe kunt een speler's hartjes niet lager dan of op
+  0 zetten!"
 getHearts: "&c%player% &7heeft momenteel &c%amount% &7hartjes!"
 reloadMsg: "&7De plugin is succesvol herladen!"
 versionMsg: "&7Je gebruikt versie <red>%version%"
+newVersionMsg: |2
+
+  &c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>
+
+  &c <u><click:open_url:'https://lsz.j4n.net/'>Documentatie</click></u> &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
 noWithdraw: "&cJe wordt uitgeschakeld als je een hartje opneemt!"
 withdrawConfirmmsg: "&8&oGebruik <underlined><click:SUGGEST_COMMAND:/withdrawheart
   %amount% confirm>/withdrawheart %amount% confirm</click></underlined> als je echt
@@ -42,18 +61,51 @@ noInventorySpace: "&cJe hebt niet genoeg inventarisruimte om zoveel hartjes op t
   nemen!"
 giveItem: "&7Je hebt %amount%x &c%item%&7 ontvangen!"
 heartGainCooldown: "&cJe moet wachten voordat je een nieuw hartje kan krijgen!"
-exportData: "&7Spelergegevens succesvol geëxporteerd naar &c%file%.csv"
+exportData: "&7Spelergegevens succesvol geëxporteerd naar &c%file%"
+exportDataError: "&cGegevens exporteren mislukt! Controleer de console voor meer informatie."
+exportingData: "&7Spelergegevens exporteren..."
 importData: |-
-  &c%file%.csv&7 &7succesvol geïmporteerd!
+  &7 &c%file%&7 succesvol geïmporteerd!
   &cHerstart de server om een vlekkeloze migratie te garanderen!
+importDataError: "&cGegevens importeren mislukt! Controleer de console voor meer informatie."
+importingData: "&7Spelergegevens importeren..."
 unwhitelistedWorld: |2
 
-  <red><b><grey>></grey> World Whitelist</b></red>
+  <red><b><grey>></grey> Wereld Whitelist</b></red>
 
-  <gray>Je speelt momenteel op wereld <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red>.
+  <gray>Je speelt momenteel op wereld <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Kopieer naar klemborg'>&world&</hover></click></red>.
   Deze wereld is niet ge-whitelist. LSZ zal hier niet activeren.</gray>
 
   <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Documentatie</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u></red>   <u><hover:show_text:'<gray>Om te negeren: Stel 'supressWhitelistMessage' in op <b>true</b> in het config bestand.</gray>'><red>Verberg Bericht</red></hover></u>
 itemFramesDisabled: "&cJe kunt geen aangepaste voorwerpen in voorwerplijsten plaatsen!"
 itemMinHearts: "&cJe hebt minimaal %amount% hartjes nodig om dit voorwerp te gebruiken!"
 itemMaxHearts: "&cJe hebt het maximale aantal hartjes voor dit voorwerp bereikt!"
+webhookEliminationTitle: Speler uitgeschakeld
+webhookElimination: "**%player%** is uitgeschakeld door **%killer%**!"
+webhookEliminationColor: ea3323
+webhookReviveTitle: Speler tot leven gewekt
+webhookRevive: "**%player%** is tot leven gewekt door **%reviver%**!"
+webhookReviveColor: b094ee
+gracePeriodEnd: "&7Je genadeperiode is afgelopen!"
+noDamageInGracePeriod: "&cJe kunt spelers geen schade toebrengen tijdens de genadeperiode!"
+noHeartUseInGracePeriod: "&cJe kunt geen hartjes gebruiken tijdens de genadeperiode!"
+noHeartGainInGracePeriod: "&cJe kunt geen hartjes verdienen tijdens de genadeperiode!"
+noHeartGainFromPlayersInGracePeriod: "&cJe kunt geen hartjes van spelers krijgen tijdens
+  hun genadeperiode!"
+noHeartLossInGracePeriod: "&cJe kunt geen hartjes verliezen tijdens de genadeperiode!"
+gracePeriodSkipSuccess: "&7De genadeperiode voor &c%playerCount% &7spelers is succesvol
+  overgeslagen."
+gracePeriodResetSuccess: "&7De genadeperiode voor &c%playerCount% &7spelers is succesvol
+  opnieuw ingesteld."
+gracePeriodSkipSuccessOnePlayer: "&7De genadeperiode voor &c%player%&7 is succesvol
+  overgeslagen."
+gracePeriodResetSuccessOnePlayer: "&7De genadeperiode voor &c%player%&7 is succesvol
+  opnieuw ingesteld."
+interactionNotAllowed: "&cJe mag hier niet mee interacteren!"
+generatingDebugReport: "&7Debugrapport genereren..."
+debugReportUploaded: "&aDebugrapport geüpload:"
+clickToOpenDebugReport: "&eKlik om het debugrapport te openen"
+failedToUploadDebugReport: "&cHet uploaden van het debugrapport is mislukt. Probeer
+  het later opnieuw."
+errorWhileGeneratingDebugReport: "&cEr is een fout opgetreden tijdens het genereren
+  van het debugrapport."
