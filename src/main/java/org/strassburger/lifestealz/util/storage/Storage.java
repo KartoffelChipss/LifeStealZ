@@ -90,4 +90,9 @@ public abstract class Storage {
      * Clear all player data from the storage system.
      */
     public abstract void clearDatabase();
+
+    /**
+     * Migrate the database to the latest version.
+     */
+    protected abstract void migrateDatabase();
 }

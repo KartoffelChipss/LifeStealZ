@@ -5,10 +5,8 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.storage.connectionPool.ConnectionPool;
 import org.strassburger.lifestealz.util.storage.connectionPool.MySQLConnectionPool;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.logging.Level;
 
 /**
  * Storage class for MySQL database.
@@ -33,5 +31,26 @@ public final class MySQLStorage extends MySQLSyntaxStorage {
     @Override
     public ConnectionPool getConnectionPool() {
         return connectionPool;
+    }
+
+    @Override
+    protected void migrateDatabase() {
+        try (
+                Connection connection = getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(
+                        "SELECT COLUMN_NAME"
+                        + " FROM INFORMATION_SCHEMA.COLUMNS"
+                        + " WHERE TABLE_NAME = 'hearts'"
+                        + " AND COLUMN_NAME = 'firstJoin'"
+                )
+        ) {
+            if (!resultSet.next()) {
+                getPlugin().getLogger().info("Adding 'firstJoin' column to 'hearts' table.");
+                statement.executeUpdate("ALTER TABLE hearts ADD COLUMN firstJoin INTEGER DEFAULT 0");
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to migrate database: ", e);
+        }
     }
 }

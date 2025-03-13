@@ -37,7 +37,7 @@ public abstract class SQLStorage extends Storage {
                         .append(");");
                 statement.executeUpdate(sql.toString());
 
-                migrateDatabase(connection);
+                migrateDatabase();
             } catch (SQLException e) {
                 getPlugin().getLogger().log(Level.SEVERE, "Failed to initialize SQL database:", e);
             }
@@ -436,39 +436,6 @@ public abstract class SQLStorage extends Storage {
         }
 
         return eliminatedPlayerNames;
-    }
-
-    private void migrateDatabase(Connection connection) {
-        try (Statement statement = connection.createStatement()) {
-            boolean hasFirstJoin = false;
-            String databaseType = connection.getMetaData().getDatabaseProductName().toLowerCase();
-
-            if (databaseType.contains("sqlite")) {
-                try (ResultSet resultSet = statement.executeQuery("PRAGMA table_info(hearts)")) {
-                    while (resultSet.next()) {
-                        if ("firstJoin".equalsIgnoreCase(resultSet.getString("name"))) {
-                            hasFirstJoin = true;
-                            break;
-                        }
-                    }
-                }
-            } else if (databaseType.contains("mysql")) {
-                try (ResultSet resultSet = statement.executeQuery(
-                        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'hearts' AND COLUMN_NAME = 'firstJoin'")) {
-                    if (resultSet.next()) {
-                        hasFirstJoin = true;
-                    }
-                }
-            }
-
-            if (!hasFirstJoin) {
-                getPlugin().getLogger().info("Adding 'firstJoin' column to 'hearts' table.");
-                statement.executeUpdate("ALTER TABLE hearts ADD COLUMN firstJoin INTEGER DEFAULT 0");
-            }
-
-        } catch (SQLException e) {
-            getPlugin().getLogger().log(Level.SEVERE, "Failed to migrate SQL database:", e);
-        }
     }
 
     @Override
