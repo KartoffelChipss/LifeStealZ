@@ -117,7 +117,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 500.0f, 1.0f);
 
         for (int i = 0; i < withdrawHearts; i++) {
-            player.getInventory().addItem(CustomItemManager.createHeart());
+            player.getInventory().addItem(CustomItemManager.createWithdrawHeart());
         }
 
         return false;

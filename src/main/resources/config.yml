@@ -58,8 +58,20 @@ heartsPerNaturalDeath: 1
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
-# The custom item that should be dropped if a player is killed (Must be an id from the items.yml)
-heartItem: "defaultheart"
+# The custom items that should be used for the following scenarios (Must be an id from the items.yml)
+heartItem:
+  # This item will be used for anything that is not listed below (mostly legacy)
+  default: "defaultheart"
+  # This item will be given, when a user withdraws a heart
+  withdraw: "defaultheart"
+  # This item will be dropped when a player is killed by another player and "dropHeartsPlayer" is enabled
+  kill: "defaultheart"
+  # This item will be dropped when a player is killed by natural causes and "dropHeartsNatural" is enabled
+  naturalDeath: "defaultheart"
+  # This item will be dropped if a player is killed, the killer is still on cooldown and "heartGainCooldown.dropOnCooldown" is enabled
+  heartGainCooldown: "defaultheart"
+  # This item will be dropped if a player is killed, the killer has reached the max amount of hearts and "dropHeartsIfMax" is enabled
+  maxHearts: "defaultheart"
 
 
 # === HEART BEHAVIOR SETTINGS ===

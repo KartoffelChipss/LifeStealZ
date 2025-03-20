@@ -71,7 +71,52 @@ public class CustomItemManager {
      * @return The default heart item
      */
     public static ItemStack createHeart() {
-        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem", "defaultheart"));
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.default", "defaultheart"));
+    }
+
+    /**
+     * Creates the withdraw heart item
+     *
+     * @return The withdraw heart item
+     */
+    public static ItemStack createWithdrawHeart() {
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.withdraw", "defaultheart"));
+    }
+
+    /**
+     * Creates the kill heart item
+     *
+     * @return The kill heart item
+     */
+    public static ItemStack createKillHeart() {
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.kill", "defaultheart"));
+    }
+
+    /**
+     * Creates the natural death heart item
+     *
+     * @return The natural death heart item
+     */
+    public static ItemStack createNaturalDeathHeart() {
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.naturalDeath", "defaultheart"));
+    }
+
+    /**
+     * Creates the revive heart item
+     *
+     * @return The revive heart item
+     */
+    public static ItemStack createHeartGainCooldownHeart() {
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.heartGainCooldown", "defaultheart"));
+    }
+
+    /**
+     * Creates the max hearts heart item
+     *
+     * @return The max hearts heart item
+     */
+    public static ItemStack createMaxHealthHeart() {
+        return createCustomItem(LifeStealZ.getInstance().getConfig().getString("heartItem.maxHearts", "defaultheart"));
     }
 
     /**

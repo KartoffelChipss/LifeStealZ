@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
@@ -76,11 +77,11 @@ public class PlayerDeathListener implements Listener {
                     "&cYou can't gain hearts during the grace period!"
             ));
         } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
-            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
+            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createKillHeart());
         } else if (isDeathByPlayer) {
             handleKillerHeartGain(player, killer, world, healthToLoose);
         } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
-            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2));
+            dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createNaturalDeathHeart());
         }
 
         if (restrictedHeartLossByGracePeriod(player)) {
@@ -181,12 +182,12 @@ public class PlayerDeathListener implements Listener {
                     new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))
             ));
             if (heartGainCooldownDropOnCooldown) {
-                dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
+                dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createHeartGainCooldownHeart());
             }
         } else if (playerData.getMaxHealth() - healthGain > minHearts || (playerData.getMaxHealth() - healthGain <= minHearts && heartRewardOnElimination)) {
             if (killerPlayerData.getMaxHealth() + healthGain > maxHearts) {
                 if (dropHeartsIfMax) {
-                    dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2));
+                    dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createMaxHealthHeart());
                 } else {
                     killer.sendMessage(MessageUtils.getAndFormatMsg(
                             false, "maxHeartLimitReached",
@@ -235,10 +236,10 @@ public class PlayerDeathListener implements Listener {
         return address.getHostAddress();
     }
 
-    private void dropHeartsNaturally(Location location, int amount) {
+    private void dropHeartsNaturally(Location location, int amount, ItemStack itemStack) {
         World world = location.getWorld();
         for (int i = 0; i < amount; i++) {
-            world.dropItemNaturally(location, CustomItemManager.createHeart());
+            world.dropItemNaturally(location, itemStack);
         }
     }
 
