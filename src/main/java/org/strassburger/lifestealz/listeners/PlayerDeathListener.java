@@ -206,7 +206,7 @@ public class PlayerDeathListener implements Listener {
     }
 
     private boolean handleAntiAltLogic(Player player, @Nullable Player killer) {
-        if (killer == null) return false;
+        if (killer == null || player.getUniqueId().equals(killer.getUniqueId())) return false;
 
         final String victimIP = getPlayerIP(player);
         final String killerIP = getPlayerIP(killer);
