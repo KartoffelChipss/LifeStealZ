@@ -1,26 +1,48 @@
 package org.strassburger.lifestealz.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customitems.CustomItem;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeManager {
     private final LifeStealZ plugin;
+    private final Map<Inventory, List<Integer>> animationMap = new HashMap<>();
 
     public RecipeManager(LifeStealZ plugin) {
         this.plugin = plugin;
+    }
+
+    /**
+     * Saves that an animation was started in an inventory to stop them when the inventory is closed
+     * @param inventory The inventory to save the animation for
+     * @param taskId The task id of the animation
+     */
+    private void addAnimation(Inventory inventory, int taskId) {
+        if (animationMap.containsKey(inventory)) animationMap.get(inventory).add(taskId);
+        else animationMap.put(inventory, new ArrayList<>(Collections.singletonList(taskId)));
+    }
+
+    /**
+     * Cancels all animations for an inventory
+     * @param inventory The inventory to cancel the animations for
+     */
+    public void cancelAnimations(Inventory inventory) {
+        if (animationMap.containsKey(inventory)) {
+            for (int taskId : animationMap.get(inventory)) {
+                Bukkit.getScheduler().cancelTask(taskId);
+            }
+            animationMap.remove(inventory);
+        }
     }
 
     /**
@@ -88,8 +110,8 @@ public class RecipeManager {
      * @param itemId The id of the item to remove the recipe for
      */
     private void removeRecipe(String itemId) {
-        NamespacedKey heartRecipeKey = new NamespacedKey(plugin, "recipe" + itemId);
-        Bukkit.removeRecipe(heartRecipeKey);
+        NamespacedKey recipeKey = new NamespacedKey(plugin, "recipe" + itemId);
+        Bukkit.removeRecipe(recipeKey);
     }
 
     /**
@@ -132,6 +154,17 @@ public class RecipeManager {
     }
 
     /**
+     * Returns a tag from a string
+     * @param tagName The name of the tag (without the #)
+     * @return The tag
+     */
+    private Tag<Material> tagFromString(String tagName) {
+        Tag<Material> blockTag = Bukkit.getTag("blocks", NamespacedKey.minecraft(tagName), Material.class);
+        if (blockTag != null) return blockTag;
+        else return Bukkit.getTag("items", NamespacedKey.minecraft(tagName), Material.class);
+    }
+
+    /**
      * Sets an ingredient for a recipe
      * @param recipe The recipe to set the ingredient for
      * @param key The key of the ingredient
@@ -139,9 +172,24 @@ public class RecipeManager {
      */
     private void setIngredient(ShapedRecipe recipe, String key, String material) {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
-        if (getRecipeIds().contains(material.toLowerCase())) recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
-        else if (Material.getMaterial(material) != null) recipe.setIngredient(key.charAt(0), Material.valueOf(material));
-        else throw new IllegalArgumentException("Invalid material: " + material);
+
+        if (material.startsWith("#") && tagFromString(material.substring(1)) != null) {
+            Tag<Material> tag = tagFromString(material.substring(1).toLowerCase());
+            recipe.setIngredient(key.charAt(0), new RecipeChoice.MaterialChoice(tag));
+            return;
+        }
+
+        if (getRecipeIds().contains(material.toLowerCase())) {
+            recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
+            return;
+        }
+
+        if (Material.getMaterial(material.toUpperCase()) != null) {
+            recipe.setIngredient(key.charAt(0), Material.valueOf(material.toUpperCase()));
+            return;
+        }
+
+        throw new IllegalArgumentException("Invalid material or Tag: " + material + " (" + material.toUpperCase() + ")");
     }
 
     /**
@@ -152,8 +200,51 @@ public class RecipeManager {
      */
     private void renderIngredient(Inventory inventory, int slot, String material) {
         if (material == null || material.equalsIgnoreCase("AIR") || material.equalsIgnoreCase("empty")) return;
-        if (getRecipeIds().contains(material.toLowerCase())) inventory.setItem(slot, new CustomItem(CustomItemManager.createCustomItem(material)).makeForbidden().getItemStack());
-        else if (Material.getMaterial(material) != null) inventory.setItem(slot, new CustomItem(new ItemStack(Material.valueOf(material), 1)).makeForbidden().getItemStack());
-        else throw new IllegalArgumentException("Invalid material: " + material);
+
+        if (material.startsWith("#") && tagFromString(material.substring(1)) != null) {
+            Tag<Material> tag = tagFromString(material.substring(1).toLowerCase());
+            Set<Material> materials = tag.getValues();
+            startTagAnimation(inventory, slot, materials);
+            return;
+        }
+
+        if (getRecipeIds().contains(material.toLowerCase())) {
+            inventory.setItem(slot, new CustomItem(CustomItemManager.createCustomItem(material)).makeForbidden().getItemStack());
+            return;
+        }
+
+        if (Material.getMaterial(material.toUpperCase()) != null) {
+            inventory.setItem(slot, new CustomItem(new ItemStack(Material.valueOf(material.toUpperCase()), 1)).makeForbidden().getItemStack());
+            return;
+        }
+
+        throw new IllegalArgumentException("Invalid material: " + material);
+    }
+
+    private void startTagAnimation(Inventory inventory, int slot, Set<Material> materials) {
+        List<Material> materialList = new ArrayList<>(materials);
+        AtomicReference<Integer> index = new AtomicReference<>(0);
+
+        if (materialList.isEmpty()) return;
+
+        Runnable runnable = () -> {
+            int currentIndex = index.get();
+            inventory.setItem(slot, new CustomItem(materialList.get(currentIndex)).makeForbidden().getItemStack());
+
+            // Update index, loop back when reaching the end
+            index.set((currentIndex + 1) % materialList.size());
+        };
+
+        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
+
+        if (taskId == -1) return;
+
+        addAnimation(inventory, taskId);
+
+        // Cancel the task after 30 seconds
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            Bukkit.getScheduler().cancelTask(taskId);
+            if (inventory != null) inventory.setItem(slot, new CustomItem(materialList.get(0)).makeForbidden().getItemStack());
+        }, 20 * 30);
     }
 }

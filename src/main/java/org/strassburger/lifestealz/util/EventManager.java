@@ -20,7 +20,7 @@ public class EventManager {
         registerListener(new EntityDamageByEntityListener(plugin));
         registerListener(new EntityResurrectListener(plugin));
         registerListener(new InteractionListener(plugin));
-        registerListener(new InventoryCloseListener());
+        registerListener(new InventoryCloseListener(plugin));
         registerListener(new InventoryClickListener(plugin));
         registerListener(new PlayerDeathListener(plugin));
         registerListener(new WorldSwitchListener(plugin));

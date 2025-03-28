@@ -28,7 +28,9 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
     # Every item represents one slot in the crafting table
     # The first item in a row is the left most item in the crafting table
     # If you want a slot to be blank, use 'AIR' or 'empty'
+    # If you want to use a simple material, use the material name (e.g. "DIAMOND_BLOCK"). Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
     # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
+    # If you want to use block or item tags, use the tag with a '#' in front (e.g. "#logs" or "#wool")
     rowOne:
       - "GOLD_BLOCK"
       - "GOLD_BLOCK"
