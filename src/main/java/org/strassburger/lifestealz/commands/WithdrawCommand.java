@@ -40,15 +40,6 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player)) return false;
 
-        if (!sender.hasPermission("lifestealz.withdraw")) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "noPermsError",
-                    "<red>You do not have permission to execute this command!"
-            ));
-            return false;
-        }
-
         int withdrawHearts = 0;
         try {
             withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
