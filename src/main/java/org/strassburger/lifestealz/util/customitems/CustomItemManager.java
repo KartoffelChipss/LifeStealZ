@@ -216,6 +216,17 @@ public class CustomItemManager {
     }
 
     /**
+     * Checks if an item is a non-usable item
+     * @param item The item to check
+     * @return If the item is a non-usable item
+     */
+    public static boolean isNonUsableItem(ItemStack item) {
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
+                && (item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("non-usable"));
+    }
+
+    /**
      * Gets the custom item id of an item
      *
      * @param item The item to get the id from

@@ -4,15 +4,24 @@
 # You can change which item is dropped on death in the main config.yml
 
 defaultheart: # <- This is the item id that can be used in recipes and for permissions
+  # This is the name of the item that is displayed in the inventory
   name: "&cHeart"
+  # The lore is the description of the item that is displayed in the inventory
   lore:
     - "&7Rightclick to use"
   #  - "This would be a second line"
   #  - "And this possibly a third line"
-  material: "NETHER_STAR" # Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  # The material is the item that is displayed in the inventory (Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
+  material: "NETHER_STAR"
+  # If set to true, the enchant glint will be applied to the item
   enchanted: false
+  # The custom model data is used to change the appearance of the item without changing the texture of a material
   customModelData: 100
-  # Custom item type for the item ("heart", "revive" or "none")
+  # Custom item type for the item. You can use:
+    # - "heart" for a heart item
+    # - "revive" for a revive item
+    # - "none" for a custom item that can be used for crafting and can be used as a normal item (e.g. if it is an enderpearl it still can be thrown)
+    # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
   customItemType: "heart"
   # When customItemType is "heart", this value is used to determine how many hearts the item gives
   customHeartValue: 1

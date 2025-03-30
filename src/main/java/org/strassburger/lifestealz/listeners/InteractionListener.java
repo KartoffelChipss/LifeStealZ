@@ -66,6 +66,11 @@ public class InteractionListener implements Listener {
                 return;
             }
 
+            if (CustomItemManager.isNonUsableItem(item)) {
+                event.setCancelled(true);
+                return;
+            }
+
             if (CustomItemManager.isHeartItem(item)) {
                 handleHeartItem(item, player, hand, event);
             }
