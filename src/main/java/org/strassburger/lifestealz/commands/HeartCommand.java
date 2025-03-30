@@ -44,14 +44,21 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
      */
     private boolean handleSelfHeartCheck(CommandSender sender) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "specifyPlayerOrBePlayer", "&cYou need to either specify a player or be a player yourself!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "specifyPlayerOrBePlayer",
+                    "&cYou need to either specify a player or be a player yourself!"
+            ));
             return false;
         }
 
         Player player = (Player) sender;
         PlayerData playerdata = plugin.getStorage().load(player.getUniqueId());
         int heartCount = (int) Math.floor(playerdata.getMaxHealth() / 2);
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "viewheartsYou", "&7You have &c%amount% &7hearts!",
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "viewheartsYou",
+                "&7You have &c%amount% &7hearts!",
                 new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount))));
         return true;
     }
@@ -74,7 +81,11 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
             if (target.getName() == null) {
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "playerNotFound",
+                        "&cPlayer not found!"
+                ));
                 return false;
             }
 
@@ -82,12 +93,19 @@ public class HeartCommand implements CommandExecutor, TabCompleter {
         }
 
         if (playerdata == null) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "playerNotFound", "&cPlayer not found!"));
+            sender.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "playerNotFound",
+                    "&cPlayer not found!"
+            ));
             return false;
         }
 
         int heartCount = (int) Math.floor(playerdata.getMaxHealth() / 2);
-        sender.sendMessage(MessageUtils.getAndFormatMsg(true, "viewheartsOther", "&c%player% &7currently has &c%amount% &7hearts!",
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "viewheartsOther",
+                "&c%player% &7currently has &c%amount% &7hearts!",
                 new MessageUtils.Replaceable("%amount%", Integer.toString(heartCount)),
                 new MessageUtils.Replaceable("%player%", targetName)));
         return true;
