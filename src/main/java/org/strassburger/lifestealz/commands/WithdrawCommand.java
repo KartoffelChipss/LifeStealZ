@@ -38,9 +38,16 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (!(sender instanceof Player)) return false;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "needToBePlayer",
+                    "&cYou need to be a player to execute this command!"
+            ));
+            return false;
+        }
 
-        int withdrawHearts = 0;
+        int withdrawHearts;
         try {
             withdrawHearts = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 1;
         } catch (NumberFormatException e) {
