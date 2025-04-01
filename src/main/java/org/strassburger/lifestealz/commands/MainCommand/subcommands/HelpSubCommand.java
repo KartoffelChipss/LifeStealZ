@@ -25,6 +25,8 @@ public class HelpSubCommand implements SubCommand {
         addHelpEntry(helpMessage, sender, "lifestealz.admin.setlife", "/lifestealz hearts", "- modify how many hearts a player has");
         addHelpEntry(helpMessage, sender, "lifestealz.admin.giveitem", "/lifestealz giveItem", "- give other players custom items, such as hearts");
         addHelpEntry(helpMessage, sender, "lifestealz.viewrecipes", "/lifestealz recipe", "- view all recipes");
+        addHelpEntry(helpMessage, sender, "lifestealz.admin.graceperiod", "/lifestealz graceperiod", "- manage a player's grace period");
+        addHelpEntry(helpMessage, sender, "lifestealz.managedata", "/lifestealz data", "- import, export or edit player data");
         addHelpEntry(helpMessage, sender, "lifestealz.admin.revive", "/revive", "- revive a player without a revive item");
         addHelpEntry(helpMessage, sender, "lifestealz.admin.eliminate", "/eliminate", "- eliminate a player");
         addHelpEntry(helpMessage, sender, "lifestealz.withdraw", "/withdrawheart", "- withdraw a heart");

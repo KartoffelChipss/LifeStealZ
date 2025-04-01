@@ -29,7 +29,7 @@ connotSetHeartsBelowOrToZero: "&cプレイヤーのハートを0またはそれ�
 getHearts: "&c%player% &7は現在 &c%amount% &7のハートを持っています！"
 reloadMsg: "&7プラグインを正常にリロードしました！"
 versionMsg: "&7現在のバージョンは <red>%version% です>"
-newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://lsz.j4n.net/'>ドキュメント</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>サポートDiscord</click></u>\n"
+newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://wiki.lifestealz.com/'>ドキュメント</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>サポートDiscord</click></u>\n"
 noWithdraw: "&cハートを引き出すと排除されてしまいます！"
 withdrawConfirmmsg: "&8&o本当にハートを引き出したい場合は <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> を使用してください"
 maxHeartLimitReached: "&c既に%limit%個のハートの上限に達しています！"

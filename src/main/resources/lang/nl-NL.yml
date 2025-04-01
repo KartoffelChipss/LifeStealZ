@@ -39,7 +39,7 @@ newVersionMsg: |2
 
   &c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>
 
-  &c <u><click:open_url:'https://lsz.j4n.net/'>Documentatie</click></u> &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
+  &c <u><click:open_url:'https://wiki.lifestealz.com/'>Documentatie</click></u> &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
 noWithdraw: "&cJe wordt uitgeschakeld als je een hartje opneemt!"
 withdrawConfirmmsg: "&8&oGebruik <underlined><click:SUGGEST_COMMAND:/withdrawheart
   %amount% confirm>/withdrawheart %amount% confirm</click></underlined> als je echt

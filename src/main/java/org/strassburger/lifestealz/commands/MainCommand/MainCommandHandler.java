@@ -51,7 +51,7 @@ public class MainCommandHandler implements CommandExecutor {
         sender.sendMessage(MessageUtils.getAndFormatMsg(
                 false,
                 "newVersionMsg",
-                "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://lsz.j4n.net/'>Documentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>\n",
+                "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://wiki.lifestealz.com/'>Documentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>\n",
                 new MessageUtils.Replaceable("%version%", plugin.getDescription().getVersion())
         ));
     }

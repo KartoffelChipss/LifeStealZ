@@ -29,7 +29,7 @@ connotSetHeartsBelowOrToZero: "&cVocê não pode definir os corações de um jog
 getHearts: "&c%player% &7atualmente tem &c%amount% &7corações!"
 reloadMsg: "&7Plugin recarregado com sucesso!"
 versionMsg: "&7Você está usando a versão <red>%version%"
-newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://lsz.j4n.net/'>Documentação</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Discord de Suporte</click></u>\n"
+newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://wiki.lifestealz.com/'>Documentação</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Discord de Suporte</click></u>\n"
 noWithdraw: "&cVocê seria eliminado se retirasse um coração!"
 withdrawConfirmmsg: "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> se realmente deseja retirar um coração"
 maxHeartLimitReached: "&cVocê já atingiu o limite de %limit% corações!"

@@ -29,7 +29,7 @@ connotSetHeartsBelowOrToZero: "&cВы не можете установить к�
 getHearts: "&c%player% &7в данный момент имеет &c%amount% &7сердец!"
 reloadMsg: "&7Плагин успешно переустановлен!"
 versionMsg: "&7Вы используете версию <red>%version%"
-newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://lsz.j4n.net/'>Докумендация</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Discord поддержки</click></u>\n"
+newVersionMsg: "\n&c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>\n\n&c <u><click:open_url:'https://wiki.lifestealz.com/'>Докумендация</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Discord поддержки</click></u>\n"
 noWithdraw: "&cВы будете уничтожены, если потеряете сердце!"
 withdrawConfirmmsg: "&8&oИспользуйте <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount% confirm>/withdrawheart %amount% confirm</click></underlined> если вы действительно хотите потерять сердце!"
 maxHeartLimitReached: "&cВы уже достигли лимита в %limit% сердец!"

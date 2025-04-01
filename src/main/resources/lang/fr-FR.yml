@@ -38,7 +38,7 @@ newVersionMsg: |2
 
   &c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>
 
-  &c <u><click:open_url:'https://lsz.j4n.net/'>Documentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
+  &c <u><click:open_url:'https://wiki.lifestealz.com/'>Documentation</click></u>  &c<u><click:open_url:'https://strassburger.org/discord'>Support Discord</click></u>
 noWithdraw: "&cVous serez éliminé si vous retirez un cœur!"
 withdrawConfirmmsg: "&8&oUtilisez <underlined><click:SUGGEST_COMMAND:/withdrawheart
   %amount% confirm>/withdrawheart %amount% confirm</click></underlined> si vous voulez
