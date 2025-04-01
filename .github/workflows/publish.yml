@@ -1,0 +1,74 @@
+name: Publish to Modrinth and Hangar
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # This step will take the version tag from the release and replace it in `pom.xml` before building.
+      - name: Set version from release tag
+        run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
+      - name: Build with Maven
+        run: mvn -B clean package
+
+      - name: Publish to Modrinth
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: 'l8Uv7FzS'
+          version: ${{ github.event.release.tag_name }}
+          name: 'LifeStealZ ${{ github.event.release.tag_name }}'
+          changelog: ${{ github.event.release.body }}
+          files: '["target/lifestealz-${{ github.event.release.tag_name }}.jar"]'
+          loaders: |-
+            paper
+            purpur
+          game-versions: |-
+            1.19.x
+            1.20.x
+            1.21.x
+          status: 'listed'
+          channel: 'release'
+
+      - name: Publish to Hangar
+        uses: benwoo1110/hangar-upload-action@v1
+        with:
+          api_token: ${{ secrets.HANGAR_TOKEN }}
+          slug: 'LifestealZ'
+          version: ${{ github.event.release.tag_name }}
+          channel: Release
+          files: |
+            [
+              {
+                "platforms": ["PAPER"],
+                "path": "target/lifestealz-${{ github.event.release.tag_name }}.jar"
+              }
+            ]
+          description: ${{ github.event.release.body }}
+          platform_dependencies: |
+            {
+              "PAPER": ["1.19.x", "1.20.x", "1.21.x"]
+            }
