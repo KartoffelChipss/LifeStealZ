@@ -49,7 +49,7 @@ public class GiveItemSubCommand implements SubCommand {
             return false;
         }
 
-        Set<String> possibleItems = plugin.getRecipeManager().getRecipeIds();
+        Set<String> possibleItems = plugin.getRecipeManager().getItemIds();
 
         if (!possibleItems.contains(item)) {
             throwUsageError(sender, getUsage());

@@ -69,7 +69,7 @@ public class LifeStealZAPIImpl implements LifeStealZAPI {
 
     @Override
     public Set<String> getCustomItemIDs() {
-        return plugin.getRecipeManager().getRecipeIds();
+        return plugin.getRecipeManager().getItemIds();
     }
 
     @Override

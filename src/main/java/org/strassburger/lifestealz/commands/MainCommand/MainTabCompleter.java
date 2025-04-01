@@ -56,7 +56,7 @@ public class MainTabCompleter implements TabCompleter {
             case "graceperiod":
                 return getDisplayOptions(getOfflinePlayersTabCompletion(true, true, plugin), input);
             case "recipe":
-                return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
+                return getDisplayOptions(plugin.getRecipeManager().getItemIds(), input);
             case "data":
                 if (sender.hasPermission("lifestealz.managedata")) return getDisplayOptions(List.of("import", "export"), input);
                 break;
@@ -75,7 +75,9 @@ public class MainTabCompleter implements TabCompleter {
             case "graceperiod":
                 return getDisplayOptions(List.of("skip", "reset"), input);
             case "giveItem":
-                return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(), input);
+                return getDisplayOptions(plugin.getRecipeManager().getItemIds(), input);
+            case "recipe":
+                return getDisplayOptions(plugin.getRecipeManager().getRecipeIds(args[1]), input);
             case "data":
                 if ("import".equals(args[1]) && sender.hasPermission("lifestealz.managedata")) {
                     return getDisplayOptions(getCSVFiles(), input);

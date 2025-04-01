@@ -24,31 +24,43 @@ public class RecipeSubCommand implements SubCommand {
         }
 
         if (!(sender instanceof Player)) return false;
+        Player player = (Player) sender;
 
         if (args.length < 2) {
-            throwUsageError(sender, getUsage());
+            throwUsageError(player, getUsage());
             return false;
         }
 
-        String recipe = args[1];
+        String itemId = args[1];
 
-        if (recipe == null || !plugin.getRecipeManager().getRecipeIds().contains(recipe)) {
-            throwUsageError(sender, getUsage());
+        if (itemId == null || !plugin.getRecipeManager().getItemIds().contains(itemId)) {
+            throwUsageError(player, getUsage());
             return false;
         }
 
-        if (!plugin.getRecipeManager().isCraftable(recipe)) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotCraftable", "&cThis item is not craftable!"));
+        if (!plugin.getRecipeManager().isCraftable(itemId)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotCraftable",
+                    "&cThis item is not craftable!"
+            ));
             return false;
         }
 
-        plugin.getRecipeManager().renderRecipe((Player) sender, recipe);
+        String recipeId = args.length > 2 ? args[2] : null;
+
+        if (recipeId == null) {
+            plugin.getRecipeManager().renderRecipe(player, itemId);
+            return true;
+        }
+
+        plugin.getRecipeManager().renderRecipe(player, itemId, recipeId);
         return true;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getRecipeIds()) + ">";
+        return "/lifestealz recipe <" + String.join(" | ", plugin.getRecipeManager().getItemIds()) + "> [<recipeId>]";
     }
 
     @Override

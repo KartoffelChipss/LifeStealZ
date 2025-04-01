@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.util;
 
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -49,8 +50,20 @@ public class RecipeManager {
      * Returns all recipe ids
      * @return All recipe ids
      */
-    public Set<String> getRecipeIds() {
+    public Set<String> getItemIds() {
         return plugin.getConfigManager().getCustomItemConfig().getKeys(false);
+    }
+
+    public Set<String> getRecipeIds(String itemId) {
+        Set<String> recipeIds = new HashSet<>();
+        FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
+        if (config.isSet(itemId + ".recipes")) {
+            ConfigurationSection recipeSection = config.getConfigurationSection(itemId + ".recipes");
+            if (recipeSection != null) {
+                recipeIds.addAll(recipeSection.getKeys(false));
+            }
+        }
+        return recipeIds;
     }
 
     /**
@@ -59,7 +72,7 @@ public class RecipeManager {
     public void registerRecipes() {
         for (String itemId : plugin.getConfigManager().getCustomItemConfig().getKeys(false)) {
             removeRecipe(itemId);
-            registerRecipe(itemId);
+            registerCustomItemRecipes(itemId);
         }
     }
 
@@ -76,21 +89,41 @@ public class RecipeManager {
      * Registers a recipe
      * @param itemId The item id to register
      */
-    private void registerRecipe(String itemId) {
+    private void registerCustomItemRecipes(String itemId) {
         boolean craftable = plugin.getConfigManager().getCustomItemConfig().getBoolean(itemId + ".craftable");
 
         if (!craftable) return;
 
         FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
 
-        NamespacedKey heartRecipeKey = new NamespacedKey(plugin, "recipe" + itemId);
+        boolean hasOneRecipe = config.isSet(itemId + ".recipe");
+
+        if (hasOneRecipe) {
+            List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
+            List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
+            List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
+
+            registerRecipe(itemId, "default", rowOne, rowTwo, rowThree);
+        } else {
+            ConfigurationSection recipeSection = config.getConfigurationSection(itemId + ".recipes");
+            if (recipeSection == null) return;
+
+            for (String recipeId : recipeSection.getKeys(false)) {
+                List<String> rowOne = recipeSection.getStringList(recipeId + ".rowOne");
+                List<String> rowTwo = recipeSection.getStringList(recipeId + ".rowTwo");
+                List<String> rowThree = recipeSection.getStringList(recipeId + ".rowThree");
+
+                registerRecipe(itemId, recipeId, rowOne, rowTwo, rowThree);
+            }
+        }
+    }
+
+    private void registerRecipe(String itemId, String recipeId, List<String> rowOne, List<String> rowTwo, List<String> rowThree) {
+        NamespacedKey recipeKey = new NamespacedKey(plugin, "recipe_" + itemId + "_" + recipeId);
         ItemStack resultItem = CustomItemManager.createCustomItem(itemId);
-        ShapedRecipe recipe = new ShapedRecipe(heartRecipeKey, resultItem);
+        ShapedRecipe recipe = new ShapedRecipe(recipeKey, resultItem);
 
         recipe.shape("ABC", "DEF", "GHI");
-        List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
-        List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
-        List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
 
         setIngredient(recipe, "A", rowOne.get(0));
         setIngredient(recipe, "B", rowOne.get(1));
@@ -110,8 +143,21 @@ public class RecipeManager {
      * @param itemId The id of the item to remove the recipe for
      */
     private void removeRecipe(String itemId) {
-        NamespacedKey recipeKey = new NamespacedKey(plugin, "recipe" + itemId);
-        Bukkit.removeRecipe(recipeKey);
+        FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
+        boolean hasOneRecipe = config.isSet(itemId + ".recipe");
+
+        if (hasOneRecipe) {
+            NamespacedKey recipeKey = new NamespacedKey(plugin, "recipe_" + itemId + "_default");
+            Bukkit.removeRecipe(recipeKey);
+        } else {
+            ConfigurationSection recipeSection = config.getConfigurationSection(itemId + ".recipes");
+            if (recipeSection == null) return;
+
+            for (String recipeId : recipeSection.getKeys(false)) {
+                NamespacedKey recipeKey = new NamespacedKey(plugin, "recipe_" + itemId + "_" + recipeId);
+                Bukkit.removeRecipe(recipeKey);
+            }
+        }
     }
 
     /**
@@ -121,6 +167,83 @@ public class RecipeManager {
      */
     public void renderRecipe(Player player, String itemId) {
         FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
+        boolean isCraftable = config.getBoolean(itemId + ".craftable");
+        if (!isCraftable) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotCraftable",
+                    "&cThis item is not craftable!"
+            ));
+            return;
+        }
+
+        boolean hasOneRecipe = config.isSet(itemId + ".recipe");
+
+        if (hasOneRecipe) {
+            List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
+            List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
+            List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
+
+            openRecipeInventory(player, itemId, rowOne, rowTwo, rowThree);
+        } else {
+            ConfigurationSection recipeSection = config.getConfigurationSection(itemId + ".recipes");
+            if (recipeSection == null) return;
+
+            String firstRecipeId = recipeSection.getKeys(false).stream().findFirst().orElse(null);
+            if (firstRecipeId == null) return;
+
+            List<String> rowOne = recipeSection.getStringList(firstRecipeId + ".rowOne");
+            List<String> rowTwo = recipeSection.getStringList(firstRecipeId + ".rowTwo");
+            List<String> rowThree = recipeSection.getStringList(firstRecipeId + ".rowThree");
+
+            openRecipeInventory(player, itemId, rowOne, rowTwo, rowThree);
+        }
+    }
+
+    /**
+     * Renders a recipe in an inventory gui
+     * @param player The player to render the recipe for
+     * @param itemId The item id to render
+     * @param recipeId The recipe id to render
+     */
+    public void renderRecipe(Player player, String itemId, String recipeId) {
+        FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
+        boolean isCraftable = config.getBoolean(itemId + ".craftable");
+        if (!isCraftable) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotCraftable",
+                    "&cThis item is not craftable!"
+            ));
+            return;
+        }
+
+        if (!config.isSet(itemId + ".recipes")) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotFound",
+                    "&cThis recipe does not exist!"
+            ));
+            return;
+        }
+
+        if (!config.isSet(itemId + ".recipes." + recipeId)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotFound",
+                    "&cThis recipe does not exist!"
+            ));
+            return;
+        }
+
+        List<String> rowOne = config.getStringList(itemId + ".recipes." + recipeId + ".rowOne");
+        List<String> rowTwo = config.getStringList(itemId + ".recipes." + recipeId + ".rowTwo");
+        List<String> rowThree = config.getStringList(itemId + ".recipes." + recipeId + ".rowThree");
+
+        openRecipeInventory(player, itemId, rowOne, rowTwo, rowThree);
+    }
+
+    private void openRecipeInventory(Player player, String itemId, List<String> rowOne, List<String> rowTwo, List<String> rowThree) {
         Inventory inventory = Bukkit.createInventory(null, 5 * 9, MessageUtils.formatMsg("&8Crafting recipe"));
 
         inventory.setItem(40, CustomItemManager.createCloseItem());
@@ -135,9 +258,6 @@ public class RecipeManager {
             inventory.setItem(slot, glass);
         }
 
-        List<String> rowOne = config.getStringList(itemId + ".recipe.rowOne");
-        List<String> rowTwo = config.getStringList(itemId + ".recipe.rowTwo");
-        List<String> rowThree = config.getStringList(itemId + ".recipe.rowThree");
         renderIngredient(inventory, 10, rowOne.get(0));
         renderIngredient(inventory, 11, rowOne.get(1));
         renderIngredient(inventory, 12, rowOne.get(2));
@@ -147,7 +267,7 @@ public class RecipeManager {
         renderIngredient(inventory, 28, rowThree.get(0));
         renderIngredient(inventory, 29, rowThree.get(1));
         renderIngredient(inventory, 30, rowThree.get(2));
-        inventory.setItem(24, new CustomItem(CustomItemManager.createCustomItem(itemId)).makeForbidden().getItemStack());
+        inventory.setItem(24,new CustomItem(CustomItemManager.createCustomItem(itemId)).makeForbidden().getItemStack());
 
         GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
         player.openInventory(inventory);
@@ -179,7 +299,7 @@ public class RecipeManager {
             return;
         }
 
-        if (getRecipeIds().contains(material.toLowerCase())) {
+        if (getItemIds().contains(material.toLowerCase())) {
             recipe.setIngredient(key.charAt(0), CustomItemManager.createCustomItem(material));
             return;
         }
@@ -208,7 +328,7 @@ public class RecipeManager {
             return;
         }
 
-        if (getRecipeIds().contains(material.toLowerCase())) {
+        if (getItemIds().contains(material.toLowerCase())) {
             inventory.setItem(slot, new CustomItem(CustomItemManager.createCustomItem(material)).makeForbidden().getItemStack());
             return;
         }
