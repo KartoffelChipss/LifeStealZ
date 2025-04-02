@@ -6,7 +6,7 @@ description: >-
 
 # 🚀 LifeStealZ
 
-![paper](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/paper\_vector.svg) ![purpur](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/purpur\_vector.svg) [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/github\_vector.svg)](https://github.com/KartoffelChipss/lifestealz) [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth\_vector.svg)](https://modrinth.com/plugin/lifestealz)
+![paper](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/paper_vector.svg) ![purpur](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/purpur_vector.svg) [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/github_vector.svg)](https://github.com/KartoffelChipss/lifestealz) [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/lifestealz)
 
 ## Features
 
@@ -33,10 +33,10 @@ If you need further help with LifeStealZ, you can join in our [Discord Server](h
 
 * [GitHub](https://github.com/KartoffelChipss/LifeStealZ)
 * [Modrinth](https://modrinth.com/plugin/lifestealz)
-* [SpigotMC](https://www.spigotmc.org/resources/lifestealz.111469/)
 * [Hangar](https://hangar.papermc.io/KartoffelChipss/LifestealZ)
 * [Support Discord](https://strassburger.org/discord)
 * [bStats](https://bstats.org/plugin/bukkit/LifeStealZ/18735)
+* [Website](https://lifestealz.com/)
 * [JavaDoc](https://javadocs.lsz.strassburger.dev)
 
 <figure><img src="https://bstats.org/signatures/bukkit/LifeStealZ.svg" alt=""><figcaption><p>Servers using LifeStealZ</p></figcaption></figure>

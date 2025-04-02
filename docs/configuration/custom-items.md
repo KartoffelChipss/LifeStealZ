@@ -7,7 +7,7 @@ description: >-
 # 💎 Custom Items
 
 {% hint style="danger" %}
-If you want to delete the custom item with the ID `defaultheart`, you will have to change the `heartItem` in the `config.yml` file to another item ID.
+If you want to delete the custom item with the ID `defaultheart`, you will have to change the `heartItem` settings in the `config.yml` file to another item ID.
 {% endhint %}
 
 You can find all the custom items in the `items.yml` file. Here you can add as many items as you want. Each item follows this pattern:
@@ -27,19 +27,20 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
   maxHearts: -1
   requirePermission: false
   craftable: true
-  recipe:
-    rowOne:
-      - "GOLD_BLOCK"
-      - "GOLD_BLOCK"
-      - "GOLD_BLOCK"
-    rowTwo:
-      - "OBSIDIAN"
-      - "NETHER_STAR"
-      - "OBSIDIAN"
-    rowThree:
-      - "DIAMOND_BLOCK"
-      - "DIAMOND_BLOCK"
-      - "DIAMOND_BLOCK"
+  recipes:
+    1:
+      rowOne:
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+      rowTwo:
+        - "OBSIDIAN"
+        - "NETHER_STAR"
+        - "OBSIDIAN"
+      rowThree:
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
   sound:
     enabled: true
     sound: ENTITY_PLAYER_LEVELUP
@@ -59,26 +60,37 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
 
 If you want to apply a custom texture from a TexturePack, you can set the `customModelData` property to whatever you need.
 
+If you don't know how to apply textures using custom model data, I would recommend [this video](https://youtu.be/x2QwKFE0aQg?si=1ZQfsXmTgk5f9xfi\&t=122).
+
 ### Crafting
 
-If you want your item to be craftable in a crafting table, you can set `craftable` to `true`. `rowOne`, `rowTwo` and `rowThree` represent the first three rows in the crafting table. Each row has a list of three [Materials](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html), that represent the three items in that crafting table row.
+If you want your item to be craftable in a crafting table, you can set `craftable` to `true`.
+
+You can add as many recipes as you want, by adding another recipe id (like the `1`in the example) with three rows each.
+
+Every recipe has a `rowOne`, `rowTwo` and `rowThree` representing the first three rows in the crafting table. Each row has a list of three [Materials](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html), that represent the three items in that crafting table row. Instead of a Material, you can also use:
+
+* `AIR`or `empty`for an empty slot in the crafting grid
+* the id of another custom item (e.g. `defaultheart`)&#x20;
+* block or item tags by putting a `#` in front of the tag (e.g. `#logs` or `#wool`)
 
 {% tabs %}
 {% tab title="Recipe" %}
 ```yaml
-recipe:
-  rowOne:
-    - "GOLD_BLOCK"
-    - "GOLD_BLOCK"
-    - "GOLD_BLOCK"
-  rowTwo:
-    - "OBSIDIAN"
-    - "NETHER_STAR"
-    - "OBSIDIAN"
-  rowThree:
-    - "DIAMOND_BLOCK"
-    - "DIAMOND_BLOCK"
-    - "DIAMOND_BLOCK"
+recipes:
+    1:
+      rowOne:
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+      rowTwo:
+        - "OBSIDIAN"
+        - "NETHER_STAR"
+        - "OBSIDIAN"
+      rowThree:
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
 ```
 {% endtab %}
 
@@ -86,10 +98,6 @@ recipe:
 <figure><img src="../.gitbook/assets/crafting-grid(1).png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 {% endtabs %}
-
-{% hint style="info" %}
-You can also use the ID of another custom LifeStealZ item as a material in the Crafting recipe!
-{% endhint %}
 
 ### Custom Item Behavior
 

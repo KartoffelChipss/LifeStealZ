@@ -37,6 +37,6 @@
 
 * [GitHub](https://github.com/KartoffelChipss/LifeStealZ)
 * [Modrinth](https://modrinth.com/plugin/lifestealz)
-* [SpigotMC](https://www.spigotmc.org/resources/lifestealz.111469/)
 * [Support Discord](https://strassburger.org/discord)
+* [Website](https://lifestealz.com/)
 * [JavaDoc](https://javadocs.lifestealz.com)
