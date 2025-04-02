@@ -57,7 +57,7 @@ jobs:
       - name: Upload JAR to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/lifestealz-${{ needs.build.outputs.version }}.jar
+          files: target/lifestealz-${{ github.event.release.tag_name }}.jar
           body: ${{ github.event.release.body }}
 
   publish_modrinth:
@@ -75,10 +75,10 @@ jobs:
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
           project: 'l8Uv7FzS'
-          version: ${{ needs.build.outputs.version }}
-          name: 'LifeStealZ ${{ needs.build.outputs.version }}'
+          version: ${{ github.event.release.tag_name }}
+          name: 'LifeStealZ ${{ github.event.release.tag_name }}'
           changelog: ${{ github.event.release.body }}
-          files: '["target/lifestealz-${{ needs.build.outputs.version }}.jar"]'
+          files: '["target/lifestealz-${{ github.event.release.tag_name }}.jar"]'
           loaders: |-
             paper
             purpur
@@ -104,13 +104,13 @@ jobs:
         with:
           api_token: ${{ secrets.HANGAR_TOKEN }}
           slug: 'LifestealZ'
-          version: ${{ needs.build.outputs.version }}
+          version: ${{ github.event.release.tag_name }}
           channel: Release
           files: |
             [
               {
                 "platforms": ["PAPER"],
-                "path": "target/lifestealz-${{ needs.build.outputs.version }}.jar"
+                "path": "target/lifestealz-${{ github.event.release.tag_name }}.jar"
               }
             ]
           description: ${{ github.event.release.body }}
