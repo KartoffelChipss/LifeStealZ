@@ -73,7 +73,7 @@ public final class LifeStealZ extends JavaPlugin {
         recipeManager = new RecipeManager(this);
         recipeManager.registerRecipes();
 
-        versionChecker = new VersionChecker();
+        versionChecker = new VersionChecker(this, "l8Uv7FzS");
         gracePeriodManager = new GracePeriodManager(this);
         webHookManager = new WebHookManager(this);
 

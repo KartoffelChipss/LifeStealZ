@@ -13,65 +13,98 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 public class VersionChecker {
-    public String MODRINTH_PROJECT_URL = "https://api.modrinth.com/v2/project/l8Uv7FzS";
-    public boolean NEW_VERSION_AVAILABLE = false;
-    public Logger logger = LifeStealZ.getInstance().getLogger();
+    private final LifeStealZ plugin;
+    private final Logger logger;
+    private final String modrinthProjectId;
+    private boolean newVersionAvailable = false;
 
-    public VersionChecker() {
-        String latestVersion = getLatestVersionFromModrinth();
+    public VersionChecker(LifeStealZ plugin, String modrinthProjectId) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
+        this.modrinthProjectId = modrinthProjectId;
+        checkForUpdates();
+    }
+
+    private String getModrinthProjectUrl() {
+        return "https://api.modrinth.com/v2/project/" + modrinthProjectId;
+    }
+
+    private void checkForUpdates() {
+        String latestVersion = fetchLatestVersion();
         if (latestVersion != null) {
-            String currentVersion = LifeStealZ.getInstance().getDescription().getVersion();
+            String currentVersion = plugin.getDescription().getVersion();
             if (!latestVersion.trim().equals(currentVersion.trim())) {
-                NEW_VERSION_AVAILABLE = true;
-                logger.info("A new version of LifestealZ is available! Version: " + latestVersion + "\nDownload the latest version here: https://modrinth.com/plugin/lifestealz/versions");
+                newVersionAvailable = true;
+
+                final String reset = "\u001B[0m";
+                final String bold = "\u001B[1m";
+                final String darkGray = "\u001B[90m";
+                final String lightGray = "\u001B[37m";
+                final String red = "\u001B[31m";
+
+                String message = "\n" +
+                        darkGray + "==========================================" + reset + "\n" +
+                        bold + "A new version of LifeStealZ is available!" + reset + "\n" +
+                        bold + "New Version: " + reset + lightGray + currentVersion + " -> " + bold + red + latestVersion + reset + "\n" +
+                        bold + "Download here: " + reset + lightGray + reset + "https://modrinth.com/plugin/lifestealz/version/" + latestVersion + "\n" +
+                        darkGray + "==========================================" + reset;
+
+                logger.info(message);
             }
         }
     }
 
-    public String getLatestVersionFromModrinth() {
+    private String fetchLatestVersion() {
+        JSONObject projectJson = fetchJsonFromUrl(getModrinthProjectUrl());
+        if (projectJson == null) return null;
+
+        JSONArray versionArray = (JSONArray) projectJson.get("versions");
+        if (versionArray == null || versionArray.isEmpty()) return null;
+
+        String latestVersionId = (String) versionArray.get(versionArray.size() - 1);
+        return fetchVersionNumber(latestVersionId);
+    }
+
+    private String fetchVersionNumber(String versionId) {
+        String versionUrl = getModrinthProjectUrl() + "/version/" + versionId;
+        JSONObject versionJson = fetchJsonFromUrl(versionUrl);
+        return versionJson != null ? (String) versionJson.get("version_number") : null;
+    }
+
+    private JSONObject fetchJsonFromUrl(String urlString) {
         try {
-            URL projectUrl = new URL(MODRINTH_PROJECT_URL);
-            HttpURLConnection projectConnection = (HttpURLConnection) projectUrl.openConnection();
-            projectConnection.setRequestMethod("GET");
-
-            if (projectConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                BufferedReader projectReader = new BufferedReader(new InputStreamReader(projectConnection.getInputStream()));
-                StringBuilder projectResponse = new StringBuilder();
-                String projectInputLine;
-                while ((projectInputLine = projectReader.readLine()) != null) {
-                    projectResponse.append(projectInputLine);
-                }
-                projectReader.close();
-
-                JSONParser parser = new JSONParser();
-                JSONObject projectJson = (JSONObject) parser.parse(projectResponse.toString());
-                JSONArray versionArray = (JSONArray) projectJson.get("versions");
-                String latestVersionId = (String) versionArray.get(versionArray.size() - 1);
-
-                URL versionUrl = new URL(MODRINTH_PROJECT_URL + "/version/" + latestVersionId);
-                HttpURLConnection versionConnection = (HttpURLConnection) versionUrl.openConnection();
-                versionConnection.setRequestMethod("GET");
-
-                if (versionConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader versionReader = new BufferedReader(new InputStreamReader(versionConnection.getInputStream()));
-                    StringBuilder versionResponse = new StringBuilder();
-                    String versionInputLine;
-                    while ((versionInputLine = versionReader.readLine()) != null) {
-                        versionResponse.append(versionInputLine);
-                    }
-                    versionReader.close();
-
-                    JSONObject versionJson = (JSONObject) parser.parse(versionResponse.toString());
-                    return (String) versionJson.get("version_number");
-                } else {
-                    logger.warning("Failed to retrieve version details from Modrinth. Response code: " + versionConnection.getResponseCode());
-                }
+            HttpURLConnection connection = createHttpConnection(urlString);
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                String response = readResponse(connection);
+                return (JSONObject) new JSONParser().parse(response);
             } else {
-                logger.warning("Failed to retrieve project information from Modrinth. Response code: " + projectConnection.getResponseCode());
+                logger.warning("Failed to retrieve data from " + urlString + " Response code: " + connection.getResponseCode());
             }
         } catch (IOException | org.json.simple.parser.ParseException e) {
-            logger.warning("Failed to check for updates: " + e.getMessage());
+            logger.warning("Error fetching data: " + e.getMessage());
         }
         return null;
+    }
+
+    private HttpURLConnection createHttpConnection(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        return connection;
+    }
+
+    private String readResponse(HttpURLConnection connection) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            return response.toString();
+        }
+    }
+
+    public boolean isNewVersionAvailable() {
+        return newVersionAvailable;
     }
 }
