@@ -10,5 +10,6 @@ org.strassburger.lifestealz.storage.connectionPool
 org.strassburger.lifestealz.util
 org.strassburger.lifestealz.util.commands
 org.strassburger.lifestealz.util.customitems
+org.strassburger.lifestealz.util.customitems.recipe
 org.strassburger.lifestealz.util.geysermc
 org.strassburger.lifestealz.util.worldguard
