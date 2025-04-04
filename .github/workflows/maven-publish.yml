@@ -23,6 +23,17 @@ jobs:
         server-id: github
         settings-path: ${{ github.workspace }}
 
+    - name: Cache Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Set version from release tag
+      run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
