@@ -12,7 +12,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
-public class InteractionEntityEventListener implements Listener {
+public final class InteractionEntityEventListener implements Listener {
     private final LifeStealZ plugin;
 
     public InteractionEntityEventListener(LifeStealZ plugin) {

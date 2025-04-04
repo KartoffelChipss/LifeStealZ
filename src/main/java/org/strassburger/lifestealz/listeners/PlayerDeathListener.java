@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-public class PlayerDeathListener implements Listener {
+public final class PlayerDeathListener implements Listener {
 
     private final LifeStealZ plugin;
 

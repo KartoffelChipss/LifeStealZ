@@ -7,7 +7,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageUtils {
+public final class MessageUtils {
     private MessageUtils() {}
 
     private static final Map<String, String> colorMap;

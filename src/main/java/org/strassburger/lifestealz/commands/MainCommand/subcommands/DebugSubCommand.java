@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DebugSubCommand implements SubCommand {
+public final class DebugSubCommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public DebugSubCommand(LifeStealZ plugin) {

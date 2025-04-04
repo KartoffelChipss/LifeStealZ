@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.util.commands.CommandUtils;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
-public class RecipeSubCommand implements SubCommand {
+public final class RecipeSubCommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public RecipeSubCommand(LifeStealZ plugin) {

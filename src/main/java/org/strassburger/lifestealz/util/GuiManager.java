@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class GuiManager {
+public final class GuiManager {
     public static Map<UUID, Inventory> REVIVE_GUI_MAP = new HashMap<>();
     public static Map<UUID, Inventory> RECIPE_GUI_MAP = new HashMap<>();
 

@@ -8,7 +8,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.List;
 
-public class CustomItemData {
+public final class CustomItemData {
     private final String itemId;
     private final String name;
     private final List<String> lore;

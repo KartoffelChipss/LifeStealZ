@@ -10,7 +10,7 @@ import org.strassburger.lifestealz.storage.Storage;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
-public class DataSubCommand implements SubCommand {
+public final class DataSubCommand implements SubCommand {
     private final Storage storage;
     private final LifeStealZ plugin;
 

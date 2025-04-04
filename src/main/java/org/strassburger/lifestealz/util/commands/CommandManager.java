@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.commands.MainCommand.MainCommandHandler;
 import org.strassburger.lifestealz.commands.MainCommand.MainTabCompleter;
 import org.strassburger.lifestealz.util.MessageUtils;
 
-public class CommandManager {
+public final class CommandManager {
     private final LifeStealZ plugin;
 
     public CommandManager(LifeStealZ plugin) {

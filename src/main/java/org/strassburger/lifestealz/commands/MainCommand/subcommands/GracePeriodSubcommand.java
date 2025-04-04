@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
-public class GracePeriodSubcommand implements SubCommand {
+public final class GracePeriodSubcommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public GracePeriodSubcommand(LifeStealZ plugin) {

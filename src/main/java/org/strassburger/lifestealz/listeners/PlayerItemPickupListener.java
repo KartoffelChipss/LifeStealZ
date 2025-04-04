@@ -12,7 +12,7 @@ import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import static org.strassburger.lifestealz.util.MessageUtils.formatTime;
 
-public class PlayerItemPickupListener implements Listener {
+public final class PlayerItemPickupListener implements Listener {
     private final LifeStealZ plugin;
 
     public PlayerItemPickupListener(LifeStealZ plugin) {

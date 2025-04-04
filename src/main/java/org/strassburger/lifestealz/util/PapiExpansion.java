@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.storage.PlayerData;
 
-public class PapiExpansion extends PlaceholderExpansion {
+public final class PapiExpansion extends PlaceholderExpansion {
     private final LifeStealZ plugin;
 
     public PapiExpansion(LifeStealZ plugin) {

@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class WebHookManager {
+public final class WebHookManager {
     private final LifeStealZ plugin;
 
     public WebHookManager(LifeStealZ plugin) {

@@ -20,7 +20,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
-public class WithdrawCommand implements CommandExecutor, TabCompleter {
+public final class WithdrawCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
 
     public WithdrawCommand(LifeStealZ plugin) {

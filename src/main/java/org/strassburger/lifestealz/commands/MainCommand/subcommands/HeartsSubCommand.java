@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
-public class HeartsSubCommand implements SubCommand {
+public final class HeartsSubCommand implements SubCommand {
     private final LifeStealZ plugin;
     private final FileConfiguration config;
     private final Storage storage;

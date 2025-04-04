@@ -4,7 +4,7 @@ import org.bukkit.event.Listener;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.listeners.*;
 
-public class EventManager {
+public final class EventManager {
     private final LifeStealZ plugin;
 
     public EventManager(LifeStealZ plugin) {

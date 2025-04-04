@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * A MySQL connection pool that manages connections to a MySQL database.
  */
-public class MySQLConnectionPool implements ConnectionPool {
+public final class MySQLConnectionPool implements ConnectionPool {
     private final HikariDataSource dataSource;
 
     /**

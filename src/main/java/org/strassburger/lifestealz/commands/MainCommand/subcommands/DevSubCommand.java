@@ -13,7 +13,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
-public class DevSubCommand implements SubCommand {
+public final class DevSubCommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public DevSubCommand(LifeStealZ plugin) {

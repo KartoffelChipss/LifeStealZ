@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Manages all running async tasks
  */
-public class AsyncTaskManager {
+public final class AsyncTaskManager {
     private final List<BukkitTask> runningTasks = new ArrayList<>();
 
     /**

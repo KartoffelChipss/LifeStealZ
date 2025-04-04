@@ -16,7 +16,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 
 import java.util.*;
 
-public class CustomItemManager {
+public final class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_ID_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemid");
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");

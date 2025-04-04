@@ -7,7 +7,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
-public class PrepareItemCraft implements Listener {
+public final class PrepareItemCraft implements Listener {
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {

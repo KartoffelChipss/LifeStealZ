@@ -11,7 +11,7 @@ import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.storage.PlayerData;
 import org.strassburger.lifestealz.storage.Storage;
 
-public class PlayerLoginListener implements Listener {
+public final class PlayerLoginListener implements Listener {
     private final LifeStealZ plugin;
 
     public PlayerLoginListener(LifeStealZ plugin) {

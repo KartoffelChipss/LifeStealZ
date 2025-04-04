@@ -6,7 +6,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 
 import java.io.File;
 
-public class ConfigManager {
+public final class ConfigManager {
     private final LifeStealZ plugin;
 
     public ConfigManager(LifeStealZ plugin) {

@@ -5,7 +5,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EliminatedPlayersCache extends Cache<String> {
+public final class EliminatedPlayersCache extends Cache<String> {
     /**
      * A cache for eliminated players to avoid unnecessary database queries on tab completion
      */

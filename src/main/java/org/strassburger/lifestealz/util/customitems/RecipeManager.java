@@ -15,7 +15,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class RecipeManager {
+public final class RecipeManager {
     private final LifeStealZ plugin;
     private final Map<Inventory, List<Integer>> animationMap = new HashMap<>();
 

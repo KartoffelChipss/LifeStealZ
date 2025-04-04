@@ -12,7 +12,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainCommandHandler implements CommandExecutor {
+public final class MainCommandHandler implements CommandExecutor {
     private final LifeStealZ plugin;
     private final Map<String, SubCommand> commands = new HashMap<>();
 

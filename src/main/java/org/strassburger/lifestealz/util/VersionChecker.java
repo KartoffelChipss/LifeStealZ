@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Logger;
 
-public class VersionChecker {
+public final class VersionChecker {
     private final LifeStealZ plugin;
     private final Logger logger;
     private final String modrinthProjectId;

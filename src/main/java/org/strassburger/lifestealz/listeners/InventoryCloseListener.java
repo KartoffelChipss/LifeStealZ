@@ -6,7 +6,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.GuiManager;
 
-public class InventoryCloseListener implements Listener {
+public final class InventoryCloseListener implements Listener {
     private final LifeStealZ plugin;
 
     public InventoryCloseListener(LifeStealZ plugin) {

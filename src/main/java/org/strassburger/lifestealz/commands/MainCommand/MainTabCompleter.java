@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.*;
 
-public class MainTabCompleter implements TabCompleter {
+public final class MainTabCompleter implements TabCompleter {
     private final LifeStealZ plugin;
 
     public MainTabCompleter(LifeStealZ plugin) {

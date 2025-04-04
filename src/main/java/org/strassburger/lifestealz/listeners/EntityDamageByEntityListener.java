@@ -10,7 +10,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.GracePeriodManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 
-public class EntityDamageByEntityListener implements Listener {
+public final class EntityDamageByEntityListener implements Listener {
     private final LifeStealZ plugin;
 
     public EntityDamageByEntityListener(LifeStealZ plugin) {

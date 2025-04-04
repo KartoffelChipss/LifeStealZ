@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.util.WhitelistManager;
 
 import java.util.List;
 
-public class EntityResurrectListener implements Listener {
+public final class EntityResurrectListener implements Listener {
     private final LifeStealZ plugin;
 
     public EntityResurrectListener(LifeStealZ plugin) {

@@ -16,7 +16,7 @@ import java.util.Set;
 import static org.strassburger.lifestealz.util.commands.CommandUtils.parsePlayerName;
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
-public class GiveItemSubCommand implements SubCommand {
+public final class GiveItemSubCommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public GiveItemSubCommand(LifeStealZ plugin) {

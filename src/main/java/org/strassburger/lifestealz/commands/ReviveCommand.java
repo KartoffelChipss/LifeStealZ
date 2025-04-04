@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ReviveCommand implements CommandExecutor, TabCompleter {
+public final class ReviveCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
 
     public ReviveCommand(LifeStealZ plugin) {

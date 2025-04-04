@@ -5,7 +5,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OfflinePlayerCache extends Cache<String> {
+public final class OfflinePlayerCache extends Cache<String> {
 
     /**
      * A cache for offline players to avoid unnecessary database queries on tab completion

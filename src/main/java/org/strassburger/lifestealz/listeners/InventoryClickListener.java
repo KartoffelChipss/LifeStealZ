@@ -23,7 +23,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 import java.util.List;
 import java.util.UUID;
 
-public class InventoryClickListener implements Listener {
+public final class InventoryClickListener implements Listener {
     private final LifeStealZ plugin;
 
     public InventoryClickListener(LifeStealZ plugin) {

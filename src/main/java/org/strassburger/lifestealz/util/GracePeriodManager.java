@@ -11,7 +11,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 import java.util.List;
 import java.util.Optional;
 
-public class GracePeriodManager {
+public final class GracePeriodManager {
     private final LifeStealZ plugin;
 
     public GracePeriodManager(LifeStealZ plugin) {

@@ -7,7 +7,7 @@ import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
-public class PrepareGrindstone implements Listener {
+public final class PrepareGrindstone implements Listener {
     @EventHandler
     public void onPrepareGrindstone(PrepareGrindstoneEvent event) {
         GrindstoneInventory inventory = event.getInventory();

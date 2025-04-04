@@ -6,7 +6,7 @@ import org.strassburger.lifestealz.commands.SubCommand;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 
-public class HelpSubCommand implements SubCommand {
+public final class HelpSubCommand implements SubCommand {
     private final LifeStealZ plugin;
 
     public HelpSubCommand(LifeStealZ plugin) {

@@ -6,7 +6,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 
 import java.util.List;
 
-public class WhitelistManager {
+public final class WhitelistManager {
 
     // For use in commands
     public boolean isWorldWhitelisted(CommandSender sender) {

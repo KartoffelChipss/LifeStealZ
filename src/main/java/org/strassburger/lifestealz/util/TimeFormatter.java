@@ -1,6 +1,13 @@
 package org.strassburger.lifestealz.util;
 
-public class TimeFormatter {
+public final class TimeFormatter {
+    private TimeFormatter() {}
+
+    /**
+     * Formats a duration to a human-readable string.
+     * @param duration The duration in milliseconds to format.
+     * @return A string representing the duration in a human-readable format.
+     */
     public static String formatDuration(long duration) {
         if (duration <= 0) return "0s";
 
@@ -27,16 +34,19 @@ public class TimeFormatter {
             result.append(days).append("d");
             addedSymbols++;
         }
+
         if (hours > 0 && addedSymbols < 2) {
             if (result.length() > 0) result.append(" ");
             result.append(hours).append("h");
             addedSymbols++;
         }
+
         if (minutes > 0 && addedSymbols < 2) {
             if (result.length() > 0) result.append(" ");
             result.append(minutes).append("m");
             addedSymbols++;
         }
+
         if (seconds > 0 && addedSymbols < 2) {
             if (result.length() > 0) result.append(" ");
             result.append(seconds).append("s");

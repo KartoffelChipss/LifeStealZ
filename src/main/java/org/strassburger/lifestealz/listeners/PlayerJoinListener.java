@@ -12,7 +12,7 @@ import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.storage.PlayerData;
 import org.strassburger.lifestealz.storage.Storage;
 
-public class PlayerJoinListener implements Listener {
+public final class PlayerJoinListener implements Listener {
 
     private final LifeStealZ plugin;
 

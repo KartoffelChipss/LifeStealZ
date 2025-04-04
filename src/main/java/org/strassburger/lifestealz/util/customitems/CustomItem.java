@@ -16,7 +16,7 @@ import java.util.Objects;
 
 import static org.strassburger.lifestealz.util.customitems.CustomItemManager.CUSTOM_ITEM_ID_KEY;
 
-public class CustomItem {
+public final class CustomItem {
     private final ItemStack itemStack;
 
     public CustomItem(ItemStack itemStack) {

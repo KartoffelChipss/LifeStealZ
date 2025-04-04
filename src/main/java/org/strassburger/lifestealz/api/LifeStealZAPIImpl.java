@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 import java.util.Set;
 import java.util.UUID;
 
-public class LifeStealZAPIImpl implements LifeStealZAPI {
+public final class LifeStealZAPIImpl implements LifeStealZAPI {
     private final LifeStealZ plugin;
 
     public LifeStealZAPIImpl(LifeStealZ plugin) {

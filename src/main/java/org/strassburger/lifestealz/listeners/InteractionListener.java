@@ -18,7 +18,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
-public class InteractionListener implements Listener {
+public final class InteractionListener implements Listener {
     private final LifeStealZ plugin;
 
     public InteractionListener(LifeStealZ plugin) {

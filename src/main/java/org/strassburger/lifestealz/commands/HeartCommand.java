@@ -16,7 +16,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
-public class HeartCommand implements CommandExecutor, TabCompleter {
+public final class HeartCommand implements CommandExecutor, TabCompleter {
     private final LifeStealZ plugin;
 
     public HeartCommand(LifeStealZ plugin) {

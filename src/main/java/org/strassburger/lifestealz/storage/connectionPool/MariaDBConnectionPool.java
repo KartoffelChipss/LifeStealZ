@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * A MariaDB connection pool that manages connections to a MariaDB database.
  */
-public class MariaDBConnectionPool implements ConnectionPool {
+public final class MariaDBConnectionPool implements ConnectionPool {
     private final HikariDataSource dataSource;
 
     /**

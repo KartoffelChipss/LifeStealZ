@@ -10,7 +10,7 @@ import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
-public class WorldSwitchListener implements Listener {
+public final class WorldSwitchListener implements Listener {
     private final LifeStealZ plugin;
 
     public WorldSwitchListener(LifeStealZ plugin) {

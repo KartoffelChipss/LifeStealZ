@@ -5,7 +5,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
 
-public class WorldGuardManager {
+public final class WorldGuardManager {
     private StateFlag HEARTLOSS_FLAG;
 
     public WorldGuardManager() {

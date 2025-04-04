@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CommandUtils {
+public final class CommandUtils {
     /**
      * Parses a player name (or a star) to a list of players
      * @param playerName The name of the player

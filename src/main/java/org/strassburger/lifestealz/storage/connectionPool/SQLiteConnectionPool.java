@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * Connection pool for SQLite. This is not really a connection pool, but it is used to keep the same interface as the other
  */
-public class SQLiteConnectionPool implements ConnectionPool {
+public final class SQLiteConnectionPool implements ConnectionPool {
     private final String connectionUrl;
 
     public SQLiteConnectionPool(String path) {
