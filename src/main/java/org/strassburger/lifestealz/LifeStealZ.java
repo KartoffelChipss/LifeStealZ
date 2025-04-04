@@ -11,7 +11,7 @@ import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.caches.EliminatedPlayersCache;
 import org.strassburger.lifestealz.caches.OfflinePlayerCache;
 import org.strassburger.lifestealz.util.commands.CommandManager;
-import org.strassburger.lifestealz.util.customitems.RecipeManager;
+import org.strassburger.lifestealz.util.customitems.recipe.RecipeManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
 import org.strassburger.lifestealz.storage.MariaDBStorage;
