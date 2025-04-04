@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util.caches;
+package org.strassburger.lifestealz.caches;
 
 import org.strassburger.lifestealz.LifeStealZ;
 

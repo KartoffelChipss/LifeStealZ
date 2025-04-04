@@ -9,7 +9,7 @@ import org.strassburger.lifestealz.util.GracePeriodManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItem;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 

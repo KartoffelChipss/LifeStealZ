@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util.storage.connectionPool;
+package org.strassburger.lifestealz.storage.connectionPool;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

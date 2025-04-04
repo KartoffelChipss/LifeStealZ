@@ -1,20 +1,20 @@
-package org.strassburger.lifestealz.util.storage;
+package org.strassburger.lifestealz.storage;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.storage.connectionPool.ConnectionPool;
-import org.strassburger.lifestealz.util.storage.connectionPool.MariaDBConnectionPool;
+import org.strassburger.lifestealz.storage.connectionPool.ConnectionPool;
+import org.strassburger.lifestealz.storage.connectionPool.MySQLConnectionPool;
 
 import java.sql.*;
 import java.util.logging.Level;
 
 /**
- * Storage class for MariaDB.
+ * Storage class for MySQL database.
  */
-public final class MariaDBStorage extends MySQLSyntaxStorage {
-    private final MariaDBConnectionPool connectionPool;
+public final class MySQLStorage extends MySQLSyntaxStorage {
+    private final MySQLConnectionPool connectionPool;
 
-    public MariaDBStorage(LifeStealZ plugin) {
+    public MySQLStorage(LifeStealZ plugin) {
         super(plugin);
 
         FileConfiguration config = getPlugin().getConfigManager().getStorageConfig();
@@ -25,7 +25,7 @@ public final class MariaDBStorage extends MySQLSyntaxStorage {
         final String USERNAME = config.getString("username");
         final String PASSWORD = config.getString("password");
 
-        connectionPool = new MariaDBConnectionPool(HOST, PORT, DATABASE, USERNAME, PASSWORD);
+        connectionPool = new MySQLConnectionPool(HOST, PORT, DATABASE, USERNAME, PASSWORD);
     }
 
     @Override
@@ -39,10 +39,10 @@ public final class MariaDBStorage extends MySQLSyntaxStorage {
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(
-                        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS"
-                                + " WHERE TABLE_SCHEMA = DATABASE()"
-                                + " AND TABLE_NAME = 'hearts'"
-                                + " AND COLUMN_NAME = 'firstJoin'"
+                        "SELECT COLUMN_NAME"
+                        + " FROM INFORMATION_SCHEMA.COLUMNS"
+                        + " WHERE TABLE_NAME = 'hearts'"
+                        + " AND COLUMN_NAME = 'firstJoin'"
                 )
         ) {
             if (!resultSet.next()) {

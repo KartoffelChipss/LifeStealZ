@@ -1,8 +1,8 @@
-package org.strassburger.lifestealz.util.storage;
+package org.strassburger.lifestealz.storage;
 
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.storage.connectionPool.ConnectionPool;
-import org.strassburger.lifestealz.util.storage.connectionPool.SQLiteConnectionPool;
+import org.strassburger.lifestealz.storage.connectionPool.ConnectionPool;
+import org.strassburger.lifestealz.storage.connectionPool.SQLiteConnectionPool;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -14,9 +14,8 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.customitems.CustomItemData;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InteractionListener implements Listener {

@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util;
+package org.strassburger.lifestealz.util.customitems;
 
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.customitems.CustomItem;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+import org.strassburger.lifestealz.util.GuiManager;
+import org.strassburger.lifestealz.util.MessageUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;

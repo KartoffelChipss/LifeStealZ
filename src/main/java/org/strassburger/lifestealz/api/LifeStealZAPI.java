@@ -2,7 +2,7 @@ package org.strassburger.lifestealz.api;
 
 import org.bukkit.inventory.ItemStack;
 import org.strassburger.lifestealz.util.customitems.CustomItemData;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.Set;
 import java.util.UUID;

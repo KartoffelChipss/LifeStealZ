@@ -6,7 +6,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.SubCommand;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
-import org.strassburger.lifestealz.util.storage.Storage;
+import org.strassburger.lifestealz.storage.Storage;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 

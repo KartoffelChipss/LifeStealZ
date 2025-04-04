@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 import java.util.Optional;

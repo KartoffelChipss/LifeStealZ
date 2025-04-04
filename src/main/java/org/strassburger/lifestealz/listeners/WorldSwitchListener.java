@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 

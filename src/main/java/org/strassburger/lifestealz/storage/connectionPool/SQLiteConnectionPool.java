@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util.storage.connectionPool;
+package org.strassburger.lifestealz.storage.connectionPool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

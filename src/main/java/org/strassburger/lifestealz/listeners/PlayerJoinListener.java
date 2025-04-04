@@ -9,8 +9,8 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
-import org.strassburger.lifestealz.util.storage.PlayerData;
-import org.strassburger.lifestealz.util.storage.Storage;
+import org.strassburger.lifestealz.storage.PlayerData;
+import org.strassburger.lifestealz.storage.Storage;
 
 public class PlayerJoinListener implements Listener {
 

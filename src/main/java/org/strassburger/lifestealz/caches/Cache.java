@@ -1,8 +1,7 @@
-package org.strassburger.lifestealz.util.caches;
+package org.strassburger.lifestealz.caches;
 
 import org.strassburger.lifestealz.LifeStealZ;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 

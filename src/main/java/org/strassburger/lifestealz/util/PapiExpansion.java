@@ -7,7 +7,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.storage.PlayerData;
+import org.strassburger.lifestealz.storage.PlayerData;
 
 public class PapiExpansion extends PlaceholderExpansion {
     private final LifeStealZ plugin;

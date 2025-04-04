@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.util.storage;
+package org.strassburger.lifestealz.storage;
 
 import java.util.HashSet;
 import java.util.Set;
