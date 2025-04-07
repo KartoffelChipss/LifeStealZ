@@ -45,6 +45,15 @@ public final class LifeStealZ extends JavaPlugin {
     @Override
     public void onLoad() {
         getLogger().info("Loading LifeStealZ...");
+
+        if (Bukkit.getName().toLowerCase().contains("spigot") || Bukkit.getName().toLowerCase().contains("craftbukkit")) {
+            getLogger().severe("---------------------------------------------------");
+            getLogger().severe("LifeStealZ does not support Spigot or Bukkit!");
+            getLogger().severe("Please use Paper or any fork of Paper (like Purpur). If you need further assistance, please join our Discord server:");
+            getLogger().severe("https://dc.lifestealz.com/");
+            getLogger().severe("---------------------------------------------------");
+        }
+
         if (hasWorldGuard()) {
             getLogger().info("WorldGuard found! Enabling WorldGuard support...");
             worldGuardManager = new WorldGuardManager();
