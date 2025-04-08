@@ -19,6 +19,7 @@ import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.UUID;
 
 public final class PlayerDeathListener implements Listener {
 
@@ -40,9 +41,14 @@ public final class PlayerDeathListener implements Listener {
         // WorldGuard check
         if (plugin.hasWorldGuard() && !WorldGuardManager.checkHeartLossFlag(player)) return;
 
-        final PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
+        UUID playerUUID = player.getUniqueId();
+        if (player.hasMetadata("combat_log_npc")) {
+        	// If the player is a combat log NPC, get the original player's UUID
+        	playerUUID = (UUID) player.getMetadata("combat_log_npc").get(0).value();
+        }
+        final PlayerData playerData = plugin.getStorage().load(playerUUID);
 
-        final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(player.getUniqueId());
+        final boolean isDeathByPlayer = killer != null && !killer.getUniqueId().equals(playerUUID);
 
         if (handleAntiAltLogic(player, killer)) return;
 
@@ -79,7 +85,7 @@ public final class PlayerDeathListener implements Listener {
         } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createKillHeart());
         } else if (isDeathByPlayer) {
-            handleKillerHeartGain(player, killer, world, healthToLoose);
+            handleKillerHeartGain(playerData, killer, world, healthToLoose);
         } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createNaturalDeathHeart());
         }
@@ -97,7 +103,7 @@ public final class PlayerDeathListener implements Listener {
 
         // Check for elimination
         if (playerData.getMaxHealth() - healthToLoose <= minHearts) {
-            handleElimination(event, player, killer, isDeathByPlayer);
+            handleElimination(event, player, playerData, killer, isDeathByPlayer);
             return;
         }
 
@@ -107,7 +113,7 @@ public final class PlayerDeathListener implements Listener {
         LifeStealZ.setMaxHealth(player, playerData.getMaxHealth());
     }
 
-    private void handleElimination(PlayerDeathEvent event, Player player, Player killer, boolean isDeathByPlayer) {
+    private void handleElimination(PlayerDeathEvent event, Player player, PlayerData playerData, Player killer, boolean isDeathByPlayer) {
         final List<String> elimCommands = plugin.getConfig().getStringList("eliminationCommands");
         final boolean disableBanOnElimination = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
         final boolean announceElimination = plugin.getConfig().getBoolean("announceElimination");
@@ -123,7 +129,6 @@ public final class PlayerDeathListener implements Listener {
 
         if (disableBanOnElimination) {
             double respawnHP = plugin.getConfig().getInt("reviveHearts") * 2;
-            PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
             playerData.setMaxHealth(respawnHP);
             plugin.getStorage().save(playerData);
             LifeStealZ.setMaxHealth(player, respawnHP);
@@ -136,7 +141,9 @@ public final class PlayerDeathListener implements Listener {
                     "eliminatedJoin",
                     "&cYou don't have any hearts left!"
             );
-            player.kick(kickMessage);
+            if (player.isOnline()) { // Avoids trying to kick NPCs since they are not online
+            	player.kick(kickMessage);
+            }
         }, 1L);
 
         if (announceElimination) {
@@ -153,13 +160,12 @@ public final class PlayerDeathListener implements Listener {
 
         plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.ELIMINATION, player.getName(), killer != null ? killer.getName() : "");
 
-        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         playerData.setMaxHealth(0.0);
         plugin.getStorage().save(playerData);
         plugin.getEliminatedPlayersCache().addEliminatedPlayer(player.getName());
     }
 
-    private void handleKillerHeartGain(Player player, Player killer, World world, double healthGain) {
+    private void handleKillerHeartGain(PlayerData playerData, Player killer, World world, double healthGain) {
         final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
         final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
         final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
@@ -168,7 +174,6 @@ public final class PlayerDeathListener implements Listener {
         final boolean heartRewardOnElimination = plugin.getConfig().getBoolean("heartRewardOnElimination");
         final boolean dropHeartsIfMax = plugin.getConfig().getBoolean("dropHeartsIfMax");
 
-        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         PlayerData killerPlayerData = plugin.getStorage().load(killer.getUniqueId());
 
         if (heartGainCooldownEnabled
