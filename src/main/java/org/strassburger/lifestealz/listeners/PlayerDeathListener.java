@@ -34,8 +34,6 @@ public final class PlayerDeathListener implements Listener {
         final Player player = event.getEntity();
         final Player killer = player.getKiller();
 
-        plugin.getLogger().info("Player " + player.getName() + " died!");
-
         if (!WhitelistManager.isWorldWhitelisted(player)) return;
 
         // WorldGuard check
@@ -62,7 +60,6 @@ public final class PlayerDeathListener implements Listener {
     }
 
     private void handleHeartLoss(PlayerDeathEvent event, Player player, Player killer, PlayerData playerData, boolean isDeathByPlayer) {
-        final World world = player.getWorld();
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
 
         double healthPerKill = plugin.getConfig().getInt("heartsPerKill") * 2;
@@ -85,7 +82,7 @@ public final class PlayerDeathListener implements Listener {
         } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createKillHeart());
         } else if (isDeathByPlayer) {
-            handleKillerHeartGain(playerData, killer, world, healthToLoose);
+            handleKillerHeartGain(playerData, killer, healthToLoose);
         } else if (plugin.getConfig().getBoolean("dropHeartsNatural")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createNaturalDeathHeart());
         }
@@ -165,7 +162,7 @@ public final class PlayerDeathListener implements Listener {
         plugin.getEliminatedPlayersCache().addEliminatedPlayer(player.getName());
     }
 
-    private void handleKillerHeartGain(PlayerData playerData, Player killer, World world, double healthGain) {
+    private void handleKillerHeartGain(PlayerData playerData, Player killer, double healthGain) {
         final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
         final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
         final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
