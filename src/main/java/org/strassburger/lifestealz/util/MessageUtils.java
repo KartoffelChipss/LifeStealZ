@@ -73,9 +73,7 @@ public final class MessageUtils {
         MiniMessage mm = MiniMessage.miniMessage();
         String msg = "<!i>" + LifeStealZ.getInstance().getLanguageManager().getString(path, fallback);
         String prefix = LifeStealZ.getInstance().getLanguageManager().getString("prefix", "&8[&cLifeStealZ&8]");
-        if (addPrefix) {
-            msg = prefix + " " + msg;
-        }
+        msg = (!prefix.isEmpty() && addPrefix) ? prefix + " " + msg : msg;
 
         for (Replaceable replaceable : replaceables) {
             msg = msg.replace(replaceable.getPlaceholder(), replaceable.getValue());
