@@ -130,7 +130,15 @@ final class RecipeRenderer {
     }
 
     private void openRecipeInventory(Player player, String itemId, List<String> rowOne, List<String> rowTwo, List<String> rowThree) {
-        Inventory inventory = Bukkit.createInventory(null, 5 * 9, MessageUtils.formatMsg("&8Crafting recipe"));
+        Inventory inventory = Bukkit.createInventory(
+                null,
+                5 * 9,
+                MessageUtils.getAndFormatMsg(
+                        false,
+                        "recipeInventoryTitle",
+                        "&8Crafting recipe"
+                )
+        );
 
         inventory.setItem(40, CustomItemManager.createCloseItem());
 
