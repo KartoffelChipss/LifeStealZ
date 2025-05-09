@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.strassburger.lifestealz.util.customitems.CustomItemManager.CUSTOM_ITEM_ID_KEY;
-import static org.strassburger.lifestealz.util.customitems.CustomItemManager.NO_DESPAWN_KEY;
 
 public final class CustomItem {
     private final ItemStack itemStack;
@@ -135,38 +134,6 @@ public final class CustomItem {
         itemMeta.lore(newLore);
         itemStack.setItemMeta(itemMeta);
 
-        return this;
-    }
-
-    public boolean getNoDespawn() {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (container.has(NO_DESPAWN_KEY, PersistentDataType.BOOLEAN)) {
-            return container.get(NO_DESPAWN_KEY, PersistentDataType.BOOLEAN);
-        }
-        return false;
-    }
-
-    public CustomItem setNoDespawn(boolean noDespawn) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(NO_DESPAWN_KEY, PersistentDataType.BOOLEAN, noDespawn);
-        itemStack.setItemMeta(itemMeta);
-        return this;
-    }
-
-    public boolean getNoBurn() {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (container.has(CustomItemManager.NO_BURN_KEY, PersistentDataType.BOOLEAN)) {
-            return container.get(CustomItemManager.NO_BURN_KEY, PersistentDataType.BOOLEAN);
-        }
-        return false;
-    }
-
-    public CustomItem setNoBurn(boolean noBurn) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(CustomItemManager.NO_BURN_KEY, PersistentDataType.BOOLEAN, noBurn);
-        itemStack.setItemMeta(itemMeta);
         return this;
     }
 
