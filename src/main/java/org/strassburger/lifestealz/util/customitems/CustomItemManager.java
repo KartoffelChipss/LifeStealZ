@@ -21,6 +21,8 @@ public final class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");
     public static final NamespacedKey REVIVE_PAGE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "revivepage");
+    public static final NamespacedKey NO_DESPAWN_KEY = new NamespacedKey(LifeStealZ.getInstance(), "nodespawn");
+    public static final NamespacedKey NO_BURN_KEY = new NamespacedKey(LifeStealZ.getInstance(), "noburn");
 
     private CustomItemManager() {}
 
