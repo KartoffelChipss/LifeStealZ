@@ -144,8 +144,20 @@ heartsPerNaturalDeath: 1
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
 enforceMaxHeartsOnAdminCommands: false
-# The custom item that should be dropped if a player is killed (Must be an id from the items.yml)
-heartItem: "defaultheart"
+# The custom items that should be used for the following scenarios (Must be an id from the items.yml)
+heartItem:
+  # This item will be used for anything that is not listed below (mostly legacy)
+  default: "defaultheart"
+  # This item will be given, when a user withdraws a heart
+  withdraw: "defaultheart"
+  # This item will be dropped when a player is killed by another player and "dropHeartsPlayer" is enabled
+  kill: "defaultheart"
+  # This item will be dropped when a player is killed by natural causes and "dropHeartsNatural" is enabled
+  naturalDeath: "defaultheart"
+  # This item will be dropped if a player is killed, the killer is still on cooldown and "heartGainCooldown.dropOnCooldown" is enabled
+  heartGainCooldown: "defaultheart"
+  # This item will be dropped if a player is killed, the killer has reached the max amount of hearts and "dropHeartsIfMax" is enabled
+  maxHearts: "defaultheart"
 
 
 # === HEART BEHAVIOR SETTINGS ===
@@ -233,11 +245,11 @@ gracePeriod:
 
   # Custom commands to be executed when the grace period starts
   startCommands:
-  # - "say The grace period for &player& has started"
+    # - "say The grace period for &player& has started"
 
   # Custom commands to be executed when the grace period ends
   endCommands:
-  # - "say The grace period for &player& has ended"
+    # - "say The grace period for &player& has ended"
 
 heartGainCooldown:
   # A cooldown for how often people can gain a heart.
@@ -261,8 +273,8 @@ antiAlt:
   # Add custom comamnds, to be executed when a possible alt kill attempt is detected
   # You can use &player& to insert the player name (commands are executed for both players)
   commands:
-  # - "say Please don't kill alts"
-  # - "ban &player& 1h"
+    # - "say Please don't kill alts"
+    # - "ban &player& 1h"
 
 webhook:
   # If a webhook should be sent, when a player is eliminated
@@ -303,15 +315,24 @@ password: "password"
 # You can change which item is dropped on death in the main config.yml
 
 defaultheart: # <- This is the item id that can be used in recipes and for permissions
+  # This is the name of the item that is displayed in the inventory
   name: "&cHeart"
+  # The lore is the description of the item that is displayed in the inventory
   lore:
     - "&7Rightclick to use"
   #  - "This would be a second line"
   #  - "And this possibly a third line"
-  material: "NETHER_STAR" # Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  # The material is the item that is displayed in the inventory (Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
+  material: "NETHER_STAR"
+  # If set to true, the enchant glint will be applied to the item
   enchanted: false
+  # The custom model data is used to change the appearance of the item without changing the texture of a material
   customModelData: 100
-  # Custom item type for the item ("heart", "revive" or "none")
+  # Custom item type for the item. You can use:
+    # - "heart" for a heart item
+    # - "revive" for a revive item
+    # - "none" for a custom item that can be used for crafting and can be used as a normal item (e.g. if it is an enderpearl it still can be thrown)
+    # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
   customItemType: "heart"
   # When customItemType is "heart", this value is used to determine how many hearts the item gives
   customHeartValue: 1
@@ -323,23 +344,31 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   requirePermission: false
   # true if this item should be craftable
   craftable: true
-  recipe:
-    # Every item represents one slot in the crafting table
-    # The first item in a row is the left most item in the crafting table
-    # If you want a slot to be blank, use 'AIR' or 'empty'
-    # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
-    rowOne:
-      - "GOLD_BLOCK"
-      - "GOLD_BLOCK"
-      - "GOLD_BLOCK"
-    rowTwo:
-      - "OBSIDIAN"
-      - "NETHER_STAR"
-      - "OBSIDIAN"
-    rowThree:
-      - "DIAMOND_BLOCK"
-      - "DIAMOND_BLOCK"
-      - "DIAMOND_BLOCK"
+  recipes:
+    # You can add as many recipes as you want
+    1:
+      # Every item represents one slot in the crafting table
+      # The first item in a row is the left most item in the crafting table
+      # If you want a slot to be blank, use 'AIR' or 'empty'
+      # If you want to use a simple material, use the material name (e.g. "DIAMOND_BLOCK"). Find all materials here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+      # If you want to use other custom item (like hearts) use the custom item name (e.g. "defaultheart")
+      # If you want to use block or item tags, use the tag with a '#' in front (e.g. "#logs" or "#wool")
+      rowOne:
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+        - "GOLD_BLOCK"
+      rowTwo:
+        - "OBSIDIAN"
+        - "NETHER_STAR"
+        - "OBSIDIAN"
+      rowThree:
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+        - "DIAMOND_BLOCK"
+  # If the item should be burnable (Not destroyed by fire, lava, explosions, cactus, etc.)
+  invulnerable: false
+  # If the item should despawn after laying on the ground for 5 minutes
+  despawnable: true
   sound:
     enabled: true
     sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
@@ -359,19 +388,24 @@ revive:
   maxHearts: -1
   requirePermission: false # (lifestealz.item.revive)
   craftable: true
-  recipe:
-    rowOne:
-      - "AMETHYST_SHARD"
-      - "NETHERITE_BLOCK"
-      - "AMETHYST_SHARD"
-    rowTwo:
-      - "OBSIDIAN"
-      - "BEACON"
-      - "OBSIDIAN"
-    rowThree:
-      - "AMETHYST_SHARD"
-      - "NETHERITE_BLOCK"
-      - "AMETHYST_SHARD"
+  recipes:
+    1:
+      rowOne:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+      rowTwo:
+        - "OBSIDIAN"
+        - "BEACON"
+        - "OBSIDIAN"
+      rowThree:
+        - "AMETHYST_SHARD"
+        - "NETHERITE_BLOCK"
+        - "AMETHYST_SHARD"
+  # If the item should burn in fire or lava
+  invulnerable: false
+  # If the item should despawn after laying on the ground for 5 minutes
+  despawnable: true
   sound:
     enabled: false
     sound: ENTITY_PLAYER_LEVELUP
