@@ -1,27 +1,23 @@
 name: Deploy Maven Javadocs to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Java
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'  # Use the desired Java distribution
-          java-version: '21'       # Use your project's Java version
+          distribution: 'temurin'
+          java-version: '21'
 
-      # Step 3: Cache Maven dependencies
       - name: Cache Maven repository
         uses: actions/cache@v3
         with:
@@ -30,18 +26,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Build Javadocs using Maven
       - name: Build Javadocs
         run: mvn clean javadoc:javadoc
 
-      # Step 5: Add the CNAME file
       - name: Add CNAME file
         run: |
-          echo "javadocs.lifestealz.com" > target/reports/apidocs/CNAME
+          echo "javadocs.lifestealz.com" > target/site/apidocs/CNAME
 
-      # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/reports/apidocs
+          publish_dir: target/site/apidocs
