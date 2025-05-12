@@ -31,10 +31,10 @@ jobs:
 
       - name: Add CNAME file
         run: |
-          echo "javadocs.lifestealz.com" > target/site/apidocs/CNAME
+          echo "javadocs.lifestealz.com" > target/reports/apidocs/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/site/apidocs
+          publish_dir: target/reports/apidocs
