@@ -21,6 +21,8 @@ public final class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_TYPE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemtype");
     public static final NamespacedKey CUSTOM_HEART_VALUE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customheartvalue");
     public static final NamespacedKey REVIVE_PAGE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "revivepage");
+    public static final NamespacedKey DESPAWNABLE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "despawnable");
+    public static final NamespacedKey INVULNERABLE_KEY = new NamespacedKey(LifeStealZ.getInstance(), "invulnerable");
 
     private CustomItemManager() {}
 
@@ -38,6 +40,8 @@ public final class CustomItemManager {
                 .setLore(config.getStringList(itemId + ".lore"))
                 .setCustomModelID(config.getInt(itemId + ".customModelData"))
                 .setEnchanted(config.getBoolean(itemId + ".enchanted"))
+                .setInvulnerable(config.getBoolean(itemId + ".invulnerable"))
+                .setDespawnable(config.getBoolean(itemId + ".despawnable"))
                 .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
         ItemMeta itemMeta = ci.getItemStack().getItemMeta();
@@ -224,6 +228,28 @@ public final class CustomItemManager {
         return item.getItemMeta() != null
                 && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
                 && (item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("non-usable"));
+    }
+
+    /**
+     * Checks if an item is despawnable
+     * @param item The item to check
+     * @return If the item is despawnable
+     */
+    public static boolean isDespawnable(ItemStack item) {
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(DESPAWNABLE_KEY, PersistentDataType.BOOLEAN)
+                && item.getItemMeta().getPersistentDataContainer().get(DESPAWNABLE_KEY, PersistentDataType.BOOLEAN);
+    }
+
+    /**
+     * Checks if an item is invulnerable
+     * @param item The item to check
+     * @return If the item is invulnerable
+     */
+    public static boolean isInvulnerable(ItemStack item) {
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(INVULNERABLE_KEY, PersistentDataType.BOOLEAN)
+                && item.getItemMeta().getPersistentDataContainer().get(INVULNERABLE_KEY, PersistentDataType.BOOLEAN);
     }
 
     /**

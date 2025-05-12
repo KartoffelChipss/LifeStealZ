@@ -28,6 +28,7 @@ public final class EventManager {
         registerListener(new InteractionEntityEventListener(plugin));
         registerListener(new PrepareItemCraft());
         registerListener(new PrepareGrindstone());
+        registerListener(new PlayerDropItemListener());
     }
 
     /**

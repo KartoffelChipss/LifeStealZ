@@ -54,6 +54,10 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
+  # If the item should be burnable (Not destroyed by fire, lava, explosions, cactus, etc.)
+  invulnerable: false
+  # If the item should despawn after laying on the ground for 5 minutes
+  despawnable: true
   sound:
     enabled: true
     sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
@@ -87,6 +91,10 @@ revive:
         - "AMETHYST_SHARD"
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
+  # If the item should burn in fire or lava
+  invulnerable: false
+  # If the item should despawn after laying on the ground for 5 minutes
+  despawnable: true
   sound:
     enabled: false
     sound: ENTITY_PLAYER_LEVELUP

@@ -21,8 +21,10 @@ public final class CustomItemData {
     private final int maxHearts;
     private final boolean craftable;
     private final boolean requirePermission;
+    private final boolean invulnerable;
+    private final boolean despawnable;
 
-    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, int minHearts, int maxHearts, boolean craftable, boolean requirePermission) {
+    public CustomItemData(String itemId, String name, List<String> lore, Material material, boolean enchanted, int customModelData, String customItemType, int customHeartValue, int minHearts, int maxHearts, boolean craftable, boolean requirePermission, boolean invulnerable, boolean despawnable) {
         this.itemId = itemId;
         this.name = name;
         this.lore = lore;
@@ -35,6 +37,8 @@ public final class CustomItemData {
         this.maxHearts = maxHearts;
         this.craftable = craftable;
         this.requirePermission = requirePermission;
+        this.invulnerable = invulnerable;
+        this.despawnable = despawnable;
     }
 
     public CustomItemData(String itemId) throws IllegalArgumentException {
@@ -56,6 +60,8 @@ public final class CustomItemData {
         this.maxHearts = config.getInt(itemId + ".maxHearts");
         this.craftable = config.getBoolean(itemId + ".craftable");
         this.requirePermission = config.getBoolean(itemId + ".requirePermission");
+        this.invulnerable = config.getBoolean(itemId + ".invulnerable");
+        this.despawnable = config.getBoolean(itemId + ".despawnable");
     }
 
     public CustomItemSoundData getSound() {
@@ -112,6 +118,14 @@ public final class CustomItemData {
 
     public String getPermission() {
         return "lifestealz.item." + itemId;
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
+    public boolean isDespawnable() {
+        return despawnable;
     }
 
     public static class CustomItemSoundData {

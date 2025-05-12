@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.strassburger.lifestealz.util.customitems.CustomItemManager.CUSTOM_ITEM_ID_KEY;
+import static org.strassburger.lifestealz.util.customitems.CustomItemManager.*;
 
 public final class CustomItem {
     private final ItemStack itemStack;
@@ -90,6 +90,22 @@ public final class CustomItem {
     public CustomItem addFlag(ItemFlag itemFlag) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(itemFlag);
+        itemStack.setItemMeta(itemMeta);
+
+        return this;
+    }
+
+    public CustomItem setDespawnable(boolean despawnable) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(DESPAWNABLE_KEY, PersistentDataType.BOOLEAN, despawnable);
+        itemStack.setItemMeta(itemMeta);
+
+        return this;
+    }
+
+    public CustomItem setInvulnerable(boolean invulnerable) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(INVULNERABLE_KEY, PersistentDataType.BOOLEAN, invulnerable);
         itemStack.setItemMeta(itemMeta);
 
         return this;
