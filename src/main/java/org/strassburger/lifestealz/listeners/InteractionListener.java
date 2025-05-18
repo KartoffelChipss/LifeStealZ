@@ -1,5 +1,7 @@
 package org.strassburger.lifestealz.listeners;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.CustomModelData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,7 +11,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.customitems.CustomItemData;
@@ -180,7 +184,8 @@ public final class InteractionListener implements Listener {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()));
         }
 
-        if (plugin.getConfig().getBoolean("playTotemEffect")) player.playEffect(EntityEffect.TOTEM_RESURRECT);
+        // NOW USES CUSTOM MODEL
+        if (plugin.getConfig().getBoolean("playTotemEffect")) playHeartAnimation(player);
 
         player.sendMessage(MessageUtils.getAndFormatMsg(true, "heartconsume", "&7Consumed a heart and got &c%amount% &7hearts!", new MessageUtils.Replaceable("%amount%", savedHeartAmount + "")));
         CooldownManager.lastHeartUse.put(player.getUniqueId(), System.currentTimeMillis());
@@ -189,6 +194,31 @@ public final class InteractionListener implements Listener {
     private void handleReviveItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {
         event.setCancelled(true);
         GuiManager.openReviveGui(player, 1);
+    }
+
+    private void playHeartAnimation(Player player) {
+        // Store the original off-hand item
+        ItemStack originalOffHandItem = player.getInventory().getItemInOffHand();
+
+        // Create a fake totem item (will be shown for a very brief moment before the animation)
+        ItemStack fakeTotem = new ItemStack(Material.TOTEM_OF_UNDYING);
+        ItemMeta meta = fakeTotem.getItemMeta();
+        fakeTotem.setData(
+                DataComponentTypes.CUSTOM_MODEL_DATA,
+                CustomModelData.customModelData().addString("lifestealz_totem").build()
+        );
+
+        player.getInventory().setItemInOffHand(fakeTotem);
+        // if you dont do a delay, it appears to use default texture
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Play the totem animation
+                player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
+                player.getInventory().setItemInOffHand(originalOffHandItem);
+            }
+        }.runTaskLater(plugin, 3L);
+
     }
 
     private void updateItemInHand(Player player, ItemStack item, int slot) {

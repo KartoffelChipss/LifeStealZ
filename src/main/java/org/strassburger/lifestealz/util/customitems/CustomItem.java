@@ -81,7 +81,7 @@ public final class CustomItem {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+        itemMeta.addEnchant(Enchantment.UNBREAKING, 1, true);
         itemStack.setItemMeta(itemMeta);
 
         return this;
