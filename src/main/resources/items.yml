@@ -15,7 +15,6 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   material: "NETHER_STAR"
   # If set to true, the enchant glint will be applied to the item
   enchanted: false
-  # The custom model data is used to change the appearance of the item without changing the texture of a material
   # Custom item type for the item. You can use:
     # - "heart" for a heart item
     # - "revive" for a revive item
