@@ -16,7 +16,6 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   # If set to true, the enchant glint will be applied to the item
   enchanted: false
   # The custom model data is used to change the appearance of the item without changing the texture of a material
-  customModelData: 100
   # Custom item type for the item. You can use:
     # - "heart" for a heart item
     # - "revive" for a revive item
@@ -70,7 +69,6 @@ revive:
     - "&7Rightclick to use"
   material: "AMETHYST_SHARD"
   enchanted: true
-  customModelData: 101
   customItemType: "revive"
   customHeartValue: 0
   minHearts: 0
