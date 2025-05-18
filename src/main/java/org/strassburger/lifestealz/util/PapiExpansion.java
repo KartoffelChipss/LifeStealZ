@@ -49,7 +49,7 @@ public final class PapiExpansion extends PlaceholderExpansion {
 
                 // Try to get max health attribute from player as LSZ always updates it and it's faster
                 if (onlinePlayer != null) {
-                    AttributeInstance attribute = onlinePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                    AttributeInstance attribute = onlinePlayer.getAttribute(Attribute.MAX_HEALTH);
                     if (attribute != null) {
                         return String.valueOf((int) (attribute.getBaseValue() / 2));
                     }

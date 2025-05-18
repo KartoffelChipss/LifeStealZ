@@ -24,7 +24,7 @@ public final class EntityDamageByEntityListener implements Listener {
 
         boolean preventCrystalPVP = plugin.getConfig().getBoolean("preventCrystalPVP");
 
-        if ((damagedEntity instanceof Player) && damagerEntity.getType() == EntityType.ENDER_CRYSTAL && preventCrystalPVP) event.setCancelled(true);
+        if ((damagedEntity instanceof Player) && damagerEntity.getType() == EntityType.END_CRYSTAL && preventCrystalPVP) event.setCancelled(true);
 
         if (damagedEntity instanceof Player && damagerEntity instanceof Player) {
             Player damagedPlayer = (Player) damagedEntity;

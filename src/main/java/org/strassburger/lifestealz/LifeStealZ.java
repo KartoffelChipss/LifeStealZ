@@ -204,7 +204,7 @@ public final class LifeStealZ extends JavaPlugin {
     }
 
     public static void setMaxHealth(Player player, double maxHealth) {
-        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
         if (attribute != null) {
             attribute.setBaseValue(maxHealth);
         }
