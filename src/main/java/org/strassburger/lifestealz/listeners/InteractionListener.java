@@ -201,12 +201,7 @@ public final class InteractionListener implements Listener {
         ItemStack originalOffHandItem = player.getInventory().getItemInOffHand();
 
         // Create a fake totem item (will be shown for a very brief moment before the animation)
-        ItemStack fakeTotem = new ItemStack(Material.TOTEM_OF_UNDYING);
-        ItemMeta meta = fakeTotem.getItemMeta();
-        fakeTotem.setData(
-                DataComponentTypes.CUSTOM_MODEL_DATA,
-                CustomModelData.customModelData().addString("lifestealz_totem").build()
-        );
+        ItemStack fakeTotem = CustomItemManager.createHeartAnimationTotem();
 
         player.getInventory().setItemInOffHand(fakeTotem);
         // if you dont do a delay, it appears to use default texture

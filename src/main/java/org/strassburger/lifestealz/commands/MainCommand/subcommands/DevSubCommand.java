@@ -10,6 +10,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.util.customitems.CustomItem;
 import org.strassburger.lifestealz.storage.PlayerData;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
@@ -103,12 +104,22 @@ public final class DevSubCommand implements SubCommand {
             sender.sendMessage(MessageUtils.formatMsg("&7Database cleared!"));
         }
 
+        if (optionTwo.equals("giveAnimationTotem")) {
+            if (!(sender instanceof Player)) return false;
+
+            Player player = (Player) sender;
+
+            player.getInventory().addItem(CustomItemManager.createHeartAnimationTotem());
+
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash | cleardatabase>";
+        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash | cleardatabase | giveAnimationTotem>";
     }
 
     @Override

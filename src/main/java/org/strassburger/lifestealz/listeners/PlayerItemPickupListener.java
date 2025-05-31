@@ -24,6 +24,12 @@ public final class PlayerItemPickupListener implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem().getItemStack();
 
+        if (CustomItemManager.isForbiddenItem(itemStack)) {
+            event.getItem().remove();
+            event.setCancelled(true);
+            return;
+        }
+
         boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
         long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
         boolean heartGainCooldownPreventPickup = plugin.getConfig().getBoolean("heartGainCooldown.preventPickup");

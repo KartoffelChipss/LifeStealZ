@@ -196,6 +196,25 @@ public final class CustomItemManager {
     }
 
     /**
+     * Creates the totem used for the heart animation
+     * @return The heart animation totem
+     */
+    public static ItemStack createHeartAnimationTotem() {
+        CustomItem ci = new CustomItem(Material.TOTEM_OF_UNDYING)
+                .setName(MessageUtils.getAndFormatMsg(false, "heartAnimationTotem", "&cHeart Animation"))
+                .setLore(new ArrayList<>(List.of("&7This item is used for heart animations.")))
+                .addFlag(ItemFlag.HIDE_ATTRIBUTES)
+                .makeForbidden();
+
+        ci.getItemStack().setData(
+                DataComponentTypes.CUSTOM_MODEL_DATA,
+                CustomModelData.customModelData().addString("lifestealz_totem").build()
+        );
+
+        return ci.getItemStack();
+    }
+
+    /**
      * Checks if an item is a heart item
      *
      * @param item The item to check
