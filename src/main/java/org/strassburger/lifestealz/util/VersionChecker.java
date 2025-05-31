@@ -10,8 +10,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
+/**
+ * VersionChecker is a utility class that checks for updates of the LifeStealZ plugin
+ * by querying the Modrinth API for the latest version compatible with the current Minecraft version.
+ */
 public final class VersionChecker {
     private final LifeStealZ plugin;
     private final Logger logger;
@@ -29,6 +35,10 @@ public final class VersionChecker {
         return "https://api.modrinth.com/v2/project/" + modrinthProjectId;
     }
 
+    /**
+     * Checks for updates of the LifeStealZ plugin by comparing the current version with the latest version available on Modrinth.
+     * If a new version is available, it logs a message to the console with the details.
+     */
     private void checkForUpdates() {
         String latestVersion = fetchLatestVersion();
         if (latestVersion != null) {
@@ -54,15 +64,21 @@ public final class VersionChecker {
         }
     }
 
+    /**
+     * Fetches the latest version of the plugin from Modrinth.
+     *
+     * @return The latest version number as a String, or null if it could not be fetched.
+     */
     private String fetchLatestVersion() {
-        JSONObject projectJson = fetchJsonFromUrl(getModrinthProjectUrl());
-        if (projectJson == null) return null;
+        String mcVersion = plugin.getServer().getMinecraftVersion();
+        String encodedGameVersion = URLEncoder.encode("[\"" + mcVersion + "\"]", StandardCharsets.UTF_8);
+        String versionsUrl = getModrinthProjectUrl() + "/version?game_versions=" + encodedGameVersion;
 
-        JSONArray versionArray = (JSONArray) projectJson.get("versions");
-        if (versionArray == null || versionArray.isEmpty()) return null;
+        JSONArray versionsArray = fetchJsonArrayFromUrl(versionsUrl);
+        if (versionsArray == null || versionsArray.isEmpty()) return null;
 
-        String latestVersionId = (String) versionArray.get(versionArray.size() - 1);
-        return fetchVersionNumber(latestVersionId);
+        JSONObject latestVersion = (JSONObject) versionsArray.get(0);
+        return (String) latestVersion.get("version_number");
     }
 
     private String fetchVersionNumber(String versionId) {
@@ -71,6 +87,11 @@ public final class VersionChecker {
         return versionJson != null ? (String) versionJson.get("version_number") : null;
     }
 
+    /**
+     * Fetches JSON data from a given URL.
+     * @param urlString The URL to fetch the JSON data from.
+     * @return A JSONObject containing the parsed JSON data, or null if an error occurs.
+     */
     private JSONObject fetchJsonFromUrl(String urlString) {
         try {
             HttpURLConnection connection = createHttpConnection(urlString);
@@ -86,6 +107,32 @@ public final class VersionChecker {
         return null;
     }
 
+    /**
+     * Fetches a JSON array from a given URL.
+     * @param urlString The URL to fetch the JSON array from.
+     * @return A JSONArray containing the parsed JSON data, or null if an error occurs.
+     */
+    private JSONArray fetchJsonArrayFromUrl(String urlString) {
+        try {
+            HttpURLConnection connection = createHttpConnection(urlString);
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                String response = readResponse(connection);
+                return (JSONArray) new JSONParser().parse(response);
+            } else {
+                logger.warning("Failed to retrieve data from " + urlString + " Response code: " + connection.getResponseCode());
+            }
+        } catch (IOException | org.json.simple.parser.ParseException e) {
+            logger.warning("Error fetching data: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Creates an HTTP connection to the specified URL.
+     * @param urlString The URL to connect to.
+     * @return An HttpURLConnection object for the specified URL.
+     * @throws IOException If an I/O error occurs while opening the connection.
+     */
     private HttpURLConnection createHttpConnection(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -93,6 +140,12 @@ public final class VersionChecker {
         return connection;
     }
 
+    /**
+     * Reads the response from the given HttpURLConnection.
+     * @param connection The HttpURLConnection to read the response from.
+     * @return The response as a String.
+     * @throws IOException If an I/O error occurs while reading the response.
+     */
     private String readResponse(HttpURLConnection connection) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             StringBuilder response = new StringBuilder();
@@ -104,6 +157,10 @@ public final class VersionChecker {
         }
     }
 
+    /**
+     * Checks if a new version of the plugin is available.
+     * @return true if a new version is available, false otherwise.
+     */
     public boolean isNewVersionAvailable() {
         return newVersionAvailable;
     }
