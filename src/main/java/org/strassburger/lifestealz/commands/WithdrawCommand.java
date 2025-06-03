@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.storage.PlayerData;
 
@@ -29,15 +28,6 @@ public final class WithdrawCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (sender instanceof Player && !WhitelistManager.isWorldWhitelisted((Player) sender)) {
-            sender.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "worldNotWhitelisted",
-                    "&cThis world is not whitelisted for LifeStealZ!"
-            ));
-            return false;
-        }
-
         if (!(sender instanceof Player)) {
             sender.sendMessage(MessageUtils.getAndFormatMsg(
                     false,

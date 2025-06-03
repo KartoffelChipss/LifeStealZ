@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WebHookManager;
-import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
@@ -26,11 +25,8 @@ public final class EliminateCommand implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
-    WhitelistManager wm = new WhitelistManager();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!wm.isWorldWhitelisted(sender)) return false;
-
         String targetPlayerName = (args != null && args.length > 0) ? args[0] : null;
         if (targetPlayerName == null) {
             throwUsageError(sender);

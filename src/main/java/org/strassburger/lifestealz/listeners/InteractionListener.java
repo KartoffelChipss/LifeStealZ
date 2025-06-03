@@ -61,14 +61,6 @@ public final class InteractionListener implements Listener {
                 }
             }
 
-            if (
-                    !WhitelistManager.isWorldWhitelisted(player)
-                    && (CustomItemManager.isHeartItem(item) || CustomItemManager.isReviveItem(item))
-            ) {
-                player.sendMessage(MessageUtils.getAndFormatMsg(false, "worldNotWhitelisted", "&cThis world is not whitelisted for LifeStealZ!"));
-                return;
-            }
-
             if (CustomItemManager.isNonUsableItem(item)) {
                 event.setCancelled(true);
                 return;

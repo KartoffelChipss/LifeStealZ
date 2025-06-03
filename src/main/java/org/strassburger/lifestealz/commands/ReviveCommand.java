@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.WebHookManager;
-import org.strassburger.lifestealz.util.WhitelistManager;
 import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.ArrayList;
@@ -26,12 +25,9 @@ public final class ReviveCommand implements CommandExecutor, TabCompleter {
     }
 
     private static final String BYPASS_OPTION = "bypass";
-    WhitelistManager whitelistManager = new WhitelistManager();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!whitelistManager.isWorldWhitelisted(sender)) return false;
-
         if (args.length < 1) {
             throwUsageError(sender);
             return false;

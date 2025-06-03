@@ -23,7 +23,6 @@ public final class EventManager {
         registerListener(new InventoryCloseListener(plugin));
         registerListener(new InventoryClickListener(plugin));
         registerListener(new PlayerDeathListener(plugin));
-        registerListener(new WorldSwitchListener(plugin));
         registerListener(new PlayerItemPickupListener(plugin));
         registerListener(new InteractionEntityEventListener(plugin));
         registerListener(new PrepareItemCraft());
