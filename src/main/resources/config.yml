@@ -46,6 +46,7 @@ supressWhitelistMessage: false
 # The amount of hearts a player has, when joining for the first time
 startHearts: 10
 # The maximal amount of hearts, a player can have
+# You can also set a per player limit using the lifestealz.maxhearts.[amount] permission or a per item limit in the items.yml file
 maxHearts: 20
 # The amount of hp a player should have after getting reived
 reviveHearts: 1

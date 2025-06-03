@@ -4,11 +4,13 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
@@ -20,6 +22,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
+
+import static org.strassburger.lifestealz.util.MaxHeartsManager.getMaxHearts;
 
 public final class PlayerDeathListener implements Listener {
 
@@ -166,7 +170,7 @@ public final class PlayerDeathListener implements Listener {
         final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
         final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
         final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
-        final double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
+        final double maxHearts = getMaxHearts(killer, plugin.getConfig());
         final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
         final boolean heartRewardOnElimination = plugin.getConfig().getBoolean("heartRewardOnElimination");
         final boolean dropHeartsIfMax = plugin.getConfig().getBoolean("dropHeartsIfMax");

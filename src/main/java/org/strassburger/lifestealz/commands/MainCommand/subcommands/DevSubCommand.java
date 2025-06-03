@@ -114,12 +114,26 @@ public final class DevSubCommand implements SubCommand {
             return true;
         }
 
+        if (optionTwo.equals("getEffectivePerms")) {
+            if (!(sender instanceof Player)) return false;
+
+            Player player = (Player) sender;
+
+            String effectivePerms = player.getEffectivePermissions()
+                    .stream()
+                    .map(permission -> permission.getPermission() + (permission.getValue() ? "" : " (denied)"))
+                    .reduce((perm1, perm2) -> perm1 + ", " + perm2)
+                    .orElse("No permissions found");
+            sender.sendMessage(MessageUtils.formatMsg("&7Effective permissions for " + player.getName() + ": " + effectivePerms));
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public String getUsage() {
-        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash | cleardatabase | giveAnimationTotem>";
+        return "/lifestealz dev <giveForbiddenitem | isInGracePeriod | setFirstJoinDate | refreshCaches | crash | cleardatabase | giveAnimationTotem | getEffectivePerms>";
     }
 
     @Override

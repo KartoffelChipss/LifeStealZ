@@ -145,7 +145,7 @@ public final class InteractionListener implements Listener {
         double heartsToAdd = savedHeartAmount * 2;
         double newHearts = playerData.getMaxHealth() + heartsToAdd;
 
-        double maxHearts = plugin.getConfig().getInt("maxHearts") * 2;
+        final double maxHearts = MaxHeartsManager.getMaxHearts(player, plugin.getConfig());
 
         if (newHearts > maxHearts) {
             player.sendMessage(MessageUtils.getAndFormatMsg(false, "maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", Integer.toString((int) maxHearts / 2))));

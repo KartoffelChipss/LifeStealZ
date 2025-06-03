@@ -74,3 +74,5 @@ permissions:
     lifestealz.viewhearts:
         description: allows to view other players max hearts
         default: true
+    lifestealz.maxhearts:
+        description: set the max hearts
