@@ -110,28 +110,12 @@ checkForUpdates: true
 lang: "en-US"
 
 
-# === WORLD SETTINGS ===
-
-# If set to true, the plugin will only take effect in the worlds listed below
-enableWhitelist: false
-
-# A list of worlds, where the plugin should take effect.
-# Depending on how your server is arranged, these settings may need to change.
-# Ensure the default world on your server is named "world", otherwise rename here!
-worlds:
-  - "world"
-  - "world_nether"
-  - "world_the_end"
-
-# Enable to remove the warning message when a world is not whitelisted.
-supressWhitelistMessage: false
-
-
 # === HEART SETTINGS ===
 
 # The amount of hearts a player has, when joining for the first time
 startHearts: 10
 # The maximal amount of hearts, a player can have
+# You can also set a per player limit using the lifestealz.maxhearts.[amount] permission or a per item limit in the items.yml file
 maxHearts: 20
 # The amount of hp a player should have after getting reived
 reviveHearts: 1
