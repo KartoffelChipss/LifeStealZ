@@ -20,7 +20,6 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
     - "This would be a second line"
   material: "NETHER_STAR"
   enchanted: false
-  customModelData: 100
   customItemType: "heart"
   customHeartValue: 1
   minHearts: 0
@@ -41,6 +40,8 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
         - "DIAMOND_BLOCK"
+  invulnerable: false
+  despawnable: true
   sound:
     enabled: true
     sound: ENTITY_PLAYER_LEVELUP
@@ -55,12 +56,18 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
 * `lore` is a list lines, that will be displayed as the item description. You can use `" "` for an empty line and the general [formatting rules](messages.md#formatting). You can add as many lines as you want.
 * `material` refers to the type of the item (e.g. Nether Star, Stick, Diamond Pickaxe). You can use any material from [this list](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html).
 * `enchanted`: Set this to `true` if you item should have an enchant glint.
+* If `invulnerable` is set to `true`, the item will not be destroyed by fire lava, explosions, cacti etc.
+* If `despawnable` is set to `false`, the item will not despawn after laying on the floor for more than 5 minutes.
 
 ### Custom Textures
 
-If you want to apply a custom texture from a TexturePack, you can set the `customModelData` property to whatever you need.
+Every item in LifeStealZ has a `minecraft:custom_model_data` property of `lifestealz_itemId`.
 
-If you don't know how to apply textures using custom model data, I would recommend [this video](https://youtu.be/x2QwKFE0aQg?si=1ZQfsXmTgk5f9xfi\&t=122).
+If you don't want to make your own texturepack, you can use the [Official LifeStealZ Resourcepack](https://modrinth.com/resourcepack/lifestealzpack) or use it as a template for your own.
+
+{% embed url="https://modrinth.com/resourcepack/lifestealzpack" %}
+Official LifeStealZ Resourcepack on Modrinth
+{% endembed %}
 
 ### Crafting
 
