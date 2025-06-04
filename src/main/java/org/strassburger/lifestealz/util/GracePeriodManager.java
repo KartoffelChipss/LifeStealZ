@@ -81,12 +81,18 @@ public final class GracePeriodManager {
         // Duration in ticks: 20 ticks = 1 second
         final long gracePeriodDuration = (long) getConfig().getDuration() * 20;
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+        if (LifeStealZ.getFoliaLib().isFolia()) {
+            LifeStealZ.getFoliaLib().getScheduler().runLater(() -> {
                 endGracePeriod(player);
-            }
-        }.runTaskLater(plugin, gracePeriodDuration);
+            }, gracePeriodDuration);
+        } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    endGracePeriod(player);
+                }
+            }.runTaskLater(plugin, gracePeriodDuration);
+        }
     }
 
     /**
