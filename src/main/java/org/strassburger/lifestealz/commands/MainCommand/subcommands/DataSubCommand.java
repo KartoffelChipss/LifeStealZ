@@ -9,6 +9,8 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.storage.Storage;
 
+import java.util.concurrent.CompletableFuture;
+
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
 public final class DataSubCommand implements SubCommand {
@@ -69,11 +71,11 @@ public final class DataSubCommand implements SubCommand {
             }
         };
         if (LifeStealZ.getFoliaLib().isFolia()) {
-            WrappedTask wrappedTask1 = (WrappedTask) LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
-            plugin.getAsyncTaskManager().addTask(null, wrappedTask1);
+            CompletableFuture<?> future = LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
+            plugin.getAsyncTaskManager().addTask(null, null, future);
         } else {
             BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-            plugin.getAsyncTaskManager().addTask(task, null);
+            plugin.getAsyncTaskManager().addTask(task, null, null);
         }
         return true;
     }
@@ -94,11 +96,11 @@ public final class DataSubCommand implements SubCommand {
             ));
         };
         if (LifeStealZ.getFoliaLib().isFolia()) {
-            WrappedTask wrappedTask1 = (WrappedTask) LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
-            plugin.getAsyncTaskManager().addTask(null, wrappedTask1);
+            CompletableFuture<?> future = LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
+            plugin.getAsyncTaskManager().addTask(null, null, future);
         } else {
             BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-            plugin.getAsyncTaskManager().addTask(task, null);
+            plugin.getAsyncTaskManager().addTask(task, null, null);
         }
         return true;
     }
