@@ -26,7 +26,8 @@ public final class MaxHeartsManager {
             if (perm.startsWith("lifestealz.maxhearts.")) {
                 try {
                     String numberPart = perm.substring("lifestealz.maxhearts.".length());
-                    highestFound = Integer.parseInt(numberPart) * 2;
+                    int hearts = Integer.parseInt(numberPart) * 2;
+                    if (hearts > highestFound) highestFound = hearts;
                 } catch (NumberFormatException ignored) {}
             }
         }
