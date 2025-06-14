@@ -117,6 +117,7 @@
                     <artifactSet>
                         <includes>
                             <include>com.zaxxer:HikariCP</include> <!-- Include HikariCP dependency -->
+                            <include>com.github.technicallycoded:FoliaLib</include>
                         </includes>
                     </artifactSet>
                     <transformers>
@@ -125,6 +126,13 @@
                             <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set your main class if needed -->
                         </transformer>
                     </transformers>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.tcoded.folialib</pattern>
+                            <!-- !! MAKE SURE TO CHANGE THIS TO YOUR PLUGIN'S GROUP & PLUGIN NAME !! -->
+                            <shadedPattern>org.strassburger.lifestealz.lib.folialib</shadedPattern>
+                        </relocation>
+                    </relocations>
                 </configuration>
             </plugin>
         </plugins>
@@ -157,7 +165,10 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -212,9 +223,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.technicallycoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>main-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.0.2</version>
         </dependency>
 
     </dependencies>

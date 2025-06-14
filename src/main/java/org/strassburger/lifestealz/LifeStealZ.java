@@ -1,5 +1,6 @@
 package org.strassburger.lifestealz;
 
+import com.tcoded.folialib.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -24,6 +25,7 @@ import java.io.File;
 
 public final class LifeStealZ extends JavaPlugin {
 
+    private static FoliaLib foliaLib;
     private VersionChecker versionChecker;
     private Storage storage;
     private WorldGuardManager worldGuardManager;
@@ -71,6 +73,8 @@ public final class LifeStealZ extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+
+        foliaLib = new FoliaLib(this);
 
         asyncTaskManager = new AsyncTaskManager();
 
@@ -220,5 +224,9 @@ public final class LifeStealZ extends JavaPlugin {
 
     public File getPluginFile() {
         return this.getFile();
+    }
+
+    public static FoliaLib getFoliaLib() {
+        return foliaLib;
     }
 }
