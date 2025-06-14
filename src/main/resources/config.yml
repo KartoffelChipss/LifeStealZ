@@ -41,6 +41,7 @@ heartsPerNaturalDeath: 1
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
+# Note that this
 enforceMaxHeartsOnAdminCommands: false
 # The custom items that should be used for the following scenarios (Must be an id from the items.yml)
 heartItem:

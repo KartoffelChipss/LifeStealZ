@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.SubCommand;
+import org.strassburger.lifestealz.util.MaxHeartsManager;
 import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.storage.PlayerData;
@@ -94,13 +95,18 @@ public final class HeartsSubCommand implements SubCommand {
             assert targetPlayer != null;
             PlayerData targetPlayerData = plugin.getStorage().load(targetPlayer.getUniqueId());
 
+            double maxAllowedHearts = config.getInt("maxHearts") * 2;
+            Player targetOnlinePlayer = targetPlayer.getPlayer();
+            if (targetOnlinePlayer != null)
+                maxAllowedHearts = MaxHeartsManager.getMaxHearts(targetOnlinePlayer, config);
+
             switch (optionTwo) {
                 case "add": {
                     if (
                             config.getBoolean("enforceMaxHeartsOnAdminCommands")
-                            && targetPlayerData.getMaxHealth() + (amount * 2) > config.getInt("maxHearts") * 2
+                            && targetPlayerData.getMaxHealth() + (amount * 2) > maxAllowedHearts
                     ) {
-                        sendHeartLimitReachedMessage(sender);
+                        sendHeartLimitReachedMessage(sender, maxAllowedHearts);
                         return false;
                     }
 
@@ -119,8 +125,8 @@ public final class HeartsSubCommand implements SubCommand {
                         return false;
                     }
 
-                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount > config.getInt("maxHearts")) {
-                        sendHeartLimitReachedMessage(sender);
+                    if (config.getBoolean("enforceMaxHeartsOnAdminCommands") && amount * 2 > maxAllowedHearts) {
+                        sendHeartLimitReachedMessage(sender, maxAllowedHearts);
                         return false;
                     }
 
@@ -199,12 +205,12 @@ public final class HeartsSubCommand implements SubCommand {
         return MessageUtils.getAndFormatMsg(true, key, defaultMessage, replaceables);
     }
 
-    private void sendHeartLimitReachedMessage(CommandSender sender) {
+    private void sendHeartLimitReachedMessage(CommandSender sender, double maxHearts) {
         Component maxHeartsMsg = MessageUtils.getAndFormatMsg(
                 true,
                 "maxHeartLimitReached",
                 "&cYou already reached the limit of %limit% hearts!",
-                new MessageUtils.Replaceable("%limit%", config.getInt("maxHearts") + ""));
+                new MessageUtils.Replaceable("%limit%", (int)(maxHearts / 2) + ""));
         sender.sendMessage(maxHeartsMsg);
     }
 
