@@ -88,9 +88,7 @@ revive:
         - "AMETHYST_SHARD"
         - "NETHERITE_BLOCK"
         - "AMETHYST_SHARD"
-  # If the item should burn in fire or lava
   invulnerable: false
-  # If the item should despawn after laying on the ground for 5 minutes
   despawnable: true
   sound:
     enabled: false
