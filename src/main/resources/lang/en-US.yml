@@ -88,3 +88,4 @@ reviveBeaconStart: "&c%player% &7will be revived in &c%seconds% seconds&7! Pleas
 reviveBeaconBreak: "&7Your revive beacon has been broken by &c%breaker%&7, the revive process has been cancelled."
 beaconInUseInteract: "&7There is already a revive process in progress. Time left: &c%timeLeft% seconds&7."
 alreadyRevivingPlayer: "&cThis player is already being revived by another beacon! Please wait until the current revive is finished."
+noReviveBeaconBreak: "&cYou cannot break a revive beacon while it is in use!"

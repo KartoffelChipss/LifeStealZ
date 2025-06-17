@@ -36,11 +36,15 @@ public final class ReviveBeaconEffectManager {
     /**
      * Starts the idle particle effects for a Revive Beacon at the specified location.
      * @param location The location of the Revive Beacon where the particles will be spawned.
+     * @param showEnchantParticles Whether to show enchantment particles around the beacon.
+     * @param decoyMaterial The material to use for the decoy block display.
      */
-    public void startIdleEffects(Location location) {
-        if (idleParticleBeacons.containsKey(getKey(location))) return;
+    public void startIdleEffects(Location location, boolean showEnchantParticles, Material decoyMaterial) {
+        if (idleParticleBeacons.containsKey(getKey(location)) || decoyDisplays.containsKey(getKey(location))) return;
 
-        applyMaterialDecoy(location);
+        applyMaterialDecoy(location, decoyMaterial);
+
+        if (!showEnchantParticles) return;
 
         var runnable = new BukkitRunnable() {
             final Location center = location.clone().add(0.5, 1.0, 0.5);
@@ -56,13 +60,20 @@ public final class ReviveBeaconEffectManager {
     /**
      * Starts the reviving particle effects for a Revive Beacon at the specified location.
      * @param location The location of the Revive Beacon where the particles will be spawned.
+     * @param showLaser Whether to show the laser effect.
+     * @param showParticleRing Whether to show the particle ring effect.
+     * @param particleColor The color of the particles in the ring.
+     * @param innerLaserMaterial The material for the inner laser beam.
+     * @param outerLaserMaterial The material for the outer laser beam.
      */
-    public void startRevivingEffects(Location location) {
+    public void startRevivingEffects(Location location, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial) {
         if (revivingParticleBeacons.containsKey(location) || lasers.containsKey(location)) return;
 
-        spawnBeaconLaser(location);
+        if (showLaser) spawnBeaconLaser(location, innerLaserMaterial, outerLaserMaterial);
 
         location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
+
+        if (!showParticleRing) return;
 
         var runnable = new BukkitRunnable() {
             final Location center = location.clone().add(0.5, 1.0, 0.5);
@@ -70,7 +81,7 @@ public final class ReviveBeaconEffectManager {
             public void run() {
                 //spawnVerticalParticleBeam(center);
 
-                spawnRing(center);
+                spawnRing(center, particleColor);
             }
         }.runTaskTimer(plugin, 0L, 10L);
 
@@ -80,16 +91,15 @@ public final class ReviveBeaconEffectManager {
     /**
      * Applies a decoy material at the specified location using block displays. This fakes the appearance of a block
      * @param location The location where the decoy material will be applied.
+     * @param decoyMaterial The material to use for the decoy block display.
      */
-    private void applyMaterialDecoy(Location location) {
+    private void applyMaterialDecoy(Location location, Material decoyMaterial) {
         if (decoyDisplays.containsKey(getKey(location))) return;
 
-        final Material material = Material.RED_STAINED_GLASS;
         BlockDisplay display = location.getWorld().spawn(location, BlockDisplay.class);
-        display.setBlock(material.createBlockData());
+        display.setBlock(decoyMaterial.createBlockData());
         display.setPersistent(true);
         display.setBrightness(new Display.Brightness(8, 8));
-
 
         decoyDisplays.put(getKey(location), display);
 
@@ -152,7 +162,7 @@ public final class ReviveBeaconEffectManager {
                     center.clone().add(0, y, 0),
                     1,
                     0.0, 0.0, 0.0,
-                    new Particle.DustOptions(getRandomRed(), 1.5f)
+                    new Particle.DustOptions(ParticleColor.RED.getColor(), 1.5f)
             );
         }
     }
@@ -161,8 +171,9 @@ public final class ReviveBeaconEffectManager {
      * Spawns a ring of particles around the specified center location.
      * This method is typically called when the Revive Beacon is activated or during the reviving process.
      * @param center The center location around which the ring of particles will be spawned.
+     * @param particleColor The color of the particles to be spawned in the ring.
      */
-    private void spawnRing(Location center) {
+    private void spawnRing(Location center, ParticleColor particleColor) {
         double radius = 1.5;
         int points = 25;
         Location ringCenter = center.clone().add(0, -0.5, 0);
@@ -177,7 +188,7 @@ public final class ReviveBeaconEffectManager {
                     ringCenter.clone().add(xOffset, 0.25, zOffset),
                     1,
                     0.0, 0.0, 0.0,
-                    new Particle.DustOptions(getRandomRed(), 1.2f)
+                    new Particle.DustOptions(particleColor.getColor(), 1.2f)
             );
         }
     }
@@ -186,8 +197,10 @@ public final class ReviveBeaconEffectManager {
      * Spawns the laser effect for a Revive Beacon at the specified location.
      *
      * @param location The location of the Revive Beacon where the laser will be spawned.
+     * @param innerMaterial The material for the inner laser beam.
+     * @param outerMaterial The material for the outer laser beam.
      */
-    private void spawnBeaconLaser(Location location) {
+    private void spawnBeaconLaser(Location location, Material innerMaterial, Material outerMaterial) {
         final float finalHeight = 150f;
         final float width1 = 0.3f;
         final float width2 = 0.5f;
@@ -197,11 +210,11 @@ public final class ReviveBeaconEffectManager {
         Location glassLoc = location.clone().add((1 - width2) / 2, 0, (1 - width2) / 2);
 
         BlockDisplay quartz = location.getWorld().spawn(quartzLoc, BlockDisplay.class);
-        quartz.setBlock(Material.RED_GLAZED_TERRACOTTA.createBlockData());
+        quartz.setBlock(innerMaterial.createBlockData());
         quartz.setPersistent(true);
 
         BlockDisplay glass = location.getWorld().spawn(glassLoc, BlockDisplay.class);
-        glass.setBlock(Material.RED_STAINED_GLASS.createBlockData());
+        glass.setBlock(outerMaterial.createBlockData());
         glass.setPersistent(true);
 
         lasers.put(getKey(location), Set.of(quartz, glass));
@@ -347,20 +360,6 @@ public final class ReviveBeaconEffectManager {
         laserGrowTasks.clear();
         for (BlockDisplay display : decoyDisplays.values()) if (display != null) display.remove();
         decoyDisplays.clear();
-    }
-
-    /**
-     * Generates a random red color for the beacon particles.
-     * @return A random red color with high red value and low green and blue values.
-     */
-    private Color getRandomRed() {
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
-
-        int red = 200 + rand.nextInt(56); // 200–255
-        int green = rand.nextInt(40); // 0–39
-        int blue = rand.nextInt(40); // 0–39
-
-        return Color.fromRGB(red, green, blue);
     }
 
     private Location getKey(Location location) {

@@ -16,8 +16,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
+import org.strassburger.lifestealz.util.customblocks.CustomBlock;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.storage.PlayerData;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomReviveBeaconItemData;
 
 import java.util.List;
 import java.util.UUID;
@@ -297,20 +299,34 @@ public final class InventoryClickListener implements Listener {
     private void beaconRevivePlayer(Player reviver, OfflinePlayer target, boolean isBedrock, Location beaconLocation) {
         PlayerData data = plugin.getStorage().load(target.getUniqueId());
 
-        if (!canRevivePlayer(reviver, target, data)) return;
+        String customItemId = CustomBlock.REVIVE_BEACON.getCustomItemId(beaconLocation.getBlock());
+        CustomReviveBeaconItemData itemData;
 
-        final int reviveSeconds = 10;
+        try {
+            itemData = new CustomReviveBeaconItemData(customItemId);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+
+        if (!canRevivePlayer(reviver, target, data)) return;
 
         reviver.sendMessage(MessageUtils.getAndFormatMsg(
                 true,
                 "reviveBeaconStart",
                 "&c%player% &7will be revived in &c%seconds% seconds&7! Please wait...",
                 new MessageUtils.Replaceable("%player%", target.getName()),
-                new MessageUtils.Replaceable("%seconds%", String.valueOf(reviveSeconds))
+                new MessageUtils.Replaceable("%seconds%", String.valueOf(itemData.getReviveTime()))
         ));
         reviver.closeInventory();
 
-        plugin.getReviveBeaconEffectManager().startRevivingEffects(beaconLocation);
+        plugin.getReviveBeaconEffectManager().startRevivingEffects(
+                beaconLocation,
+                itemData.shouldShowLaser(),
+                itemData.shouldShowParticleRing(),
+                itemData.getParticleColor(),
+                itemData.getInnerLaser(),
+                itemData.getOuterLaser()
+        );
 
         BukkitTask reviveTask = new BukkitRunnable() {
             @Override
@@ -322,7 +338,7 @@ public final class InventoryClickListener implements Listener {
                 beaconLocation.getBlock().setType(Material.AIR);
                 beaconLocation.getWorld().playSound(beaconLocation, Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
             }
-        }.runTaskLater(plugin, reviveSeconds * 20L);
+        }.runTaskLater(plugin, itemData.getReviveTime() * 20L);
 
         LifeStealZ.reviveTasks.put(beaconLocation, new ReviveTask(
                 beaconLocation,
@@ -330,7 +346,7 @@ public final class InventoryClickListener implements Listener {
                 reviver.getUniqueId(),
                 target.getUniqueId(),
                 System.currentTimeMillis() / 1000L,
-                reviveSeconds
+                itemData.getReviveTime()
         ));
     }
 

@@ -10,6 +10,7 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customblocks.CustomBlock;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemType;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomReviveBeaconItemData;
 
 public final class ReviveBeaconPlaceListener implements Listener {
     private final LifeStealZ plugin;
@@ -27,9 +28,20 @@ public final class ReviveBeaconPlaceListener implements Listener {
         if (!CustomItemType.REVIVE_BEACON.is(itemInHand)) return;
 
         String customItemId = CustomItemManager.getCustomItemId(itemInHand);
+        CustomReviveBeaconItemData itemData;
+
+        try {
+            itemData = new CustomReviveBeaconItemData(customItemId);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
 
         CustomBlock.REVIVE_BEACON.make(block, customItemId);
 
-        plugin.getReviveBeaconEffectManager().startIdleEffects(block.getLocation());
+        plugin.getReviveBeaconEffectManager().startIdleEffects(
+                block.getLocation(),
+                itemData.shouldShowEnchantParticles(),
+                itemData.getDecoyMaterial()
+        );
     }
 }

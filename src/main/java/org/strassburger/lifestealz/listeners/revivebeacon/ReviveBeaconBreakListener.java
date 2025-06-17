@@ -16,6 +16,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.ReviveTask;
 import org.strassburger.lifestealz.util.customblocks.CustomBlock;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomReviveBeaconItemData;
 
 public final class ReviveBeaconBreakListener implements Listener {
     private final LifeStealZ plugin;
@@ -29,11 +30,24 @@ public final class ReviveBeaconBreakListener implements Listener {
         Block block = event.getBlock();
         if (!CustomBlock.REVIVE_BEACON.is(block)) return;
 
-        plugin.getReviveBeaconEffectManager().clearAllEffects(block.getLocation());
+        Player player = event.getPlayer();
         Location location = block.getLocation();
 
-        ReviveTask reviveTask = LifeStealZ.reviveTasks.remove(location);
+        ReviveTask reviveTask = LifeStealZ.reviveTasks.get(location);
         if (reviveTask != null) {
+            CustomReviveBeaconItemData itemData = new CustomReviveBeaconItemData(CustomBlock.REVIVE_BEACON.getCustomItemId(block));
+            if (!itemData.isAllowBreakingBeaconWhileReviving()) {
+                event.setCancelled(true);
+                player.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "noReviveBeaconBreak",
+                        "&cYou cannot break a revive beacon while it is in use!"
+                ));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+                return;
+            }
+
+            LifeStealZ.reviveTasks.remove(location);
             if (!reviveTask.task().isCancelled()) reviveTask.task().cancel();
             location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f);
             Player reviver = Bukkit.getPlayer(reviveTask.reviver());
@@ -42,17 +56,19 @@ public final class ReviveBeaconBreakListener implements Listener {
                         true,
                         "reviveBeaconBreak",
                         "&7Your revive beacon has been broken by &c%breaker%&7, the revive process has been cancelled.",
-                        new MessageUtils.Replaceable("%breaker%", event.getPlayer().getName())
+                        new MessageUtils.Replaceable("%breaker%", player.getName())
                 ));
             }
         }
 
+        plugin.getReviveBeaconEffectManager().clearAllEffects(location);
+
         event.setDropItems(false);
-        if (!event.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) return;
+        if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
         String customID = CustomBlock.REVIVE_BEACON.getCustomItemId(block);
         if (customID == null) return;
         ItemStack item = CustomItemManager.createCustomItem(customID);
-        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), item);
+        block.getWorld().dropItemNaturally(location.add(0.5, 0.5, 0.5), item);
     }
 
     @EventHandler
