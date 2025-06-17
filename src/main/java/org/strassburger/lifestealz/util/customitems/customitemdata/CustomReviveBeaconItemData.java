@@ -5,7 +5,7 @@ import org.strassburger.lifestealz.util.customblocks.ParticleColor;
 
 import java.util.Objects;
 
-public class CustomReviveBeaconItemData extends CustomItemData {
+public final class CustomReviveBeaconItemData extends CustomItemData {
     private final int reviveTime;
     private final boolean allowBreakingBeaconWhileReviving;
     private final boolean showLaser;
