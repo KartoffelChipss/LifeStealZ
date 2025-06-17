@@ -1,16 +1,19 @@
 package org.strassburger.lifestealz;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.strassburger.lifestealz.api.LifeStealZAPI;
 import org.strassburger.lifestealz.api.LifeStealZAPIImpl;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.caches.EliminatedPlayersCache;
 import org.strassburger.lifestealz.caches.OfflinePlayerCache;
 import org.strassburger.lifestealz.util.commands.CommandManager;
+import org.strassburger.lifestealz.util.customblocks.ReviveBeaconEffectManager;
 import org.strassburger.lifestealz.util.customitems.recipe.RecipeManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserManager;
 import org.strassburger.lifestealz.util.geysermc.GeyserPlayerFile;
@@ -21,6 +24,8 @@ import org.strassburger.lifestealz.storage.SQLiteStorage;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class LifeStealZ extends JavaPlugin {
 
@@ -37,10 +42,12 @@ public final class LifeStealZ extends JavaPlugin {
     private EliminatedPlayersCache eliminatedPlayersCache;
     private OfflinePlayerCache offlinePlayerCache;
     private AsyncTaskManager asyncTaskManager;
+    private ReviveBeaconEffectManager reviveBeaconEffectManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
 
+    public static Map<Location, ReviveTask> reviveTasks = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -73,6 +80,7 @@ public final class LifeStealZ extends JavaPlugin {
         saveDefaultConfig();
 
         asyncTaskManager = new AsyncTaskManager();
+        reviveBeaconEffectManager = new ReviveBeaconEffectManager(this);
 
         languageManager = new LanguageManager(this);
         configManager = new ConfigManager(this);
@@ -111,6 +119,7 @@ public final class LifeStealZ extends JavaPlugin {
     public void onDisable() {
         getLogger().info("Canceling all running tasks...");
         asyncTaskManager.cancelAllTasks();
+        reviveBeaconEffectManager.clearAllEffects();
         getLogger().info("LifeStealZ disabled!");
     }
 
@@ -124,6 +133,10 @@ public final class LifeStealZ extends JavaPlugin {
 
     public AsyncTaskManager getAsyncTaskManager() {
         return asyncTaskManager;
+    }
+
+    public ReviveBeaconEffectManager getReviveBeaconEffectManager() {
+        return reviveBeaconEffectManager;
     }
 
     public VersionChecker getVersionChecker() {

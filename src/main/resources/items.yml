@@ -18,6 +18,7 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   # Custom item type for the item. You can use:
     # - "heart" for a heart item
     # - "revive" for a revive item
+    # - "revivebeacon" for a revive beacon item -> This item must actually be a beacon to work!
     # - "none" for a custom item that can be used for crafting and can be used as a normal item (e.g. if it is an enderpearl it still can be thrown)
     # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
   customItemType: "heart"

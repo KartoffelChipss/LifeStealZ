@@ -16,6 +16,7 @@ import org.strassburger.lifestealz.util.MessageUtils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import java.util.*;
+import java.util.logging.Level;
 
 public final class CustomItemManager {
     public static final NamespacedKey CUSTOM_ITEM_ID_KEY = new NamespacedKey(LifeStealZ.getInstance(), "customitemid");
@@ -34,33 +35,42 @@ public final class CustomItemManager {
      * @return The custom item
      */
     public static ItemStack createCustomItem(String itemId) {
-        FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
+        try {
+            FileConfiguration config = LifeStealZ.getInstance().getConfigManager().getCustomItemConfig();
+            String customItemType = config.getString(itemId + ".customItemType", "heart");
 
-        CustomItem ci = new CustomItem(Material.valueOf(config.getString(itemId + ".material")))
-                .setName(config.getString(itemId + ".name"))
-                .setLore(config.getStringList(itemId + ".lore"))
-                .setEnchanted(config.getBoolean(itemId + ".enchanted"))
-                .setInvulnerable(config.getBoolean(itemId + ".invulnerable"))
-                .setDespawnable(config.getBoolean(itemId + ".despawnable"))
-                .addFlag(ItemFlag.HIDE_ATTRIBUTES);
+            String materialString = config.getString(itemId + ".material", "NETHER_STAR");
+            if (customItemType.equalsIgnoreCase("revivebeacon")) materialString = "BEACON";
+            Material material = Material.valueOf(materialString);
 
-        ci.getItemStack().setData(
-                DataComponentTypes.CUSTOM_MODEL_DATA,
-                CustomModelData.customModelData().addString("lifestealz_" + itemId).build()
-        );
+            CustomItem ci = new CustomItem(material)
+                    .setName(config.getString(itemId + ".name"))
+                    .setLore(config.getStringList(itemId + ".lore"))
+                    .setEnchanted(config.getBoolean(itemId + ".enchanted"))
+                    .setInvulnerable(config.getBoolean(itemId + ".invulnerable"))
+                    .setDespawnable(config.getBoolean(itemId + ".despawnable"))
+                    .addFlag(ItemFlag.HIDE_ATTRIBUTES);
 
-        ItemMeta itemMeta = ci.getItemStack().getItemMeta();
+            ci.getItemStack().setData(
+                    DataComponentTypes.CUSTOM_MODEL_DATA,
+                    CustomModelData.customModelData().addString("lifestealz_" + itemId).build()
+            );
 
-        itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING, itemId);
+            ItemMeta itemMeta = ci.getItemStack().getItemMeta();
 
-        String customItemType = config.getString(itemId + ".customItemType") != null ? Objects.requireNonNull(config.getString(itemId + ".customItemType")) : "heart";
-        itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING, customItemType);
+            itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_ID_KEY, PersistentDataType.STRING, itemId);
 
-        if (customItemType.equalsIgnoreCase("heart")) itemMeta.getPersistentDataContainer().set(CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER, config.getInt( itemId + ".customHeartValue"));
+            itemMeta.getPersistentDataContainer().set(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING, customItemType);
 
-        ci.getItemStack().setItemMeta(itemMeta);
+            if (customItemType.equalsIgnoreCase("heart")) itemMeta.getPersistentDataContainer().set(CUSTOM_HEART_VALUE_KEY, PersistentDataType.INTEGER, config.getInt( itemId + ".customHeartValue"));
 
-        return ci.getItemStack();
+            ci.getItemStack().setItemMeta(itemMeta);
+
+            return ci.getItemStack();
+        } catch (IllegalArgumentException ex) {
+            LifeStealZ.getInstance().getLogger().log(Level.SEVERE, "Could not create custom item with id '" + itemId + "': " + ex.getMessage(), ex);
+            return new CustomItem(Material.BARRIER).setName("&cInvalid Item").setLore(new ArrayList<>(List.of("&7This item is invalid or does not exist.", "&cCheck the server console for more information!"))).makeForbidden().getItemStack();
+        }
     }
 
     /**
@@ -236,6 +246,18 @@ public final class CustomItemManager {
         return item.getItemMeta() != null
                 && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
                 && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
+    }
+
+    /**
+     * Checks if an item is a revive beacon
+     *
+     * @param item The item to check
+     * @return If the item is a revive beacon
+     */
+    public static boolean isReviveBeacon(ItemStack item) {
+        return item.getItemMeta() != null
+                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
+                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revivebeacon");
     }
 
     /**

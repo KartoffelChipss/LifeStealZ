@@ -2,10 +2,7 @@ package org.strassburger.lifestealz.listeners;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,6 +11,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
@@ -33,152 +32,11 @@ public final class InventoryClickListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-
         Inventory openInventory = player.getOpenInventory().getTopInventory();
 
-        if (openInventory.equals(GuiManager.RECIPE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
-            event.setCancelled(true);
-
-            if (event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.BARRIER) {
-                event.getWhoClicked().closeInventory();
-            }
-
-            return;
-        }
-
-        if (openInventory.equals(GuiManager.REVIVE_GUI_MAP.get(event.getWhoClicked().getUniqueId()))) {
-            int reviveMaximum = plugin.getConfig().getInt("maxRevives");
-            int minHearts = plugin.getConfig().getInt("minHearts");
-
-            event.setCancelled(true);
-
-            ItemStack item = event.getCurrentItem();
-
-            if (item == null || item.getType() == Material.AIR || !(event.getWhoClicked() instanceof Player)) return;
-
-            switch (item.getType()) {
-                case BARRIER:
-                    player.closeInventory();
-                    break;
-                case ARROW:
-                    event.setCancelled(true);
-                    Integer pageInt = item.getItemMeta().getPersistentDataContainer().get(CustomItemManager.REVIVE_PAGE_KEY, PersistentDataType.INTEGER);
-                    int page = pageInt != null ? pageInt : 1;
-                    GuiManager.openReviveGui(player, page);
-                case PLAYER_HEAD:
-                    if (!player.hasPermission("lifestealz.revive")) {
-                        throwPermissionError(player);
-                        return;
-                    }
-
-                    if (item.lore() == null) return;
-                    String uuidString = getLastLineOfLore(item, false);
-                    if (uuidString == null) return;
-                    UUID playerUUID = UUID.fromString(uuidString);
-                    OfflinePlayer targetPlayer = Bukkit.getServer().getOfflinePlayer(playerUUID);
-
-                    if (targetPlayer.getName() == null) {
-                        player.sendMessage(Component.text("§cAn error occurred while fetching playerdata! Are you sure this is a real player?"));
-                        return;
-                    }
-
-                    if (!hasReviveCrystal(player)) {
-                        plugin.getLogger().warning("Player " + player.getName() + " tried to revive " + targetPlayer.getName() + " without a revive crystal!");
-                        return;
-                    }
-
-                    PlayerData targetPlayerData = plugin.getStorage().load(playerUUID);
-
-                    if (reviveMaximum != -1 && targetPlayerData.getHasBeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetPlayerData.getHasBeenRevived() + "")));
-                        return;
-                    }
-
-                    if (targetPlayerData.getMaxHealth() > minHearts * 2) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
-                        return;
-                    }
-
-                    targetPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
-                    targetPlayerData.setHasBeenRevived(targetPlayerData.getHasBeenRevived() + 1);
-                    plugin.getStorage().save(targetPlayerData);
-
-                    plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetPlayer.getName());
-
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetPlayer.getName())));
-
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
-
-                    event.getInventory().close();
-
-                    List<String> reviveCommands = plugin.getConfig().getStringList("reviveuseCommands");
-                    for (String command : reviveCommands) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()).replace("&target&", targetPlayer.getName()));
-                    }
-
-                    removeReviveCrystal(player);
-
-                    plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, targetPlayer.getName(), player.getName());
-                    break;
-                case SKELETON_SKULL:
-                    if (!player.hasPermission("lifestealz.revive")) {
-                        throwPermissionError(player);
-                        return;
-                    }
-
-                    if (item.lore() == null) return;
-                    String bedrockUuidString = getLastLineOfLore(item, true);
-                    if (bedrockUuidString == null) return;
-                    UUID bedrockPlayerUUID = UUID.fromString(bedrockUuidString);
-                    OfflinePlayer targetBedrockPlayer = Bukkit.getServer().getOfflinePlayer(bedrockPlayerUUID);
-
-                    if (targetBedrockPlayer.getName() == null) {
-                        player.sendMessage(Component.text("§cAn error occurred while fetching playerdata! Are you sure this is a real player?"));
-                        return;
-                    }
-
-                    if (!hasReviveCrystal(player)) {
-                        plugin.getLogger().warning("Player " + player.getName() + " tried to revive " + targetBedrockPlayer.getName() + " without a revive crystal!");
-                        return;
-                    }
-
-                    PlayerData targetBedrockPlayerData = plugin.getStorage().load(bedrockPlayerUUID);
-
-
-                    if (reviveMaximum != -1 && targetBedrockPlayerData.getHasBeenRevived() >= reviveMaximum) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "reviveMaxReached", "&cThis player has already been revived %amount% times!", new MessageUtils.Replaceable("%amount%", targetBedrockPlayerData.getHasBeenRevived() + "")));
-                        return;
-                    }
-
-
-                    if (targetBedrockPlayerData.getMaxHealth() > minHearts * 2) {
-                        player.sendMessage(MessageUtils.getAndFormatMsg(false, "onlyReviveElimPlayers","&cYou can only revive eliminated players!"));
-                        return;
-                    }
-
-                    targetBedrockPlayerData.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
-                    targetBedrockPlayerData.setHasBeenRevived(targetBedrockPlayerData.getHasBeenRevived() + 1);
-                    plugin.getStorage().save(targetBedrockPlayerData);
-
-                    plugin.getEliminatedPlayersCache().removeEliminatedPlayer(targetBedrockPlayer.getName());
-
-                    player.sendMessage(MessageUtils.getAndFormatMsg(true, "reviveSuccess", "&7You successfully revived &c%player%&7!", new MessageUtils.Replaceable("%player%", targetBedrockPlayer.getName())));
-
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
-
-                    event.getInventory().close();
-
-                    List<String> bedrockReviveCommands = plugin.getConfig().getStringList("reviveuseCommands");
-                    for (String command : bedrockReviveCommands) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("&player&", player.getName()).replace("&target&", targetBedrockPlayer.getName()));
-                    }
-
-                    removeReviveCrystal(player);
-                    break;
-            }
-
-            return;
-        }
+        if (handleRecipeGuiClick(event, player, openInventory)) return;
+        if (handleReviveGuiClick(event, player, openInventory)) return;
+        if (handleBeaconReviveGuiClick(event, player, openInventory)) return;
 
         if (event.getCurrentItem() != null && CustomItemManager.isForbiddenItem(event.getCurrentItem())) {
             event.setCancelled(true);
@@ -186,20 +44,337 @@ public final class InventoryClickListener implements Listener {
         }
     }
 
+    /**
+     * Handles clicks in the recipe GUI.
+     * @param event The InventoryClickEvent to handle.
+     * @param player The player who clicked in the inventory.
+     * @param openInventory The inventory that is currently open for the player.
+     * @return true if the event was handled, false otherwise.
+     */
+    private boolean handleRecipeGuiClick(InventoryClickEvent event, Player player, Inventory openInventory) {
+        if (!openInventory.equals(GuiManager.RECIPE_GUI_MAP.get(player.getUniqueId()))) return false;
+
+        event.setCancelled(true);
+        ItemStack currentItem = event.getCurrentItem();
+
+        if (currentItem != null && currentItem.getType() == Material.BARRIER) {
+            player.closeInventory();
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles clicks in the revive GUI.
+     * @param event The InventoryClickEvent to handle.
+     * @param player The player who clicked in the inventory.
+     * @param openInventory The inventory that is currently open for the player.
+     * @return true if the event was handled, false otherwise.
+     */
+    private boolean handleReviveGuiClick(InventoryClickEvent event, Player player, Inventory openInventory) {
+        if (!openInventory.equals(GuiManager.REVIVE_GUI_MAP.get(player.getUniqueId()))) return false;
+
+        event.setCancelled(true);
+        ItemStack item = event.getCurrentItem();
+        if (item == null || item.getType() == Material.AIR) return true;
+
+        switch (item.getType()) {
+            case BARRIER -> player.closeInventory();
+            case ARROW -> GuiManager.openReviveGui(player, getPageFromItem(item));
+            case PLAYER_HEAD -> handleReviveClick(item, player, false);
+            case SKELETON_SKULL -> handleReviveClick(item, player, true);
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles clicks in the beacon revive GUI.
+     * @param event The InventoryClickEvent to handle.
+     * @param player The player who clicked in the inventory.
+     * @param openInventory The inventory that is currently open for the player.
+     * @return true if the event was handled, false otherwise.
+     */
+    private boolean handleBeaconReviveGuiClick(InventoryClickEvent event, Player player, Inventory openInventory) {
+        if (!openInventory.equals(GuiManager.REVIVE_BEACON_GUI_MAP.get(player.getUniqueId()))) return false;
+
+        Location beaconLocation = GuiManager.REVIVE_BEACON_INVENTORY_LOCATIONS.get(player.getUniqueId());
+
+        if (beaconLocation == null) {
+            player.sendMessage(Component.text("§cAn error occurred while fetching the beacon location! Please try again."));
+            return false;
+        }
+
+        event.setCancelled(true);
+        ItemStack item = event.getCurrentItem();
+        if (item == null || item.getType() == Material.AIR) return true;
+
+        switch (item.getType()) {
+            case BARRIER -> player.closeInventory();
+            case ARROW -> GuiManager.openReviveBeaconGui(player, getPageFromItem(item), plugin, beaconLocation);
+            case PLAYER_HEAD -> handleBeaconReviveClick(item, player, false, beaconLocation);
+            case SKELETON_SKULL -> handleBeaconReviveClick(item, player, true, beaconLocation);
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles the click on a revive item in the inventory.
+     * @param item The ItemStack that was clicked, representing a revive item.
+     * @param player The player who clicked the item.
+     * @param bedrock Whether the item is for Bedrock edition.
+     */
+    private void handleReviveClick(ItemStack item, Player player, boolean bedrock) {
+        if (!player.hasPermission("lifestealz.revive")) {
+            throwPermissionError(player);
+            return;
+        }
+
+        String uuidString = getLastLineOfLore(item, bedrock);
+        if (uuidString == null) return;
+
+        UUID uuid = UUID.fromString(uuidString);
+        OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(uuid);
+
+        if (target.getName() == null) {
+            player.sendMessage(Component.text("§cAn error occurred while fetching playerdata! Are you sure this is a real player?"));
+            return;
+        }
+
+        if (!hasReviveCrystal(player)) {
+            plugin.getLogger().warning("Player " + player.getName() + " tried to revive " + target.getName() + " without a revive crystal!");
+            return;
+        }
+
+        revivePlayer(player, target, bedrock);
+    }
+
+    /**
+     * Handles the click on a revive beacon item in the inventory.
+     * @param item The ItemStack that was clicked, representing a revive beacon item.
+     * @param player The player who clicked the item.
+     * @param bedrock Whether the item is for Bedrock edition.
+     * @param beaconLocation The location of the beacon where the revive is being initiated.
+     */
+    private void handleBeaconReviveClick(ItemStack item, Player player, boolean bedrock, Location beaconLocation) {
+        if (!player.hasPermission("lifestealz.revive")) {
+            throwPermissionError(player);
+            return;
+        }
+
+        if (LifeStealZ.reviveTasks.get(beaconLocation) != null) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "reviveBeaconAlreadyInUse",
+                    "&cThis revive beacon is already in use! Please wait until the current revive is finished."
+            ));
+            return;
+        }
+
+        String uuidString = getLastLineOfLore(item, bedrock);
+        if (uuidString == null) return;
+
+        UUID uuid = UUID.fromString(uuidString);
+        OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(uuid);
+
+        if (target.getName() == null) {
+            player.sendMessage(Component.text("§cAn error occurred while fetching playerdata! Are you sure this is a real player?"));
+            return;
+        }
+
+        boolean targetReviving = LifeStealZ.reviveTasks.values()
+                .stream()
+                .anyMatch(task -> task.target().equals(target.getUniqueId()));
+
+        if (targetReviving) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "alreadyRevivingPlayer",
+                    "&cThis player is already being revived by another beacon! Please wait until the current revive is finished."
+            ));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+            player.closeInventory();
+            return;
+        }
+
+        beaconRevivePlayer(player, target, bedrock, beaconLocation);
+    }
+
+    /**
+     * Checks if the player can revive the target player.
+     * @param reviver The player who is trying to revive another player.
+     * @param target The player who is being revived (OfflinePlayer).
+     * @param data The PlayerData of the target player.
+     * @return true if the player can revive the target, false otherwise.
+     */
+    private boolean canRevivePlayer(Player reviver, OfflinePlayer target, PlayerData data) {
+        int reviveMaximum = plugin.getConfig().getInt("maxRevives");
+        int minHearts = plugin.getConfig().getInt("minHearts");
+
+        if (reviveMaximum != -1 && data.getHasBeenRevived() >= reviveMaximum) {
+            reviver.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "reviveMaxReached",
+                    "&cThis player has already been revived %amount% times!",
+                    new MessageUtils.Replaceable("%amount%", String.valueOf(data.getHasBeenRevived()))
+            ));
+            return false;
+        }
+
+        if (data.getMaxHealth() > minHearts * 2) {
+            reviver.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "onlyReviveElimPlayers",
+                    "&cYou can only revive eliminated players!"
+            ));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Modifes the data of the player being revived.
+     * @param data The PlayerData of the player being revived.
+     */
+    private void applyReviveData(PlayerData data) {
+        data.setMaxHealth(plugin.getConfig().getInt("reviveHearts") * 2);
+        data.setHasBeenRevived(data.getHasBeenRevived() + 1);
+        plugin.getStorage().save(data);
+    }
+
+    /**
+     * Executes common actions after a player has been revived.
+     * @param reviver The player who revived the target.
+     * @param target The player who was revived (OfflinePlayer).
+     */
+    private void executeReviveActions(Player reviver, OfflinePlayer target) {
+        plugin.getEliminatedPlayersCache().removeEliminatedPlayer(target.getName());
+
+        reviver.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "reviveSuccess",
+                "&7You successfully revived &c%player%&7!",
+                new MessageUtils.Replaceable("%player%", target.getName())
+        ));
+        reviver.playSound(reviver.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
+
+        for (String command : plugin.getConfig().getStringList("reviveuseCommands")) {
+            String finalCommand = command
+                    .replace("&player&", reviver.getName())
+                    .replace("&target&", target.getName());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
+        }
+
+        plugin.getWebHookManager().sendWebhookMessage(WebHookManager.WebHookType.REVIVE, target.getName(), reviver.getName());
+    }
+
+    /**
+     * Revives a player from the normal revive GUI.
+     * @param reviver The player who is reviving another player.
+     * @param target The player who is being revived (OfflinePlayer).
+     * @param isBedrock Whether the revive is for Bedrock edition.
+     */
+    private void revivePlayer(Player reviver, OfflinePlayer target, boolean isBedrock) {
+        PlayerData data = plugin.getStorage().load(target.getUniqueId());
+
+        if (!canRevivePlayer(reviver, target, data)) return;
+
+        applyReviveData(data);
+        executeReviveActions(reviver, target);
+        removeReviveCrystal(reviver);
+        reviver.closeInventory();
+    }
+
+    /**
+     * Revives a player using a revive beacon.
+     * @param reviver The player who is reviving another player.
+     * @param target The player who is being revived (OfflinePlayer).
+     * @param isBedrock Whether the revive is for Bedrock edition.
+     * @param beaconLocation The location of the beacon where the revive is being initiated.
+     */
+    private void beaconRevivePlayer(Player reviver, OfflinePlayer target, boolean isBedrock, Location beaconLocation) {
+        PlayerData data = plugin.getStorage().load(target.getUniqueId());
+
+        if (!canRevivePlayer(reviver, target, data)) return;
+
+        final int reviveSeconds = 10;
+
+        reviver.sendMessage(MessageUtils.getAndFormatMsg(
+                true,
+                "reviveBeaconStart",
+                "&c%player% &7will be revived in &c%seconds% seconds&7! Please wait...",
+                new MessageUtils.Replaceable("%player%", target.getName()),
+                new MessageUtils.Replaceable("%seconds%", String.valueOf(reviveSeconds))
+        ));
+        reviver.closeInventory();
+
+        plugin.getReviveBeaconEffectManager().startRevivingEffects(beaconLocation);
+
+        BukkitTask reviveTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                applyReviveData(data);
+                executeReviveActions(reviver, target);
+
+                plugin.getReviveBeaconEffectManager().clearAllEffects(beaconLocation);
+                beaconLocation.getBlock().setType(Material.AIR);
+                beaconLocation.getWorld().playSound(beaconLocation, Sound.ENTITY_PLAYER_LEVELUP, 500.0f, 1.0f);
+            }
+        }.runTaskLater(plugin, reviveSeconds * 20L);
+
+        LifeStealZ.reviveTasks.put(beaconLocation, new ReviveTask(
+                beaconLocation,
+                reviveTask,
+                reviver.getUniqueId(),
+                target.getUniqueId(),
+                System.currentTimeMillis() / 1000L,
+                reviveSeconds
+        ));
+    }
+
+    /**
+     * Retrieves the page number from the item's persistent data container.
+     * If the page number is not set, it defaults to 1.
+     *
+     * @param item The ItemStack from which to retrieve the page number.
+     * @return The page number, or 1 if not set.
+     */
+    private int getPageFromItem(ItemStack item) {
+        Integer pageInt = item.getItemMeta().getPersistentDataContainer()
+                .get(CustomItemManager.REVIVE_PAGE_KEY, PersistentDataType.INTEGER);
+        return pageInt != null ? pageInt : 1;
+    }
+
+    /**
+     * Throws a permission error message to the player.
+     * @param player The player who lacks the required permission.
+     */
     private void throwPermissionError(HumanEntity player) {
         CommandUtils.throwPermissionError(player);
     }
 
+    /**
+     * Retrieves the last line of lore from an item.
+     * @param item The ItemStack from which to retrieve the lore.
+     * @param bedrock Whether the item is for Bedrock edition.
+     * @return The last line of lore as a String, or null if the lore is not available or too short.
+     */
     private String getLastLineOfLore(ItemStack item, boolean bedrock) {
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
         List<Component> lore = item.lore();
-        if (lore == null) return null;
-        int line;
-        if(bedrock) line = 2; else line = 1;
+        if (lore == null || lore.size() < (bedrock ? 2 : 1)) return null;
+        int line = bedrock ? 2 : 1;
         Component lastLore = lore.get(lore.size() - line);
         return plainSerializer.serialize(lastLore);
     }
 
+    /**
+     * Checks if the player has a revive crystal in their inventory.
+     * @param player The player to check.
+     * @return true if the player has a revive crystal, false otherwise.
+     */
     private boolean hasReviveCrystal(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && CustomItemManager.isReviveItem(item)) return true;
@@ -207,6 +382,13 @@ public final class InventoryClickListener implements Listener {
         return false;
     }
 
+    /**
+     * Removes one revive crystal from the player's inventory.
+     * If the player has multiple, it only removes one.
+     * If the player has no revive crystals, it does nothing.
+     *
+     * @param player The player from whose inventory to remove the revive crystal.
+     */
     private void removeReviveCrystal(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && CustomItemManager.isReviveItem(item)) {

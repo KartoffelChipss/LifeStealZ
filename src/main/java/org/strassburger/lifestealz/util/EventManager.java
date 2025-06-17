@@ -3,6 +3,9 @@ package org.strassburger.lifestealz.util;
 import org.bukkit.event.Listener;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.listeners.*;
+import org.strassburger.lifestealz.listeners.revivebeacon.ReviveBeaconBreakListener;
+import org.strassburger.lifestealz.listeners.revivebeacon.ReviveBeaconInteractListener;
+import org.strassburger.lifestealz.listeners.revivebeacon.ReviveBeaconPlaceListener;
 
 public final class EventManager {
     private final LifeStealZ plugin;
@@ -28,6 +31,11 @@ public final class EventManager {
         registerListener(new PrepareItemCraft());
         registerListener(new PrepareGrindstone());
         registerListener(new PlayerDropItemListener());
+
+        // Revive Beacon Listeners
+        registerListener(new ReviveBeaconPlaceListener(plugin));
+        registerListener(new ReviveBeaconBreakListener(plugin));
+        registerListener(new ReviveBeaconInteractListener(plugin));
     }
 
     /**
