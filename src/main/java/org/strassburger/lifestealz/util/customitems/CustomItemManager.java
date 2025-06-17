@@ -15,6 +15,8 @@ import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.MessageUtils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomItemData;
+
 import java.util.*;
 import java.util.logging.Level;
 
@@ -229,11 +231,11 @@ public final class CustomItemManager {
      *
      * @param item The item to check
      * @return If the item is a heart item
+     * @deprecated Use {@link CustomItemType#HEART} instead
      */
+    @Deprecated
     public static boolean isHeartItem(ItemStack item) {
-        return item.getItemMeta() != null
-                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
-                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("heart");
+        return CustomItemType.HEART.is(item);
     }
 
     /**
@@ -241,23 +243,11 @@ public final class CustomItemManager {
      *
      * @param item The item to check
      * @return If the item is a revive item
+     * @deprecated Use {@link CustomItemType#REVIVE} instead
      */
+    @Deprecated
     public static boolean isReviveItem(ItemStack item) {
-        return item.getItemMeta() != null
-                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
-                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revive");
-    }
-
-    /**
-     * Checks if an item is a revive beacon
-     *
-     * @param item The item to check
-     * @return If the item is a revive beacon
-     */
-    public static boolean isReviveBeacon(ItemStack item) {
-        return item.getItemMeta() != null
-                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
-                && item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("revivebeacon");
+        return CustomItemType.REVIVE.is(item);
     }
 
     /**
@@ -276,17 +266,6 @@ public final class CustomItemManager {
      */
     public static boolean isCustomItem(ItemStack item) {
         return getCustomItemId(item) != null;
-    }
-
-    /**
-     * Checks if an item is a non-usable item
-     * @param item The item to check
-     * @return If the item is a non-usable item
-     */
-    public static boolean isNonUsableItem(ItemStack item) {
-        return item.getItemMeta() != null
-                && item.getItemMeta().getPersistentDataContainer().has(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING)
-                && (item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("non-usable"));
     }
 
     /**

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customblocks.CustomBlock;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+import org.strassburger.lifestealz.util.customitems.CustomItemType;
 
 public final class ReviveBeaconPlaceListener implements Listener {
     private final LifeStealZ plugin;
@@ -23,7 +24,7 @@ public final class ReviveBeaconPlaceListener implements Listener {
         if (!block.getType().equals(Material.BEACON)) return;
 
         ItemStack itemInHand = event.getItemInHand();
-        if (!CustomItemManager.isReviveBeacon(itemInHand)) return;
+        if (!CustomItemType.REVIVE_BEACON.is(itemInHand)) return;
 
         String customItemId = CustomItemManager.getCustomItemId(itemInHand);
 
