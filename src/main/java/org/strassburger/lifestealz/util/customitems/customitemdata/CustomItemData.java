@@ -36,10 +36,10 @@ public class CustomItemData {
         this.material = Material.valueOf(section.getString("material", "STONE"));
         this.enchanted = section.getBoolean("enchanted", false);
         this.customItemType = CustomItemType.fromString(section.getString("customItemType", "none"));
-        this.craftable = section.getBoolean("craftable");
-        this.requirePermission = section.getBoolean("requirePermission");
-        this.invulnerable = section.getBoolean("invulnerable");
-        this.despawnable = section.getBoolean("despawnable");
+        this.craftable = section.getBoolean("craftable", true);
+        this.requirePermission = section.getBoolean("requirePermission", false);
+        this.invulnerable = section.getBoolean("invulnerable", false);
+        this.despawnable = section.getBoolean("despawnable", true);
     }
 
     /**
