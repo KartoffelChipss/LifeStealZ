@@ -22,18 +22,19 @@ public final class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         Storage storage = plugin.getStorage();
 
-        PlayerData playerData = loadOrCreatePlayerData(player, storage);
+        PlayerData playerData = loadOrCreatePlayerData(player, storage, plugin.getConfig().getInt("startHearts", 10));
 
         if (shouldKickPlayer(playerData)) {
             kickPlayer(event);
         }
     }
 
-    private PlayerData loadOrCreatePlayerData(Player player, Storage storage) {
+    private PlayerData loadOrCreatePlayerData(Player player, Storage storage, int startHearts) {
         PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         if (playerData == null) {
             playerData = new PlayerData(player.getName(), player.getUniqueId());
             playerData.setFirstJoin(System.currentTimeMillis());
+            playerData.setMaxHealth(startHearts * 2.0);
             storage.save(playerData);
             plugin.getGracePeriodManager().startGracePeriod(player);
             plugin.getOfflinePlayerCache().addItem(player.getName());
