@@ -10,7 +10,9 @@ description: >-
 If you want to delete the custom item with the ID `defaultheart`, you will have to change the `heartItem` settings in the `config.yml` file to another item ID.
 {% endhint %}
 
-You can find all the custom items in the `items.yml` file. Here you can add as many items as you want. Each item follows this pattern:
+You can find all the custom items in the `items.yml` file. Here you can add as many items as you want. Each item follows this pattern.&#x20;
+
+If you remove an item setting, the default value will be applied.
 
 ```yaml
 itemId: # <- This is the item id that can be used in recipes and for permissions
@@ -21,9 +23,22 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
   material: "NETHER_STAR"
   enchanted: false
   customItemType: "heart"
+  # --- Heart Item Settings --- (only relevant if customItemType is "heart")
   customHeartValue: 1
   minHearts: 0
   maxHearts: -1
+  # --- End of Heart Item Settings ---
+  # --- Revive Beacon Settings --- (only relevant if customItemType is "revivebeacon")
+  reviveTime: 30
+  allowBreakingBeaconWhileReviving: true
+  decoyMaterial: "RED_STAINED_GLASS"
+  showEnchantParticles: true
+  showLaser: true
+  innerLaserMaterial: "RED_GLAZED_TERRACOTTA"
+  outerLaserMaterial: "RED_STAINED_GLASS"
+  showParticleRing: true
+  particleColor: "RED"
+  # --- End of Revive Beacon Settings ---
   requirePermission: false
   craftable: true
   recipes:
@@ -112,10 +127,30 @@ recipes:
 * `customItemType` can be either `none`, `heart` or `revive`.
   * `none`: This item will have no special functionality and can be used in other LifeStealZ crafting recipes for example.
   * `heart`: This item will grant the user one or multiple hearts (see further config options in this category)
-  * `revive`: This will make the item act as revive item. Players can use this item to revive eliminated players.
-* `customHeartValue`: Here you can set how many hearts a user should get when using this item (only works when `customItemType` is set to `heart`)
+  * `revive`: This will make the item act as revive item. Players can right click with this item to instantly revive eliminated players.
+  * `revivebeacon`: This will make the item a revive beacon. Revive beacons can be placed down to revive a player. You can configure how long it takes to revive a player and if the process can be canceled by destorying the beacon.
+
+### Heart Settings
+
+These settings are only relevant if `customItemType` is set to `heart`.
+
+* `customHeartValue`: Here you can set how many hearts a user should get when using this item
 * `minHearts`: Here you can set the minimum amount of hearts a user needs to already have to be able to use this item.
 * `maxHearts`: Here you can set the maximum amount of hearts a user can have to be able to use this item. Setting it to -1 will disable this.
+
+### Revive Beacon Settings
+
+These settings are only relevant if `customItemType` is set to `revivebeacon`.
+
+* `reviveTime`: The time in seconds it takes to revive a player.
+* `allowBreakingBeaconWhileReviving`: Wether or not you can interrupt the revive process by destroying the revive beacon.
+* `decoyMaterial`: The [Material](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html), that should be around the beacon block.
+* `showEnchantParticles`: Whether or not enchant particles should spawn around the revive beacon.
+* `showLaser`: Wether or not the revive beacon should fire a laser in the air while reviving a player.
+* `innerLaserMaterial`: The [Material](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) of the inner part of the laser.
+* `outerLaserMaterial`: The [Material](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) of the outer part of the laser. (Recommended to be a semi-transparent material)
+* `showParticleRing`: Wether or not to show a particle ring around the revive beacon while reviving a player.
+* `particleColor`: The color of the particle ring. Possible values: `WHITE`, `GRAY`, `RED`, `ORANGE`, `YELLOW`, `GREEN`, `BLUE`, `PURPLE`, `PINK`
 
 ### Custom Sound
 
