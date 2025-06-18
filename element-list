@@ -5,11 +5,14 @@ org.strassburger.lifestealz.commands
 org.strassburger.lifestealz.commands.MainCommand
 org.strassburger.lifestealz.commands.MainCommand.subcommands
 org.strassburger.lifestealz.listeners
+org.strassburger.lifestealz.listeners.revivebeacon
 org.strassburger.lifestealz.storage
 org.strassburger.lifestealz.storage.connectionPool
 org.strassburger.lifestealz.util
 org.strassburger.lifestealz.util.commands
+org.strassburger.lifestealz.util.customblocks
 org.strassburger.lifestealz.util.customitems
+org.strassburger.lifestealz.util.customitems.customitemdata
 org.strassburger.lifestealz.util.customitems.recipe
 org.strassburger.lifestealz.util.geysermc
 org.strassburger.lifestealz.util.worldguard
