@@ -85,6 +85,7 @@ jobs:
           game-versions: |-
             1.21.4
             1.21.5
+            1.21.6
           status: 'listed'
           channel: 'release'
 
@@ -115,5 +116,5 @@ jobs:
           description: ${{ github.event.release.body }}
           platform_dependencies: |
             {
-              "PAPER": ["1.21.4", "1.21.5"]
+              "PAPER": ["1.21.4", "1.21.5", "1.21.6"]
             }
