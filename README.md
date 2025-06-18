@@ -28,7 +28,7 @@ LifeStealZ offers a great amount of admin tools and is highly customizable. You 
 * ✅ Withdraw hearts
 * ✅ Customizable heart items
 * ✅ Custom crafting recipes
-* ✅ Revive item
+* ✅ Revive beacon
 * ✅ Maximal and starter hearts
 * ✅ Disable totems
 * ✅ Disable crystal pvp
@@ -310,20 +310,21 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   material: "NETHER_STAR"
   # If set to true, the enchant glint will be applied to the item
   enchanted: false
-  # The custom model data is used to change the appearance of the item without changing the texture of a material
-  customModelData: 100
-  # Custom item type for the item. You can use:
+    # Custom item type for the item. You can use:
     # - "heart" for a heart item
     # - "revive" for a revive item
+    # - "revivebeacon" for a revive beacon item -> This item must actually be a beacon to work!
     # - "none" for a custom item that can be used for crafting and can be used as a normal item (e.g. if it is an enderpearl it still can be thrown)
-    # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
+  # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
   customItemType: "heart"
+  # --- Heart Item Settings --- (only relevant if customItemType is "heart")
   # When customItemType is "heart", this value is used to determine how many hearts the item gives
   customHeartValue: 1
   # The minimum amount of hearts a player must have to use this item (only relevant if customItemType is "heart")
   minHearts: 0
   # The maximum amount of hearts a player can have to use this item (-1 for infinite) (only relevant if customItemType is "heart")
   maxHearts: -1
+  # --- End of Heart Item Settings ---
   # If this item requires a permission to be used (lifestealz.item.defaultheart)
   requirePermission: false
   # true if this item should be craftable
@@ -360,35 +361,51 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
     pitch: 1.0
 
 revive:
-  name: "&dRevive Crystal"
+  name: "&cRevive Beacon"
   lore:
-    - "&7Rightclick to use"
-  material: "AMETHYST_SHARD"
+    - "&7Place down to use"
+  # The material has to be a beacon if customItemType is "revivebeacon"
+  material: "BEACON"
   enchanted: true
-  customModelData: 101
-  customItemType: "revive"
-  customHeartValue: 0
-  minHearts: 0
-  maxHearts: -1
+  customItemType: "revivebeacon"
+  # --- Revive Beacon Settings --- (only relevant if customItemType is "revivebeacon")
+  # The time in seconds it takes to revive a player
+  reviveTime: 30
+  # If players should be able to break the beacon while reviving, interrupting the revive process
+  allowBreakingBeaconWhileReviving: true
+  # The material around the beacon (AIR for no material)
+  decoyMaterial: "RED_STAINED_GLASS"
+  # If the revive beacon should be surrounded by enchant particles
+  showEnchantParticles: true
+  # If the revive beacon should show a laser while reviving
+  showLaser: true
+  # The material of the inner part of the beacon laser
+  innerLaserMaterial: "RED_GLAZED_TERRACOTTA"
+  # The material of the outer part of the beacon laser
+  outerLaserMaterial: "RED_STAINED_GLASS"
+  # If the revive beacon should show a particle ring while reviving
+  showParticleRing: true
+  # The color of the particle ring
+  # possible values: WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK
+  particleColor: "RED"
+  # --- End of Revive Beacon Settings ---
   requirePermission: false # (lifestealz.item.revive)
   craftable: true
   recipes:
     1:
       rowOne:
-        - "AMETHYST_SHARD"
-        - "NETHERITE_BLOCK"
-        - "AMETHYST_SHARD"
+        - "DIAMOND"
+        - "BEACON"
+        - "DIAMOND"
       rowTwo:
         - "OBSIDIAN"
-        - "BEACON"
+        - "defaultheart"
         - "OBSIDIAN"
       rowThree:
-        - "AMETHYST_SHARD"
-        - "NETHERITE_BLOCK"
-        - "AMETHYST_SHARD"
-  # If the item should burn in fire or lava
+        - "DIAMOND"
+        - "BEACON"
+        - "DIAMOND"
   invulnerable: false
-  # If the item should despawn after laying on the ground for 5 minutes
   despawnable: true
   sound:
     enabled: false

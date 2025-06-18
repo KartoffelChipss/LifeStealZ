@@ -69,6 +69,7 @@ revive:
   name: "&cRevive Beacon"
   lore:
     - "&7Place down to use"
+  # The material has to be a beacon if customItemType is "revivebeacon"
   material: "BEACON"
   enchanted: true
   customItemType: "revivebeacon"
