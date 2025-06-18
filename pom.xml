@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.strassburger</groupId>
     <artifactId>lifestealz</artifactId>
-    <version>2.15.2</version>
+    <version>2.16.0</version>
     <packaging>jar</packaging>
 
     <name>LifeStealZ</name>
@@ -120,9 +120,12 @@
                         </includes>
                     </artifactSet>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set your main class if needed -->
+                        <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                        <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set
+                            your main class if needed -->
                         </transformer>
                     </transformers>
                 </configuration>
