@@ -25,9 +25,7 @@ public final class EntityResurrectListener implements Listener {
         } else if (player.getInventory().getItemInMainHand().getType().name().contains("TOTEM")) {
             totem = player.getInventory().getItemInMainHand();
         }
-
-        System.out.println("EntityResurrectListener: " + player.getName() + " is trying to resurrect with a totem: " + (totem != null ? totem.getType().name() : "none") + "Is forbidden: " + (totem != null && CustomItemManager.isForbiddenItem(totem)));
-
+        
         if (
                 plugin.getConfig().getBoolean("preventTotems") ||
                 (totem != null && CustomItemManager.isForbiddenItem(totem))
