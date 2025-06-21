@@ -45,7 +45,7 @@ public final class DebugSubCommand implements SubCommand {
         ));
 
         // Run asynchronously
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Runnable runnable = () -> {
             try {
                 String debugDump = generateDebugDump();
                 String pasteUrl = uploadToMclogs(debugDump);
@@ -56,9 +56,9 @@ public final class DebugSubCommand implements SubCommand {
 
                     // Create a formatted message with a clickable link
                     Component message = MessageUtils.getAndFormatMsg(
-                            false,
-                            "debugReportUploaded",
-                            "&aDebug report uploaded: "
+                                    false,
+                                    "debugReportUploaded",
+                                    "&aDebug report uploaded: "
                             )
                             .append(
                                     MessageUtils.formatMsg("&7" + pasteUrl)
@@ -86,7 +86,12 @@ public final class DebugSubCommand implements SubCommand {
                         "&cAn error occurred while generating the debug report."
                 ));
             }
-        });
+        };
+        if (LifeStealZ.getFoliaLib().isFolia()) {
+            LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        }
 
         return true;
     }
