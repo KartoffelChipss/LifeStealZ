@@ -1,7 +1,5 @@
 package org.strassburger.lifestealz.listeners;
 
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.CustomModelData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,12 +9,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.*;
-import org.strassburger.lifestealz.util.customitems.CustomItemData;
+import org.strassburger.lifestealz.util.customitems.CustomItemType;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomHeartItemData;
+import org.strassburger.lifestealz.util.customitems.customitemdata.CustomItemData;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.storage.PlayerData;
 
@@ -61,16 +60,16 @@ public final class InteractionListener implements Listener {
                 }
             }
 
-            if (CustomItemManager.isNonUsableItem(item)) {
+            if (CustomItemType.NONUSABLE.is(item)) {
                 event.setCancelled(true);
                 return;
             }
 
-            if (CustomItemManager.isHeartItem(item)) {
+            if (CustomItemType.HEART.is(item)) {
                 handleHeartItem(item, player, hand, event);
             }
 
-            if (CustomItemManager.isReviveItem(item)) {
+            if (CustomItemType.REVIVE.is(item)) {
                 handleReviveItem(item, player, hand, event);
             }
         }
@@ -104,9 +103,14 @@ public final class InteractionListener implements Listener {
     }
 
     private void handleHeartItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {
-        CustomItemData customItemData = CustomItemManager.getCustomItemData(CustomItemManager.getCustomItemId(item));
+        CustomHeartItemData customItemData;
+        String customItemId = CustomItemManager.getCustomItemId(item);
 
-        if (customItemData == null) return;
+        try {
+            customItemData = new CustomHeartItemData(customItemId);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
 
         event.setCancelled(true);
 

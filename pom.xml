@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.strassburger</groupId>
     <artifactId>lifestealz</artifactId>
-    <version>2.15.2</version>
+    <version>2.16.0</version>
     <packaging>jar</packaging>
 
     <name>LifeStealZ</name>
@@ -61,8 +61,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -84,6 +84,10 @@
                 <version>3.10.0</version>
                 <configuration>
                     <sourcepath>src/main/java</sourcepath>
+                    <links>
+                        <link>https://jd.papermc.io/paper/1.21.4/</link>
+                        <link>https://docs.enginehub.org/javadoc/com.sk89q.worldguard/worldguard-core/release/</link>
+                    </links>
                 </configuration>
                 <executions>
                     <execution>
@@ -121,9 +125,12 @@
                         </includes>
                     </artifactSet>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set your main class if needed -->
+                        <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                        <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set
+                            your main class if needed -->
                         </transformer>
                     </transformers>
                     <relocations>

@@ -1,6 +1,7 @@
 package org.strassburger.lifestealz.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,11 +18,32 @@ import java.util.UUID;
 
 public final class GuiManager {
     public static Map<UUID, Inventory> REVIVE_GUI_MAP = new HashMap<>();
+    public static Map<UUID, Inventory> REVIVE_BEACON_GUI_MAP = new HashMap<>();
     public static Map<UUID, Inventory> RECIPE_GUI_MAP = new HashMap<>();
+    public static Map<UUID, Location> REVIVE_BEACON_INVENTORY_LOCATIONS = new HashMap<>();
+
+    private GuiManager() {}
 
     public static void openReviveGui(Player player, int page) {
         List<UUID> eliminatedPlayers = LifeStealZ.getInstance().getStorage().getEliminatedPlayers();
 
+        Inventory inventory = getReviveInventory(eliminatedPlayers, page, LifeStealZ.getInstance());
+
+        player.openInventory(inventory);
+        GuiManager.REVIVE_GUI_MAP.put(player.getUniqueId(), inventory);
+    }
+
+    public static void openReviveBeaconGui(Player player, int page, LifeStealZ plugin, Location beaconLocation) {
+        List<UUID> eliminatedPlayers = plugin.getStorage().getEliminatedPlayers();
+
+        Inventory inventory = getReviveInventory(eliminatedPlayers, page, plugin);
+
+        player.openInventory(inventory);
+        GuiManager.REVIVE_BEACON_GUI_MAP.put(player.getUniqueId(), inventory);
+        GuiManager.REVIVE_BEACON_INVENTORY_LOCATIONS.put(player.getUniqueId(), beaconLocation);
+    }
+
+    private static Inventory getReviveInventory(List<UUID> eliminatedPlayers, int page, LifeStealZ plugin) {
         Inventory inventory = Bukkit.createInventory(null, 6 * 9, MessageUtils.getAndFormatMsg(false, "reviveTitle", "&8Revive a player"));
 
         int itemsPerPage = 5 * 9;
@@ -34,7 +56,7 @@ public final class GuiManager {
         for (int i = startIndex; i < endIndex; i++) {
             UUID eliminatedPlayerUUID = eliminatedPlayers.get(i);
             if (eliminatedPlayerUUID == null) continue;
-            if(LifeStealZ.getInstance().hasGeyser() && LifeStealZ.getInstance().getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
+            if(plugin.hasGeyser() && plugin.getGeyserPlayerFile().isPlayerStored(eliminatedPlayerUUID)) {
                 inventory.addItem(new CustomItem(CustomItemManager.getBedrockPlayerHead(eliminatedPlayerUUID)).makeForbidden().getItemStack());
             } else {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(eliminatedPlayerUUID);
@@ -44,8 +66,7 @@ public final class GuiManager {
 
         addNavbar(inventory, page, page > 1, endIndex < eliminatedPlayers.size());
 
-        player.openInventory(inventory);
-        GuiManager.REVIVE_GUI_MAP.put(player.getUniqueId(), inventory);
+        return inventory;
     }
 
     private static void addNavbar(Inventory inventory, int page, boolean addBackButton, boolean addNextButton) {

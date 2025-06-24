@@ -35,17 +35,20 @@ public final class PlayerJoinListener implements Listener {
             }
         }
 
-        PlayerData playerData = loadOrCreatePlayerData(player, storage);
+        PlayerData playerData = loadOrCreatePlayerData(player, storage, plugin.getConfig().getInt("startHearts", 10));
         LifeStealZ.setMaxHealth(player, playerData.getMaxHealth());
 
         notifyOpAboutUpdate(player);
     }
 
-    private PlayerData loadOrCreatePlayerData(Player player, Storage storage) {
-        PlayerData playerData = storage.load(player.getUniqueId());
+    private PlayerData loadOrCreatePlayerData(Player player, Storage storage, int startHearts) {
+        PlayerData playerData = plugin.getStorage().load(player.getUniqueId());
         if (playerData == null) {
             playerData = new PlayerData(player.getName(), player.getUniqueId());
+            playerData.setFirstJoin(System.currentTimeMillis());
+            playerData.setMaxHealth(startHearts * 2.0);
             storage.save(playerData);
+            plugin.getGracePeriodManager().startGracePeriod(player);
             plugin.getOfflinePlayerCache().addItem(player.getName());
         }
         return playerData;
