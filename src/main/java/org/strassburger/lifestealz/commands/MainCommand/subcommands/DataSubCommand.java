@@ -51,7 +51,7 @@ public final class DataSubCommand implements SubCommand {
                 "exportingData",
                 "&7Exporting player data..."
         ));
-        SchedulerUtils.AsyncTask task = SchedulerUtils.runTaskAsynchronously(plugin, () -> {
+        SchedulerUtils.UniversalTask task = SchedulerUtils.runTaskAsynchronously(plugin, () -> {
             String filePath = storage.export(fileName);
             if (filePath != null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(
@@ -78,7 +78,7 @@ public final class DataSubCommand implements SubCommand {
                 "importingData",
                 "&7Importing player data..."
         ));
-        SchedulerUtils.AsyncTask task =SchedulerUtils.runTaskAsynchronously(plugin, () -> {
+        SchedulerUtils.UniversalTask task =SchedulerUtils.runTaskAsynchronously(plugin, () -> {
             storage.importData(fileName);
             sender.sendMessage(MessageUtils.getAndFormatMsg(
                     true,

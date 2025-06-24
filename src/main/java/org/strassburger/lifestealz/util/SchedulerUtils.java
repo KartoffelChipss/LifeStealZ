@@ -13,73 +13,73 @@ public class SchedulerUtils {
         return LifeStealZ.getFoliaLib().isFolia();
     }
 
-    public static AsyncTask runTask(Plugin plugin, Runnable runnable) {
+    public static UniversalTask runTask(Plugin plugin, Runnable runnable) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             CompletableFuture<Void> task = LifeStealZ.getFoliaLib().getScheduler().runNextTick(wrappedTask -> runnable.run());
-            return new AsyncTask(null, null, task, -1);
+            return new UniversalTask(null, null, task, -1);
         } else {
             BukkitTask task = Bukkit.getScheduler().runTask(plugin, runnable);
-            return new AsyncTask(task, null, null, -1);
+            return new UniversalTask(task, null, null, -1);
         }
     }
 
-    public static AsyncTask runTaskAsynchronously(Plugin plugin, Runnable runnable) {
+    public static UniversalTask runTaskAsynchronously(Plugin plugin, Runnable runnable) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             CompletableFuture<Void> task = LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
-            return new AsyncTask(null, null, task, -1);
+            return new UniversalTask(null, null, task, -1);
         } else {
             BukkitTask task = Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
-            return new AsyncTask(task, null, null, -1);
+            return new UniversalTask(task, null, null, -1);
         }
     }
 
-    public static AsyncTask runTaskLater(final Plugin plugin, final Runnable runnable, long delay) {
+    public static UniversalTask runTaskLater(final Plugin plugin, final Runnable runnable, long delay) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             WrappedTask task = LifeStealZ.getFoliaLib().getScheduler().runLater(runnable, delay);
-            return new AsyncTask(null, task, null, -1);
+            return new UniversalTask(null, task, null, -1);
         } else {
             BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
-            return new AsyncTask(task, null, null, -1);
+            return new UniversalTask(task, null, null, -1);
         }
     }
 
-    public static AsyncTask runTaskTimerAsynchronously(final Plugin plugin, final Runnable runnable, long delay, long period) {
+    public static UniversalTask runTaskTimerAsynchronously(final Plugin plugin, final Runnable runnable, long delay, long period) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             WrappedTask task = LifeStealZ.getFoliaLib().getScheduler().runTimerAsync(runnable, delay, period);
-            return new AsyncTask(null, task, null, -1);
+            return new UniversalTask(null, task, null, -1);
         } else {
             BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period);
-            return new AsyncTask(task, null, null, -1);
+            return new UniversalTask(task, null, null, -1);
         }
     }
 
-    public static AsyncTask runTaskLaterAsynchronously(final Plugin plugin, final Runnable runnable, long delay) {
+    public static UniversalTask runTaskLaterAsynchronously(final Plugin plugin, final Runnable runnable, long delay) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             WrappedTask task = LifeStealZ.getFoliaLib().getScheduler().runLaterAsync(runnable, delay);
-            return new AsyncTask(null, task, null, -1);
+            return new UniversalTask(null, task, null, -1);
         } else {
             BukkitTask task = Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
-            return new AsyncTask(task, null, null, -1);
+            return new UniversalTask(task, null, null, -1);
         }
     }
 
-    public static AsyncTask scheduleSyncDelayedTask(Plugin plugin, Runnable runnable, long delay) {
+    public static UniversalTask scheduleSyncDelayedTask(Plugin plugin, Runnable runnable, long delay) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             WrappedTask task = LifeStealZ.getFoliaLib().getScheduler().runLater(runnable, delay);
-            return new AsyncTask(null, task, null, -1);
+            return new UniversalTask(null, task, null, -1);
         } else {
             int taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, runnable, delay);
-            return new AsyncTask(null, null, null, taskId);
+            return new UniversalTask(null, null, null, taskId);
         }
     }
 
-    public static AsyncTask scheduleSyncRepeatingTask(Plugin plugin, Runnable runnable, long delay, long period) {
+    public static UniversalTask scheduleSyncRepeatingTask(Plugin plugin, Runnable runnable, long delay, long period) {
         if (LifeStealZ.getFoliaLib().isFolia()) {
             WrappedTask task = LifeStealZ.getFoliaLib().getScheduler().runTimer(runnable, delay, period);
-            return new AsyncTask(null, task, null, -1);
+            return new UniversalTask(null, task, null, -1);
         } else {
             int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, runnable, delay, period);
-            return new AsyncTask(null, null, null, taskId);
+            return new UniversalTask(null, null, null, taskId);
         }
     }
 
@@ -88,7 +88,7 @@ public class SchedulerUtils {
      *
      * @param taskId 用于存储传统任务ID
      */
-    public record AsyncTask(BukkitTask bukkitTask, WrappedTask foliaTask, CompletableFuture<Void> future, int taskId) {
+    public record UniversalTask(BukkitTask bukkitTask, WrappedTask foliaTask, CompletableFuture<Void> future, int taskId) {
 
         /**
          * 取消任务

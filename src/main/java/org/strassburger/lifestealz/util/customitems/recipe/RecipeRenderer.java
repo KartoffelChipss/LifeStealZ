@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 final class RecipeRenderer {
     private final LifeStealZ plugin;
-    private final Map<Inventory, List<SchedulerUtils.AsyncTask>> animationMap = new HashMap<>();
+    private final Map<Inventory, List<SchedulerUtils.UniversalTask>> animationMap = new HashMap<>();
 
     public RecipeRenderer(LifeStealZ plugin) {
         this.plugin = plugin;
@@ -33,7 +33,7 @@ final class RecipeRenderer {
      * @param inventory The inventory to save the animation for
      * @param taskId    The task id of the animation
      */
-    private void addAnimation(Inventory inventory, SchedulerUtils.AsyncTask task) {
+    private void addAnimation(Inventory inventory, SchedulerUtils.UniversalTask task) {
         if (animationMap.containsKey(inventory)) animationMap.get(inventory).add(task);
         else animationMap.put(inventory, new ArrayList<>(Collections.singletonList(task)));
     }
@@ -45,7 +45,7 @@ final class RecipeRenderer {
      */
     public void cancelAnimations(Inventory inventory) {
         if (animationMap.containsKey(inventory)) {
-            for (SchedulerUtils.AsyncTask task : animationMap.get(inventory)) {
+            for (SchedulerUtils.UniversalTask task : animationMap.get(inventory)) {
                 task.cancel();
             }
         }
@@ -217,7 +217,7 @@ final class RecipeRenderer {
             index.set((currentIndex + 1) % materialList.size());
         };
 
-        SchedulerUtils.AsyncTask task = SchedulerUtils.scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
+        SchedulerUtils.UniversalTask task = SchedulerUtils.scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
         if (task.isCancelled()) return;
 
         addAnimation(inventory, task);

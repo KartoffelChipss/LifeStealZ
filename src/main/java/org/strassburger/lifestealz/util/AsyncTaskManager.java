@@ -11,14 +11,14 @@ import java.util.concurrent.CompletableFuture;
  * Manages all running async tasks
  */
 public final class AsyncTaskManager {
-    private final List<SchedulerUtils.AsyncTask> runningTasks = new ArrayList<>();
+    private final List<SchedulerUtils.UniversalTask> runningTasks = new ArrayList<>();
 
     /**
      * Add a task to the list of running tasks
      *
      * @param task The task to add
      */
-    public void addTask(SchedulerUtils.AsyncTask task) {
+    public void addTask(SchedulerUtils.UniversalTask task) {
         runningTasks.add(task);
     }
 
@@ -26,7 +26,7 @@ public final class AsyncTaskManager {
      * Cancel all running tasks
      */
     public void cancelAllTasks() {
-        for (SchedulerUtils.AsyncTask task : runningTasks) {
+        for (SchedulerUtils.UniversalTask task : runningTasks) {
             task.cancel();
         }
         runningTasks.clear();
