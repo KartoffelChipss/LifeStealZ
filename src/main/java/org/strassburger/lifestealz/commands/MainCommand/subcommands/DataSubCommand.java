@@ -1,15 +1,13 @@
 package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
-import com.tcoded.folialib.wrapper.task.WrappedTask;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.commands.SubCommand;
 import org.strassburger.lifestealz.util.MessageUtils;
+import org.strassburger.lifestealz.util.SchedulerUtils;
 import org.strassburger.lifestealz.util.commands.CommandUtils;
 import org.strassburger.lifestealz.storage.Storage;
-
-import java.util.concurrent.CompletableFuture;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
@@ -53,7 +51,7 @@ public final class DataSubCommand implements SubCommand {
                 "exportingData",
                 "&7Exporting player data..."
         ));
-        Runnable runnable = () -> {
+        SchedulerUtils.AsyncTask task = SchedulerUtils.runTaskAsynchronously(plugin, () -> {
             String filePath = storage.export(fileName);
             if (filePath != null) {
                 sender.sendMessage(MessageUtils.getAndFormatMsg(
@@ -69,14 +67,8 @@ public final class DataSubCommand implements SubCommand {
                         "&cFailed to export data! Check console for details."
                 ));
             }
-        };
-        if (LifeStealZ.getFoliaLib().isFolia()) {
-            CompletableFuture<?> future = LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
-            plugin.getAsyncTaskManager().addTask(null, null, future);
-        } else {
-            BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-            plugin.getAsyncTaskManager().addTask(task, null, null);
-        }
+        });
+        plugin.getAsyncTaskManager().addTask(task);
         return true;
     }
 
@@ -86,7 +78,7 @@ public final class DataSubCommand implements SubCommand {
                 "importingData",
                 "&7Importing player data..."
         ));
-        Runnable runnable = () -> {
+        SchedulerUtils.AsyncTask task =SchedulerUtils.runTaskAsynchronously(plugin, () -> {
             storage.importData(fileName);
             sender.sendMessage(MessageUtils.getAndFormatMsg(
                     true,
@@ -94,14 +86,8 @@ public final class DataSubCommand implements SubCommand {
                     "&7Successfully imported &c%file%.csv&7!\n&cPlease restart the server, to ensure flawless migration!",
                     new MessageUtils.Replaceable("%file%", fileName)
             ));
-        };
-        if (LifeStealZ.getFoliaLib().isFolia()) {
-            CompletableFuture<?> future = LifeStealZ.getFoliaLib().getScheduler().runAsync(wrappedTask -> runnable.run());
-            plugin.getAsyncTaskManager().addTask(null, null, future);
-        } else {
-            BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-            plugin.getAsyncTaskManager().addTask(task, null, null);
-        }
+        });
+        plugin.getAsyncTaskManager().addTask(task);
         return true;
     }
 

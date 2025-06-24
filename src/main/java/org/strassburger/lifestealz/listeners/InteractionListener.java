@@ -1,6 +1,9 @@
 package org.strassburger.lifestealz.listeners;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,14 +13,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.storage.PlayerData;
 import org.strassburger.lifestealz.util.*;
+import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemType;
 import org.strassburger.lifestealz.util.customitems.customitemdata.CustomHeartItemData;
 import org.strassburger.lifestealz.util.customitems.customitemdata.CustomItemData;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
@@ -35,11 +37,7 @@ public final class InteractionListener implements Listener {
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
         if (shouldCancelRespawnAnchorUsage(event) || shouldCancelBedInteraction(event)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "interactionNotAllowed",
-                    "&cYou are not allowed to interact with this!"
-            ));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "interactionNotAllowed", "&cYou are not allowed to interact with this!"));
             event.setCancelled(true);
             return;
         }
@@ -77,6 +75,7 @@ public final class InteractionListener implements Listener {
 
     /**
      * Checks if the event should be cancelled when a player interacts with a respawn anchor
+     *
      * @param event PlayerInteractEvent
      * @return wether the event needs to be cancelled
      */
@@ -88,8 +87,7 @@ public final class InteractionListener implements Listener {
         Block block = event.getClickedBlock();
         List<World.Environment> disabledEnvironments = List.of(World.Environment.NORMAL, World.Environment.THE_END);
 
-        return block != null && block.getType() == Material.RESPAWN_ANCHOR &&
-                disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment());
+        return block != null && block.getType() == Material.RESPAWN_ANCHOR && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment());
     }
 
     private boolean shouldCancelBedInteraction(PlayerInteractEvent event) {
@@ -97,9 +95,7 @@ public final class InteractionListener implements Listener {
         List<Material> disabledMaterials = List.of(Material.BLACK_BED, Material.BLUE_BED, Material.BROWN_BED, Material.CYAN_BED, Material.GRAY_BED, Material.GREEN_BED, Material.LIGHT_BLUE_BED, Material.LIGHT_GRAY_BED, Material.LIME_BED, Material.MAGENTA_BED, Material.ORANGE_BED, Material.PINK_BED, Material.PURPLE_BED, Material.RED_BED, Material.WHITE_BED, Material.YELLOW_BED);
         Block block = event.getClickedBlock();
         if (block == null || !plugin.getConfig().getBoolean("preventBeds")) return false;
-        return event.getAction() == Action.RIGHT_CLICK_BLOCK
-                && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment())
-                && disabledMaterials.contains(block.getType());
+        return event.getAction() == Action.RIGHT_CLICK_BLOCK && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment()) && disabledMaterials.contains(block.getType());
     }
 
     private void handleHeartItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {
@@ -120,11 +116,7 @@ public final class InteractionListener implements Listener {
         }
 
         if (restrictedHeartByGracePeriod(player)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "noHeartUseInGracePeriod",
-                    "&cYou can't use hearts during the grace period!"
-            ));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartUseInGracePeriod", "&cYou can't use hearts during the grace period!"));
             return;
         }
 
@@ -167,12 +159,14 @@ public final class InteractionListener implements Listener {
         playerData.setMaxHealth(newHearts);
         plugin.getStorage().save(playerData);
         LifeStealZ.setMaxHealth(player, newHearts);
-        if (plugin.getConfig().getBoolean("healOnHeartUse")) player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
+        if (plugin.getConfig().getBoolean("healOnHeartUse"))
+            player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 
         String customItemID = CustomItemManager.getCustomItemId(item);
         if (customItemID != null) {
             CustomItemData.CustomItemSoundData sound = CustomItemManager.getCustomItemData(customItemID).getSound();
-            if (sound.isEnabled()) player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
+            if (sound.isEnabled())
+                player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
         }
 
         List<String> heartuseCommands = plugin.getConfig().getStringList("heartuseCommands");
@@ -201,22 +195,11 @@ public final class InteractionListener implements Listener {
 
         player.getInventory().setItemInOffHand(fakeTotem);
         // if you dont do a delay, it appears to use default texture
-        if (LifeStealZ.getFoliaLib().isFolia()) {
-            LifeStealZ.getFoliaLib().getScheduler().runLater(() -> {
-                // Play the totem animation
-                player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
-                player.getInventory().setItemInOffHand(originalOffHandItem);
-            }, 3L);
-        } else {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    // Play the totem animation
-                    player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
-                    player.getInventory().setItemInOffHand(originalOffHandItem);
-                }
-            }.runTaskLater(plugin, 3L);
-        }
+        SchedulerUtils.runTaskLater(plugin, () -> {
+            // Play the totem animation
+            player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
+            player.getInventory().setItemInOffHand(originalOffHandItem);
+        }, 3L);
     }
 
     private void updateItemInHand(Player player, ItemStack item, int slot) {

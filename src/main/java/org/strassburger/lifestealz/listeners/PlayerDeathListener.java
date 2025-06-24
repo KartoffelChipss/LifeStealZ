@@ -4,18 +4,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Nullable;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.storage.PlayerData;
 import org.strassburger.lifestealz.util.*;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.storage.PlayerData;
 import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
 
 import java.net.InetAddress;
@@ -43,8 +41,8 @@ public final class PlayerDeathListener implements Listener {
 
         UUID playerUUID = player.getUniqueId();
         if (player.hasMetadata("combat_log_npc")) {
-        	// If the player is a combat log NPC, get the original player's UUID
-        	playerUUID = (UUID) player.getMetadata("combat_log_npc").get(0).value();
+            // If the player is a combat log NPC, get the original player's UUID
+            playerUUID = (UUID) player.getMetadata("combat_log_npc").get(0).value();
         }
         final PlayerData playerData = plugin.getStorage().load(playerUUID);
 
@@ -70,17 +68,9 @@ public final class PlayerDeathListener implements Listener {
 
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (restrictedHeartLossByGracePeriod(player) && isDeathByPlayer) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "noHeartGainFromPlayersInGracePeriod",
-                    "&cYou can't gain hearts from players during their grace period!"
-            ));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartGainFromPlayersInGracePeriod", "&cYou can't gain hearts from players during their grace period!"));
         } else if (isDeathByPlayer && restrictedHeartGainByGracePeriod(killer)) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "noHeartGainInGracePeriod",
-                    "&cYou can't gain hearts during the grace period!"
-            ));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartGainInGracePeriod", "&cYou can't gain hearts during the grace period!"));
         } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createKillHeart());
         } else if (isDeathByPlayer) {
@@ -90,11 +80,7 @@ public final class PlayerDeathListener implements Listener {
         }
 
         if (restrictedHeartLossByGracePeriod(player)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "noHeartLossInGracePeriod",
-                    "&cYou can't lose hearts during the grace period!"
-            ));
+            player.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartLossInGracePeriod", "&cYou can't lose hearts during the grace period!"));
             return;
         }
 
@@ -117,19 +103,11 @@ public final class PlayerDeathListener implements Listener {
         final boolean disableBanOnElimination = plugin.getConfig().getBoolean("disablePlayerBanOnElimination");
         final boolean announceElimination = plugin.getConfig().getBoolean("announceElimination");
 
-        Runnable runnable = () -> {
+        SchedulerUtils.scheduleSyncDelayedTask(plugin, () -> {
             for (String command : elimCommands) {
-                plugin.getServer().dispatchCommand(
-                        plugin.getServer().getConsoleSender(),
-                        command.replace("&player&", player.getName())
-                );
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("&player&", player.getName()));
             }
-        };
-        if (LifeStealZ.getFoliaLib().isFolia()) {
-            LifeStealZ.getFoliaLib().getScheduler().runLater(runnable, 1L);
-        } else {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, runnable, 1L);
-        }
+        }, 1L);
 
         if (disableBanOnElimination) {
             double respawnHP = plugin.getConfig().getInt("reviveHearts") * 2;
@@ -139,31 +117,16 @@ public final class PlayerDeathListener implements Listener {
             return;
         }
 
-        Runnable runnable2 = () -> {
-            Component kickMessage = MessageUtils.getAndFormatMsg(
-                    false,
-                    "eliminatedJoin",
-                    "&cYou don't have any hearts left!"
-            );
+        SchedulerUtils.scheduleSyncDelayedTask(plugin, () -> {
+            Component kickMessage = MessageUtils.getAndFormatMsg(false, "eliminatedJoin", "&cYou don't have any hearts left!");
             if (player.isOnline()) { // Avoids trying to kick NPCs since they are not online
-            	player.kick(kickMessage);
+                player.kick(kickMessage);
             }
-        };
-        if (LifeStealZ.getFoliaLib().isFolia()) {
-            LifeStealZ.getFoliaLib().getScheduler().runLater(runnable2, 1L);
-        } else {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,runnable2, 1L);
-        }
+        }, 1L);
 
         if (announceElimination) {
             String messageKey = isDeathByPlayer ? "eliminationAnnouncement" : "eliminateionAnnouncementNature";
-            Bukkit.broadcast(MessageUtils.getAndFormatMsg(
-                    false,
-                    messageKey,
-                    isDeathByPlayer ? "&c%player% &7has been eliminated by &c%killer%&7!" : "&c%player% &7has been eliminated!",
-                    new MessageUtils.Replaceable("%player%", player.getName()),
-                    new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")
-            ));
+            Bukkit.broadcast(MessageUtils.getAndFormatMsg(false, messageKey, isDeathByPlayer ? "&c%player% &7has been eliminated by &c%killer%&7!" : "&c%player% &7has been eliminated!", new MessageUtils.Replaceable("%player%", player.getName()), new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")));
             event.setDeathMessage(null);
         }
 
@@ -185,16 +148,9 @@ public final class PlayerDeathListener implements Listener {
 
         PlayerData killerPlayerData = plugin.getStorage().load(killer.getUniqueId());
 
-        if (heartGainCooldownEnabled
-                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
-                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
+        if (heartGainCooldownEnabled && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
             long timeLeft = (CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown - System.currentTimeMillis()) / 1000;
-            killer.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "heartGainCooldown",
-                    "&cYou have to wait before gaining another heart!",
-                    new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))
-            ));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "heartGainCooldown", "&cYou have to wait before gaining another heart!", new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))));
             if (heartGainCooldownDropOnCooldown) {
                 dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createHeartGainCooldownHeart());
             }
@@ -203,11 +159,7 @@ public final class PlayerDeathListener implements Listener {
                 if (dropHeartsIfMax) {
                     dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createMaxHealthHeart());
                 } else {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(
-                            false, "maxHeartLimitReached",
-                            "&cYou already reached the limit of %limit% hearts!",
-                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")
-                    ));
+                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "maxHeartLimitReached", "&cYou already reached the limit of %limit% hearts!", new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")));
                 }
             } else {
                 killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + healthGain);
@@ -227,16 +179,13 @@ public final class PlayerDeathListener implements Listener {
 
         if (victimIP != null && victimIP.equals(killerIP) && plugin.getConfig().getBoolean("antiAlt.enabled")) {
             if (plugin.getConfig().getBoolean("antiAlt.logAttempt")) {
-                plugin.getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill "
-                        + player.getName() + " with the same IP address! (Probably an alt account)");
+                plugin.getLogger().info("[ALT WARNING] Player " + killer.getName() + " tried to kill " + player.getName() + " with the same IP address! (Probably an alt account)");
             }
             if (plugin.getConfig().getBoolean("antiAlt.sendMessage")) {
-                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "altKill",
-                        "&cPlease don't kill alts! This attempt has been logged!"));
+                killer.sendMessage(MessageUtils.getAndFormatMsg(false, "altKill", "&cPlease don't kill alts! This attempt has been logged!"));
             }
             for (String command : plugin.getConfig().getStringList("antiAlt.commands")) {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
-                        command.replace("&player&", killer.getName()));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("&player&", killer.getName()));
             }
             return plugin.getConfig().getBoolean("antiAlt.preventKill");
         }
