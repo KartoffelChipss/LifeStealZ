@@ -87,7 +87,8 @@ public final class InteractionListener implements Listener {
         Block block = event.getClickedBlock();
         List<World.Environment> disabledEnvironments = List.of(World.Environment.NORMAL, World.Environment.THE_END);
 
-        return block != null && block.getType() == Material.RESPAWN_ANCHOR && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment());
+        return block != null && block.getType() == Material.RESPAWN_ANCHOR &&
+                disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment());
     }
 
     private boolean shouldCancelBedInteraction(PlayerInteractEvent event) {
@@ -95,7 +96,9 @@ public final class InteractionListener implements Listener {
         List<Material> disabledMaterials = List.of(Material.BLACK_BED, Material.BLUE_BED, Material.BROWN_BED, Material.CYAN_BED, Material.GRAY_BED, Material.GREEN_BED, Material.LIGHT_BLUE_BED, Material.LIGHT_GRAY_BED, Material.LIME_BED, Material.MAGENTA_BED, Material.ORANGE_BED, Material.PINK_BED, Material.PURPLE_BED, Material.RED_BED, Material.WHITE_BED, Material.YELLOW_BED);
         Block block = event.getClickedBlock();
         if (block == null || !plugin.getConfig().getBoolean("preventBeds")) return false;
-        return event.getAction() == Action.RIGHT_CLICK_BLOCK && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment()) && disabledMaterials.contains(block.getType());
+        return event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && disabledEnvironments.contains(event.getPlayer().getWorld().getEnvironment())
+                && disabledMaterials.contains(block.getType());
     }
 
     private void handleHeartItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {
@@ -116,7 +119,11 @@ public final class InteractionListener implements Listener {
         }
 
         if (restrictedHeartByGracePeriod(player)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartUseInGracePeriod", "&cYou can't use hearts during the grace period!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartUseInGracePeriod",
+                    "&cYou can't use hearts during the grace period!"
+            ));
             return;
         }
 

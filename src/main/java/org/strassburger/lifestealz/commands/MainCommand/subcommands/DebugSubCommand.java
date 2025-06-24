@@ -39,7 +39,11 @@ public final class DebugSubCommand implements SubCommand {
             return false;
         }
 
-        sender.sendMessage(MessageUtils.getAndFormatMsg(false, "generatingDebugReport", "&7Generating debug report..."));
+        sender.sendMessage(MessageUtils.getAndFormatMsg(
+                false,
+                "generatingDebugReport",
+                "&7Generating debug report..."
+        ));
 
         // Run asynchronously
         SchedulerUtils.runTaskAsynchronously(plugin, () -> {
@@ -52,15 +56,36 @@ public final class DebugSubCommand implements SubCommand {
                     pasteUrl = pasteUrl.replace("\\/", "/");
 
                     // Create a formatted message with a clickable link
-                    Component message = MessageUtils.getAndFormatMsg(false, "debugReportUploaded", "&aDebug report uploaded: ").append(MessageUtils.formatMsg("&7" + pasteUrl).clickEvent(ClickEvent.openUrl(pasteUrl)).hoverEvent(HoverEvent.showText(MessageUtils.getAndFormatMsg(false, "clickToOpenDebugReport", "&eClick to open the debug report"))));
+                    Component message = MessageUtils.getAndFormatMsg(
+                                    false,
+                                    "debugReportUploaded",
+                                    "&aDebug report uploaded: "
+                            )
+                            .append(
+                                    MessageUtils.formatMsg("&7" + pasteUrl)
+                                            .clickEvent(ClickEvent.openUrl(pasteUrl))
+                                            .hoverEvent(HoverEvent.showText(MessageUtils.getAndFormatMsg(
+                                                    false,
+                                                    "clickToOpenDebugReport",
+                                                    "&eClick to open the debug report"
+                                            )))
+                            );
 
                     sender.sendMessage(message);
                 } else {
-                    sender.sendMessage(MessageUtils.getAndFormatMsg(false, "failedToUploadDebugReport", "&cFailed to upload debug report. Please try again later."));
+                    sender.sendMessage(MessageUtils.getAndFormatMsg(
+                            false,
+                            "failedToUploadDebugReport",
+                            "&cFailed to upload debug report. Please try again later."
+                    ));
                 }
             } catch (Exception e) {
                 plugin.getLogger().log(Level.SEVERE, "Error generating debug report", e);
-                sender.sendMessage(MessageUtils.getAndFormatMsg(false, "errorWhileGeneratingDebugReport", "&cAn error occurred while generating the debug report."));
+                sender.sendMessage(MessageUtils.getAndFormatMsg(
+                        false,
+                        "errorWhileGeneratingDebugReport",
+                        "&cAn error occurred while generating the debug report."
+                ));
             }
         });
         return true;
@@ -95,26 +120,42 @@ public final class DebugSubCommand implements SubCommand {
         String osInfo = System.getProperty("os.name") + " " + System.getProperty("os.version");
 
         // Header
-        debug.append("---- LifeStealZ Debug Dump ----\n").append("// This is an automatically generated debug report for the LifeStealZ Plugin.\n").append("// This report DOES NOT include any Personally Identifiable Information.\n").append("// This debug report is intended to be provided to a support agent.\n\n").append("// For More Information visit: https://modrinth.com/plugin/lifestealz\n\n").append("Time: ").append(formattedTime).append(" (Epoch: ").append(epochTime).append(")\n\n");
+        debug.append("---- LifeStealZ Debug Dump ----\n")
+                .append("// This is an automatically generated debug report for the LifeStealZ Plugin.\n")
+                .append("// This report DOES NOT include any Personally Identifiable Information.\n")
+                .append("// This debug report is intended to be provided to a support agent.\n\n")
+                .append("// For More Information visit: https://modrinth.com/plugin/lifestealz\n\n")
+                .append("Time: ").append(formattedTime).append(" (Epoch: ").append(epochTime).append(")\n\n");
 
         // Plugin info
-        debug.append("-- Plugin Details --\n").append("Plugin Version: ").append(pluginVersion).append("\n").append("Plugin Hash: ").append(pluginHash).append("\n\n").append("Minecraft Version: ").append(serverVersion).append("\n").append("Server Software: ").append(serverSoftware).append("\n").append("Java Version: ").append(javaVersion).append("\n").append("OS: ").append(osInfo).append("\n\n");
+        debug.append("-- Plugin Details --\n")
+                .append("Plugin Version: ").append(pluginVersion).append("\n")
+                .append("Plugin Hash: ").append(pluginHash).append("\n\n")
+                .append("Minecraft Version: ").append(serverVersion).append("\n")
+                .append("Server Software: ").append(serverSoftware).append("\n")
+                .append("Java Version: ").append(javaVersion).append("\n")
+                .append("OS: ").append(osInfo).append("\n\n");
 
 
-        debug.append("-- Installed Plugins --\n").append(getInstalledPlugins()).append("\n\n");
+        debug.append("-- Installed Plugins --\n")
+                .append(getInstalledPlugins()).append("\n\n");
 
-        debug.append("-- Lifecycle Logs --\n").append(getPluginLogs()).append("\n\n");
+        debug.append("-- Lifecycle Logs --\n").
+                append(getPluginLogs()).append("\n\n");
         // Configuration files
         debug.append("-- Configuration Files --\n");
 
         // Main config
-        debug.append("# config.yml\n```yaml\n").append(plugin.getConfig().saveToString()).append("\n```\n\n");
+        debug.append("# config.yml\n```yaml\n").
+                append(plugin.getConfig().saveToString()).append("\n```\n\n");
 
         // Storage config
-        debug.append("# storage.yml\n```yaml\n").append(plugin.getConfigManager().getStorageConfig().saveToString()).append("\n```\n\n");
+        debug.append("# storage.yml\n```yaml\n").
+                append(plugin.getConfigManager().getStorageConfig().saveToString()).append("\n```\n\n");
 
         // Items config
-        debug.append("# items.yml\n```yaml\n").append(plugin.getConfigManager().getCustomItemConfig().saveToString()).append("\n```\n\n");
+        debug.append("# items.yml\n```yaml\n").
+                append(plugin.getConfigManager().getCustomItemConfig().saveToString()).append("\n```\n\n");
 
 
         return debug.toString();
@@ -133,7 +174,9 @@ public final class DebugSubCommand implements SubCommand {
             if (!logFile.exists()) {
                 // Try to find the log file in a different location for some server types
                 File serverDir = new File(".");
-                Optional<File> latestLog = Arrays.stream(serverDir.listFiles()).filter(f -> f.isFile() && f.getName().endsWith(".log")).max(Comparator.comparingLong(File::lastModified));
+                Optional<File> latestLog = Arrays.stream(serverDir.listFiles())
+                        .filter(f -> f.isFile() && f.getName().endsWith(".log"))
+                        .max(Comparator.comparingLong(File::lastModified));
 
                 if (latestLog.isPresent()) {
                     logFile = latestLog.get();
@@ -231,7 +274,10 @@ public final class DebugSubCommand implements SubCommand {
     private String getInstalledPlugins() {
         StringBuilder pluginInfo = new StringBuilder();
         for (Plugin p : Bukkit.getPluginManager().getPlugins()) {
-            pluginInfo.append("- ").append(p.getName()).append(" v").append(p.getDescription().getVersion()).append(" (Enabled: ").append(p.isEnabled()).append(")").append("\n");
+            pluginInfo.append("- ").append(p.getName())
+                    .append(" v").append(p.getDescription().getVersion())
+                    .append(" (Enabled: ").append(p.isEnabled()).append(")")
+                    .append("\n");
         }
         return pluginInfo.toString();
     }

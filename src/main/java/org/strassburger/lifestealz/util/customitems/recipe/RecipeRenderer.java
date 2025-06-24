@@ -61,7 +61,11 @@ final class RecipeRenderer {
         FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
         boolean isCraftable = config.getBoolean(itemId + ".craftable");
         if (!isCraftable) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotCraftable", "&cThis item is not craftable!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotCraftable",
+                    "&cThis item is not craftable!"
+            ));
             return;
         }
 
@@ -99,17 +103,29 @@ final class RecipeRenderer {
         FileConfiguration config = plugin.getConfigManager().getCustomItemConfig();
         boolean isCraftable = config.getBoolean(itemId + ".craftable");
         if (!isCraftable) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotCraftable", "&cThis item is not craftable!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotCraftable",
+                    "&cThis item is not craftable!"
+            ));
             return;
         }
 
         if (!config.isSet(itemId + ".recipes")) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotFound", "&cThis recipe does not exist!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotFound",
+                    "&cThis recipe does not exist!"
+            ));
             return;
         }
 
         if (!config.isSet(itemId + ".recipes." + recipeId)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "recipeNotFound", "&cThis recipe does not exist!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "recipeNotFound",
+                    "&cThis recipe does not exist!"
+            ));
             return;
         }
 
@@ -121,11 +137,22 @@ final class RecipeRenderer {
     }
 
     private void openRecipeInventory(Player player, String itemId, List<String> rowOne, List<String> rowTwo, List<String> rowThree) {
-        Inventory inventory = Bukkit.createInventory(null, 5 * 9, MessageUtils.getAndFormatMsg(false, "recipeInventoryTitle", "&8Crafting recipe"));
+        Inventory inventory = Bukkit.createInventory(
+                null,
+                5 * 9,
+                MessageUtils.getAndFormatMsg(
+                        false,
+                        "recipeInventoryTitle",
+                        "&8Crafting recipe"
+                )
+        );
 
         inventory.setItem(40, CustomItemManager.createCloseItem());
 
-        ItemStack glass = new CustomItem(Material.GRAY_STAINED_GLASS_PANE).setName("&c ").makeForbidden().getItemStack();
+        ItemStack glass = new CustomItem(Material.GRAY_STAINED_GLASS_PANE)
+                .setName("&c ")
+                .makeForbidden()
+                .getItemStack();
 
         List<Integer> glassSlots = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 22, 23, 25, 26, 27, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44);
         for (int slot : glassSlots) {

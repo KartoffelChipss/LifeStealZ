@@ -96,7 +96,11 @@ public final class GracePeriodManager {
         if (!isEnabled()) return;
 
         if (getConfig().shouldAnnounce()) {
-            Component endMessage = MessageUtils.getAndFormatMsg(true, "gracePeriodEnd", "&7The grace period has ended!");
+            Component endMessage = MessageUtils.getAndFormatMsg(
+                    true,
+                    "gracePeriodEnd",
+                    "&7The grace period has ended!"
+            );
             player.sendMessage(endMessage);
         }
 
@@ -105,7 +109,8 @@ public final class GracePeriodManager {
         }
 
         for (String command : getConfig().getEndCommands()) {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                    command.replace("&player&", player.getName()));
         }
     }
 
@@ -126,7 +131,8 @@ public final class GracePeriodManager {
         plugin.getStorage().save(playerData);
 
         for (String command : getConfig().getEndCommands()) {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+                    command.replace("&player&", player.getName()));
         }
 
         return true;
