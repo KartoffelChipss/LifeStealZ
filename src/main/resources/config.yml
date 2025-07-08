@@ -120,6 +120,7 @@ heartuseCommands:
 
 reviveuseCommands:
 # - "say &player& revived &target&"
+# - "broadcast &player& is reviving &target& at &location&"
 
 gracePeriod:
   # If a grace period should be enabled

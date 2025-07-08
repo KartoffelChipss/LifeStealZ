@@ -251,7 +251,7 @@ public final class InventoryClickListener implements Listener {
      * @param reviver The player who revived the target.
      * @param target The player who was revived (OfflinePlayer).
      */
-    private void executeReviveActions(Player reviver, OfflinePlayer target) {
+    private void executeReviveActions(Player reviver, OfflinePlayer target, String location) {
         plugin.getEliminatedPlayersCache().removeEliminatedPlayer(target.getName());
 
         reviver.sendMessage(MessageUtils.getAndFormatMsg(
@@ -265,7 +265,8 @@ public final class InventoryClickListener implements Listener {
         for (String command : plugin.getConfig().getStringList("reviveuseCommands")) {
             String finalCommand = command
                     .replace("&player&", reviver.getName())
-                    .replace("&target&", target.getName());
+                    .replace("&target&", target.getName())
+                    .replace("&location&", location);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
         }
 
@@ -284,7 +285,7 @@ public final class InventoryClickListener implements Listener {
         if (!canRevivePlayer(reviver, target, data)) return;
 
         applyReviveData(data);
-        executeReviveActions(reviver, target);
+        executeReviveActions(reviver, target, "null");
         removeReviveCrystal(reviver);
         reviver.closeInventory();
     }
@@ -332,7 +333,11 @@ public final class InventoryClickListener implements Listener {
             @Override
             public void run() {
                 applyReviveData(data);
-                executeReviveActions(reviver, target);
+                executeReviveActions(
+                        reviver,
+                        target,
+                        beaconLocation.getBlockX() + ", " + beaconLocation.getBlockY() + ", " + beaconLocation.getBlockZ()
+                );
 
                 plugin.getReviveBeaconEffectManager().clearAllEffects(beaconLocation);
                 beaconLocation.getBlock().setType(Material.AIR);
