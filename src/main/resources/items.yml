@@ -60,7 +60,7 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   # If the item should despawn after laying on the ground for 5 minutes
   despawnable: true
   # If this list is empty ("[]"), the item is available in all worlds
-    # If you want to limit the item to specific worlds, add the world names here
+  # If you want to limit the item to specific worlds, add the world names here
   whitelistedWorlds: []
   sound:
     enabled: true
