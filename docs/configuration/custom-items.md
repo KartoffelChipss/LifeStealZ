@@ -41,6 +41,7 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
   # --- End of Revive Beacon Settings ---
   requirePermission: false
   craftable: true
+  whitelistedWorlds: []
   recipes:
     1:
       rowOne:
@@ -73,6 +74,7 @@ itemId: # <- This is the item id that can be used in recipes and for permissions
 * `enchanted`: Set this to `true` if you item should have an enchant glint.
 * If `invulnerable` is set to `true`, the item will not be destroyed by fire lava, explosions, cacti etc.
 * If `despawnable` is set to `false`, the item will not despawn after laying on the floor for more than 5 minutes.
+* if `whitelistedWorlds` is set to `[]`, the item can be used anywhere. If you provide a list of worlds, it can only be used in those worlds.
 
 ### Custom Textures
 
