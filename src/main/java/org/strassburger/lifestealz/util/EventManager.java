@@ -31,7 +31,8 @@ public final class EventManager {
         registerListener(new PrepareItemCraft());
         registerListener(new PrepareGrindstone());
         registerListener(new PlayerDropItemListener());
-
+        registerListener(new ElytraDisableListener(plugin)); //preventElytraOnPvP
+        registerListener(new NetheriteItemListener(plugin)); //preventNetheriteItems
         // Revive Beacon Listeners
         registerListener(new ReviveBeaconPlaceListener(plugin));
         registerListener(new ReviveBeaconBreakListener(plugin));

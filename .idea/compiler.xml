@@ -9,6 +9,8 @@
         <module name="lifestealz" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="untitled" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

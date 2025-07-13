@@ -99,6 +99,10 @@ preventBeds: false
 # If the use of custom items in item frames should be prevented
 # It is recommended to leave this enabled, as people may be able to duplicate items otherwise
 preventCustomItemsInItemFrames: true
+# If the use of Netherite material armor and tools should be prevented
+preventNetheriteItems: false
+# Elytra usability on PVP should be prevented (15s cooldown)
+preventElytraOnPvP: false
 
 
 # === Extensive Customization ===
