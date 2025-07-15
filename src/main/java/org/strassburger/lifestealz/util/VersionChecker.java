@@ -43,6 +43,8 @@ public final class VersionChecker {
         String latestVersion = fetchLatestVersion();
         if (latestVersion != null) {
             String currentVersion = plugin.getDescription().getVersion();
+            System.out.println("Current version: " + currentVersion);
+            System.out.println("Latest version: " + latestVersion);
             if (!latestVersion.trim().equals(currentVersion.trim())) {
                 newVersionAvailable = true;
 
@@ -55,7 +57,7 @@ public final class VersionChecker {
                 String message = "\n" +
                         darkGray + "==========================================" + reset + "\n" +
                         bold + "A new version of LifeStealZ is available!" + reset + "\n" +
-                        bold + "New Version: " + reset + lightGray + currentVersion + " -> " + bold + red + latestVersion + reset + "\n" +
+                        bold + "New Version: " + reset + bold + red + latestVersion + reset + lightGray + " (Your version: " + currentVersion + ")" + reset + "\n" +
                         bold + "Download here: " + reset + lightGray + reset + "https://modrinth.com/plugin/lifestealz/version/" + latestVersion + "\n" +
                         darkGray + "==========================================" + reset;
 

@@ -7,7 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.strassburger.lifestealz.LifeStealZ;
 import org.strassburger.lifestealz.util.customitems.CustomItemType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomItemData {
     private final String itemId;
@@ -20,6 +22,7 @@ public class CustomItemData {
     private final boolean requirePermission;
     private final boolean invulnerable;
     private final boolean despawnable;
+    private final List<String> whitelistedWorlds;
 
     /**
      * Creates a new CustomItemData object for the given item ID.
@@ -40,6 +43,7 @@ public class CustomItemData {
         this.requirePermission = section.getBoolean("requirePermission", false);
         this.invulnerable = section.getBoolean("invulnerable", false);
         this.despawnable = section.getBoolean("despawnable", true);
+        this.whitelistedWorlds = section.getStringList("whitelistedWorlds");
     }
 
     /**
@@ -97,6 +101,19 @@ public class CustomItemData {
 
     public boolean isDespawnable() {
         return despawnable;
+    }
+
+    public List<String> getWhitelistedWorlds() {
+        return new ArrayList<>(whitelistedWorlds);
+    }
+
+    /**
+     * Checks if the custom item is allowed in the given world.
+     * @param worldName the name of the world to check
+     * @return true if the item is allowed in the world, false otherwise
+     */
+    public boolean isAllowedInWorld(String worldName) {
+        return whitelistedWorlds.isEmpty() || whitelistedWorlds.contains(worldName);
     }
 
     public static class CustomItemSoundData {

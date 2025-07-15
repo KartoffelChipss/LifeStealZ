@@ -112,27 +112,28 @@ lang: "en-US"
 
 # === HEART SETTINGS ===
 
-# The amount of hearts a player has, when joining for the first time
+# The amount of hearts a player has when joining for the first time
 startHearts: 10
 # The maximal amount of hearts, a player can have
 # You can also set a per player limit using the lifestealz.maxhearts.[amount] permission or a per item limit in the items.yml file
 maxHearts: 20
-# The amount of hp a player should have after getting reived
+# The amount of hp a player should have after getting revived
 reviveHearts: 1
-# The amount of hearts the killer should gain and the victim should loose
+# The amount of hearts the killer should gain and the victim should lose
 heartsPerKill: 1
-# The amount of hearts a player should loose, when dying naturally
+# The amount of hearts a player should lose when dying naturally
 heartsPerNaturalDeath: 1
 # The minimal amount of hearts. If a player gets to this amount of hearts, they will be eliminated.
 # PLEASE ONLY CHANGE IF YOU KNOW WHAT YOU ARE DOING!
 minHearts: 0
 # This option will enforce the heart limit on admin commands like /lifestealz hearts <add, set> <player> <amount>
+# Note that this
 enforceMaxHeartsOnAdminCommands: false
 # The custom items that should be used for the following scenarios (Must be an id from the items.yml)
 heartItem:
   # This item will be used for anything that is not listed below (mostly legacy)
   default: "defaultheart"
-  # This item will be given, when a user withdraws a heart
+  # This item will be given when a user withdraws a heart
   withdraw: "defaultheart"
   # This item will be dropped when a player is killed by another player and "dropHeartsPlayer" is enabled
   kill: "defaultheart"
@@ -200,11 +201,17 @@ eliminationCommands:
 # - "say &player& got eliminated"
 # - "niceCommandtwo"
 
+# These commands will be executed when a player uses a heart item
 heartuseCommands:
 # - "say &player& used a heart item"
 
+# These commands will be executed when a player has been revived
 reviveuseCommands:
 # - "say &player& revived &target&"
+
+# These commands will be executed when a player starts reviving another player using a revive beacon
+reviveStartCommands:
+# - "broadcast &player& started reviving &target& at &location&"
 
 gracePeriod:
   # If a grace period should be enabled
@@ -310,12 +317,12 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   material: "NETHER_STAR"
   # If set to true, the enchant glint will be applied to the item
   enchanted: false
-    # Custom item type for the item. You can use:
+  # Custom item type for the item. You can use:
     # - "heart" for a heart item
     # - "revive" for a revive item
     # - "revivebeacon" for a revive beacon item -> This item must actually be a beacon to work!
     # - "none" for a custom item that can be used for crafting and can be used as a normal item (e.g. if it is an enderpearl it still can be thrown)
-  # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
+    # - "non-usable" for a custom item that can be used for crafting and cannot be used as a normal item (e.g. if it is an enderpearl it cannot be thrown)
   customItemType: "heart"
   # --- Heart Item Settings --- (only relevant if customItemType is "heart")
   # When customItemType is "heart", this value is used to determine how many hearts the item gives
@@ -354,6 +361,9 @@ defaultheart: # <- This is the item id that can be used in recipes and for permi
   invulnerable: false
   # If the item should despawn after laying on the ground for 5 minutes
   despawnable: true
+  # If this list is empty ("[]"), the item is available in all worlds
+  # If you want to limit the item to specific worlds, add the world names here
+  whitelistedWorlds: []
   sound:
     enabled: true
     sound: ENTITY_PLAYER_LEVELUP # Find all sounds here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
@@ -407,6 +417,7 @@ revive:
         - "DIAMOND"
   invulnerable: false
   despawnable: true
+  whitelistedWorlds: []
   sound:
     enabled: false
     sound: ENTITY_PLAYER_LEVELUP

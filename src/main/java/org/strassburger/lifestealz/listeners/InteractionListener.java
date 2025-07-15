@@ -113,6 +113,16 @@ public final class InteractionListener implements Listener {
 
         event.setCancelled(true);
 
+        String world = player.getWorld().getName();
+        if (!customItemData.isAllowedInWorld(world)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noItemUseInWorld",
+                    "&cYou cannot use this item in this world!"
+            ));
+            return;
+        }
+
         if (customItemData.requiresPermission() && !player.hasPermission(customItemData.getPermission()) && !player.isOp() && !player.hasPermission("lifestealz.item.*")) {
             player.sendMessage(MessageUtils.getAndFormatMsg(false, "noPermissionError", "&cYou don't have permission to use this!"));
             return;
@@ -189,7 +199,27 @@ public final class InteractionListener implements Listener {
     }
 
     private void handleReviveItem(ItemStack item, Player player, EquipmentSlot hand, PlayerInteractEvent event) {
+        CustomItemData customItemData;
+        String customItemId = CustomItemManager.getCustomItemId(item);
+
+        try {
+            customItemData = new CustomItemData(customItemId);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+
         event.setCancelled(true);
+
+        String world = player.getWorld().getName();
+        if (!customItemData.isAllowedInWorld(world)) {
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noItemUseInWorld",
+                    "&cYou cannot use this item in this world!"
+            ));
+            return;
+        }
+
         GuiManager.openReviveGui(player, 1);
     }
 

@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.strassburger.lifestealz.LifeStealZ;
+import org.strassburger.lifestealz.util.MessageUtils;
 import org.strassburger.lifestealz.util.customblocks.CustomBlock;
 import org.strassburger.lifestealz.util.customitems.CustomItemManager;
 import org.strassburger.lifestealz.util.customitems.CustomItemType;
@@ -33,6 +34,17 @@ public final class ReviveBeaconPlaceListener implements Listener {
         try {
             itemData = new CustomReviveBeaconItemData(customItemId);
         } catch (IllegalArgumentException e) {
+            return;
+        }
+
+        String world = block.getWorld().getName();
+        if (!itemData.isAllowedInWorld(world)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noItemUseInWorld",
+                    "&cYou cannot use this item in this world!"
+            ));
             return;
         }
 

@@ -115,11 +115,17 @@ eliminationCommands:
 # - "say &player& got eliminated"
 # - "niceCommandtwo"
 
+# These commands will be executed when a player uses a heart item
 heartuseCommands:
 # - "say &player& used a heart item"
 
+# These commands will be executed when a player has been revived
 reviveuseCommands:
 # - "say &player& revived &target&"
+
+# These commands will be executed when a player starts reviving another player using a revive beacon
+reviveStartCommands:
+# - "broadcast &player& started reviving &target& at &location&"
 
 gracePeriod:
   # If a grace period should be enabled
