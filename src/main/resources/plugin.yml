@@ -9,7 +9,7 @@ description: LifeStealZ - The Ultimate LifeSteal SMP Plugin!
 softdepend:
     - PlaceholderAPI
     - WorldGuard
-    - Geyser-Spigot
+    - Floodgate-Spigot
 
 commands:
     lifestealz:
