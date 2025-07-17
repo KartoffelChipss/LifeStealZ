@@ -2,6 +2,11 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="sonatype" />
       <option name="name" value="sonatype" />
       <option name="url" value="https://oss.sonatype.org/content/groups/public/" />
@@ -17,14 +22,14 @@
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="github" />
-      <option name="name" value="github" />
-      <option name="url" value="https://maven.pkg.github.com/KartoffelChipss/LifeStealZ" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="placeholderapi" />
       <option name="name" value="placeholderapi" />
       <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="github" />
+      <option name="name" value="github" />
+      <option name="url" value="https://maven.pkg.github.com/KartoffelChipss/LifeStealZ" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
