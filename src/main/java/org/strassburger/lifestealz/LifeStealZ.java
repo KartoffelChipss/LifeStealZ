@@ -45,7 +45,7 @@ public final class LifeStealZ extends JavaPlugin {
     private ReviveBeaconEffectManager reviveBeaconEffectManager;
     private final boolean hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     private final boolean hasPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-    private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("Floodgate-Spigot") != null;
+    private final boolean hasGeyser = Bukkit.getPluginManager().getPlugin("floodgate") != null;
 
     public static Map<Location, ReviveTask> reviveTasks = new HashMap<>();
 
