@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.*;
 import com.zetaplugins.lifestealz.util.customitems.CustomItemType;
 import com.zetaplugins.lifestealz.util.customitems.customitemdata.CustomHeartItemData;
 import com.zetaplugins.lifestealz.util.customitems.customitemdata.CustomItemData;

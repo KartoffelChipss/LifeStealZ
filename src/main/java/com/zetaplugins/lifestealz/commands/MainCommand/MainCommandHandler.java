@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.commands.MainCommand.subcommands.*;
 import com.zetaplugins.lifestealz.commands.SubCommand;
 import com.zetaplugins.lifestealz.util.MessageUtils;
 

@@ -1,8 +1,8 @@
-package org.strassburger.lifestealz.util.geysermc;
+package com.zetaplugins.lifestealz.util.geysermc;
 
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
-import org.strassburger.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.LifeStealZ;
 
 import java.util.UUID;
 

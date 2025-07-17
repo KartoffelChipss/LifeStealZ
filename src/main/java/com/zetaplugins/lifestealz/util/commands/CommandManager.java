@@ -8,7 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.commands.*;
 import com.zetaplugins.lifestealz.commands.MainCommand.MainCommandHandler;
 import com.zetaplugins.lifestealz.commands.MainCommand.MainTabCompleter;
 import com.zetaplugins.lifestealz.util.MessageUtils;

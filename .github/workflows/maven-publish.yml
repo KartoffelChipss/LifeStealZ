@@ -1,43 +1,51 @@
-name: Maven Package
+name: Deploy Artifact to Maven Repository
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-        cache: 'maven'
-        server-id: github
-        settings-path: ${{ github.workspace }}
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Cache Maven repository
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
 
-    - name: Set version from release tag
-      run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+      - name: Build plugin
+        run: mvn clean package -DskipTests
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      - name: Extract Maven coordinates
+        id: meta
+        run: |
+          echo "groupId=$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout)" >> $GITHUB_OUTPUT
+          echo "artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_OUTPUT
+          echo "version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.MVN_REPO_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.MVN_REPO_SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload artifact to VPS
+        run: |
+          GROUP_PATH=$(echo "${{ steps.meta.outputs.groupId }}" | sed 's/\./\//g')
+          ARTIFACT_ID=${{ steps.meta.outputs.artifactId }}
+          VERSION=${{ steps.meta.outputs.version }}
+          REMOTE_DIR="${{ secrets.REMOTE_MAVEN_PATH }}/$GROUP_PATH/$ARTIFACT_ID/$VERSION"
+
+          echo "Creating remote directory: $REMOTE_DIR"
+          ssh ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }} "mkdir -p $REMOTE_DIR"
+
+          echo "Uploading JAR and POM"
+          scp target/$ARTIFACT_ID-$VERSION.jar ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }}:$REMOTE_DIR/
+          scp pom.xml ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }}:$REMOTE_DIR/$ARTIFACT_ID-$VERSION.pom

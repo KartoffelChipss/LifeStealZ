@@ -3,7 +3,6 @@ package com.zetaplugins.lifestealz.util;
 import com.zetaplugins.lifestealz.listeners.*;
 import org.bukkit.event.Listener;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.listeners.*;
 import com.zetaplugins.lifestealz.listeners.revivebeacon.ReviveBeaconBreakListener;
 import com.zetaplugins.lifestealz.listeners.revivebeacon.ReviveBeaconInteractListener;
 import com.zetaplugins.lifestealz.listeners.revivebeacon.ReviveBeaconPlaceListener;

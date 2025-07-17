@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.zetaplugins.lifestealz.api.LifeStealZAPI;
 import com.zetaplugins.lifestealz.api.LifeStealZAPIImpl;
-import org.strassburger.lifestealz.util.*;
+import com.zetaplugins.lifestealz.util.*;
 import com.zetaplugins.lifestealz.caches.EliminatedPlayersCache;
 import com.zetaplugins.lifestealz.caches.OfflinePlayerCache;
 import com.zetaplugins.lifestealz.util.commands.CommandManager;

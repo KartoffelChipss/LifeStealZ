@@ -12,12 +12,12 @@
     <name>LifeStealZ</name>
 
     <description>LifeStealZ - The Ultimate LifeSteal SMP Plugin!</description>
-    <url>https://github.com/KartoffelChipss/LifeStealZ</url>
+    <url>https://github.com/ZetaPlugins/LifeStealZ</url>
 
     <licenses>
         <license>
             <name>GNU General Public License v3.0</name>
-            <url>https://github.com/KartoffelChipss/LifeStealZ/blob/main/LICENSE</url>
+            <url>https://github.com/ZetaPlugins/LifeStealZ/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -32,13 +32,13 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/KartoffelChipss/LifeStealZ/issues</url>
+        <url>https://github.com/ZetaPlugins/LifeStealZ/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/KartoffelChipss/LifeStealZ</url>
-        <connection>scm:git:git://github.com/KartoffelChipss/LifeStealZ.git</connection>
-        <developerConnection>scm:git:ssh://github.com/KartoffelChipss/LifeStealZ.git</developerConnection>
+        <url>https://github.com/ZetaPlugins/LifeStealZ</url>
+        <connection>scm:git:git://github.com/ZetaPlugins/LifeStealZ.git</connection>
+        <developerConnection>scm:git:ssh://github.com/ZetaPlugins/LifeStealZ.git</developerConnection>
     </scm>
 
     <properties>
@@ -46,13 +46,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/KartoffelChipss/LifeStealZ</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <plugins>

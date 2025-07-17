@@ -15,7 +15,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.*;
 import com.zetaplugins.lifestealz.util.customitems.CustomItemManager;
 import com.zetaplugins.lifestealz.storage.PlayerData;
 import com.zetaplugins.lifestealz.util.worldguard.WorldGuardManager;

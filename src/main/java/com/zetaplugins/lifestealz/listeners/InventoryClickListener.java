@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import com.zetaplugins.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.*;
 import com.zetaplugins.lifestealz.util.commands.CommandUtils;
 import com.zetaplugins.lifestealz.util.customblocks.CustomBlock;
 import com.zetaplugins.lifestealz.util.customitems.CustomItemManager;
