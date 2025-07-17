@@ -121,7 +121,7 @@
                     <artifactSet>
                         <includes>
                             <include>com.zaxxer:HikariCP</include> <!-- Include HikariCP dependency -->
-                            <include>com.github.technicallycoded:FoliaLib</include>
+                            <include>com.tcoded:FoliaLib</include>
                         </includes>
                     </artifactSet>
                     <transformers>
