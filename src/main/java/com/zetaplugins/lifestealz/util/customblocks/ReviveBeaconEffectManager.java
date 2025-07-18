@@ -2,8 +2,12 @@ package com.zetaplugins.lifestealz.util.customblocks;
 
 import org.bukkit.Sound;
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
@@ -59,32 +63,87 @@ public final class ReviveBeaconEffectManager {
     /**
      * Starts the reviving particle effects for a Revive Beacon at the specified location.
      * @param location The location of the Revive Beacon where the particles will be spawned.
+     * @param target The name of the Player who is being revived.
      * @param showLaser Whether to show the laser effect.
      * @param showParticleRing Whether to show the particle ring effect.
      * @param particleColor The color of the particles in the ring.
      * @param innerLaserMaterial The material for the inner laser beam.
      * @param outerLaserMaterial The material for the outer laser beam.
+     * @param showBossbar Whether a custom Bossbar should be shown.
+     * @param bossbarTitle The Title/Text of the Bossbar
+     * @param bossbarColor The Color of the Bossbar.
      */
-    public void startRevivingEffects(Location location, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial) {
+    public void startRevivingEffects(Location location, String target, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial, int reviveTime, boolean showBossbar, String bossbarTitle, BarColor bossbarColor, BarStyle bossbarStyle) {
         if (revivingParticleBeacons.containsKey(location) || lasers.containsKey(location)) return;
 
         if (showLaser) spawnBeaconLaser(location, innerLaserMaterial, outerLaserMaterial);
 
         location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
 
-        if (!showParticleRing) return;
+        if (showParticleRing) {
+            var runnable = new BukkitRunnable() {
+                final Location center = location.clone().add(0.5, 1.0, 0.5);
 
-        var runnable = new BukkitRunnable() {
-            final Location center = location.clone().add(0.5, 1.0, 0.5);
+                public void run() {
+                    //spawnVerticalParticleBeam(center);
 
+                    spawnRing(center, particleColor);
+                }
+            }.runTaskTimer(plugin, 0L, 10L);
+
+            revivingParticleBeacons.put(getKey(location), runnable);
+        }
+
+        // Check config value
+        if (!showBossbar) return;
+
+        // Create Bossbar
+        int countdown = reviveTime;
+        BossBar bossBar = Bukkit.createBossBar("", bossbarColor, bossbarStyle);
+        bossBar.setVisible(true);
+
+        new BukkitRunnable() {
+            int timeleft = countdown;
+
+            @Override
             public void run() {
-                //spawnVerticalParticleBeam(center);
+                if (timeleft <= 0){
+                    bossBar.setVisible(false);
+                    bossBar.removeAll();
+                    cancel();
+                    return;
+                }
 
-                spawnRing(center, particleColor);
+                // Calculate Time
+                int days = timeleft / 86400;
+                int hours = (timeleft % 86400) / 3600;
+                int minutes = (timeleft & 3600) / 60;
+                int seconds = timeleft % 60;
+
+                // Format to two digits
+                String hFormatted = String.format("%02d", hours);
+                String mFormatted = String.format("%02d", minutes);
+                String sFormatted = String.format("%02d", seconds);
+
+                // Show bossbar to all players
+                // (This is in the Task because new players may join during this time)
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    bossBar.addPlayer(p);
+                }
+
+                // Refresh progress bar progress
+                bossBar.setProgress((double) timeleft / countdown);
+
+                String title = bossbarTitle
+                        .replace("&target&", target)
+                        .replace("&remainingD&", String.valueOf(days))
+                        .replace("&remainingH&", hFormatted)
+                        .replace("&remainingM&", mFormatted)
+                        .replace("&remainingS&", sFormatted);
+                bossBar.setTitle(title);
+                timeleft--;
             }
-        }.runTaskTimer(plugin, 0L, 10L);
-
-        revivingParticleBeacons.put(getKey(location), runnable);
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     /**

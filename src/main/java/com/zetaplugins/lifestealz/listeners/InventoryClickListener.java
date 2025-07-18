@@ -344,11 +344,17 @@ public final class InventoryClickListener implements Listener {
 
         plugin.getReviveBeaconEffectManager().startRevivingEffects(
                 beaconLocation,
+                target.getName(),
                 itemData.shouldShowLaser(),
                 itemData.shouldShowParticleRing(),
                 itemData.getParticleColor(),
                 itemData.getInnerLaser(),
-                itemData.getOuterLaser()
+                itemData.getOuterLaser(),
+                itemData.getReviveTime(),
+                itemData.shouldShowBossbar(),
+                itemData.getBossbarTitle(),
+                itemData.getBossbarColor(),
+                itemData.getBossbarStyle()
         );
 
         BukkitTask reviveTask = new BukkitRunnable() {
