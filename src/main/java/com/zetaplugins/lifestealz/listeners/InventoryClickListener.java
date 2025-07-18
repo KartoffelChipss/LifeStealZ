@@ -253,7 +253,7 @@ public final class InventoryClickListener implements Listener {
      * Executes common actions after a player has been revived.
      * @param reviver The player who revived the target.
      * @param target The player who was revived (OfflinePlayer).
-     * @param location The location where the revive took place as a String, or "null" if not applicable.
+     * @param location The location where the revive took place as a String Array containing the X, Y and Z value, or "null" if not applicable.
      */
     private void executeReviveActions(Player reviver, OfflinePlayer target, String[] location) {
         plugin.getEliminatedPlayersCache().removeEliminatedPlayer(target.getName());
