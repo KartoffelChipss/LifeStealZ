@@ -139,8 +139,12 @@ public final class ReviveBeaconEffectManager {
                         .replace("&remainingD&", String.valueOf(days))
                         .replace("&remainingH&", hFormatted)
                         .replace("&remainingM&", mFormatted)
-                        .replace("&remainingS&", sFormatted);
-                bossBar.setTitle(title);
+                        .replace("&remainingS&", sFormatted)
+                        .replace("&locationX&", String.valueOf(location.getBlockX()))
+                        .replace("&locationY&", String.valueOf(location.getBlockY()))
+                        .replace("&locationZ&", String.valueOf(location.getBlockZ()))
+                        .replace("&location&", location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
+                bossBar.setTitle(ChatColor.translateAlternateColorCodes('&', title));
                 timeleft--;
             }
         }.runTaskTimer(plugin, 0L, 20L);
