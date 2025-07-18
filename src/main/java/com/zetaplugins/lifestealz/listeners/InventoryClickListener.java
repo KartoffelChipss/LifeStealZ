@@ -255,7 +255,7 @@ public final class InventoryClickListener implements Listener {
      * @param target The player who was revived (OfflinePlayer).
      * @param location The location where the revive took place as a String, or "null" if not applicable.
      */
-    private void executeReviveActions(Player reviver, OfflinePlayer target, String location) {
+    private void executeReviveActions(Player reviver, OfflinePlayer target, String[] location) {
         plugin.getEliminatedPlayersCache().removeEliminatedPlayer(target.getName());
 
         reviver.sendMessage(MessageUtils.getAndFormatMsg(
@@ -270,7 +270,9 @@ public final class InventoryClickListener implements Listener {
             String finalCommand = command
                     .replace("&player&", reviver.getName())
                     .replace("&target&", target.getName())
-                    .replace("&location&", location);
+                    .replace("&locationX&", location[0])
+                    .replace("&locationY&", location[1])
+                    .replace("&locationZ&", location[2]);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
         }
 
@@ -288,8 +290,9 @@ public final class InventoryClickListener implements Listener {
 
         if (!canRevivePlayer(reviver, target, data)) return;
 
+        String[] locationNull = {"null", "null", "null"};
         applyReviveData(data);
-        executeReviveActions(reviver, target, "null");
+        executeReviveActions(reviver, target, locationNull);
         removeReviveCrystal(reviver);
         reviver.closeInventory();
     }
@@ -315,7 +318,7 @@ public final class InventoryClickListener implements Listener {
 
         if (!canRevivePlayer(reviver, target, data)) return;
 
-        String locationString = beaconLocation.getBlockX() + ", " + beaconLocation.getBlockY() + ", " + beaconLocation.getBlockZ();
+        String[] location = {String.valueOf(beaconLocation.getBlockX()), String.valueOf(beaconLocation.getBlockY()), String.valueOf(beaconLocation.getBlockZ())};
 
         reviver.sendMessage(MessageUtils.getAndFormatMsg(
                 true,
@@ -331,7 +334,10 @@ public final class InventoryClickListener implements Listener {
             String finalCommand = command
                     .replace("&player&", reviver.getName())
                     .replace("&target&", target.getName())
-                    .replace("&location&", locationString);
+                    .replace("&location", location[0] + ", " + location[1] + ", " + location[2])
+                    .replace("&locationX&", location[0])
+                    .replace("&locationY&", location[1])
+                    .replace("&locationZ&", location[2]);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
         }
 
@@ -348,7 +354,7 @@ public final class InventoryClickListener implements Listener {
             @Override
             public void run() {
                 applyReviveData(data);
-                executeReviveActions(reviver, target, locationString);
+                executeReviveActions(reviver, target, location);
 
                 plugin.getReviveBeaconEffectManager().clearAllEffects(beaconLocation);
                 beaconLocation.getBlock().setType(Material.AIR);
