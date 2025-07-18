@@ -270,6 +270,7 @@ public final class InventoryClickListener implements Listener {
             String finalCommand = command
                     .replace("&player&", reviver.getName())
                     .replace("&target&", target.getName())
+                    .replace("&location&", location[0] + ", " + location[1] + ", " + location[2])
                     .replace("&locationX&", location[0])
                     .replace("&locationY&", location[1])
                     .replace("&locationZ&", location[2]);
@@ -334,7 +335,7 @@ public final class InventoryClickListener implements Listener {
             String finalCommand = command
                     .replace("&player&", reviver.getName())
                     .replace("&target&", target.getName())
-                    .replace("&location", location[0] + ", " + location[1] + ", " + location[2])
+                    .replace("&location&", location[0] + ", " + location[1] + ", " + location[2])
                     .replace("&locationX&", location[0])
                     .replace("&locationY&", location[1])
                     .replace("&locationZ&", location[2]);
