@@ -69,11 +69,8 @@ public final class ReviveBeaconEffectManager {
      * @param particleColor The color of the particles in the ring.
      * @param innerLaserMaterial The material for the inner laser beam.
      * @param outerLaserMaterial The material for the outer laser beam.
-     * @param showBossbar Whether a custom Bossbar should be shown.
-     * @param bossbarTitle The Title/Text of the Bossbar
-     * @param bossbarColor The Color of the Bossbar.
      */
-    public void startRevivingEffects(Location location, String target, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial, int reviveTime, boolean showBossbar, String bossbarTitle, BarColor bossbarColor, BarStyle bossbarStyle) {
+    public void startRevivingEffects(Location location, String target, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial, int reviveTime) {
         if (revivingParticleBeacons.containsKey(location) || lasers.containsKey(location)) return;
 
         if (showLaser) spawnBeaconLaser(location, innerLaserMaterial, outerLaserMaterial);
@@ -95,11 +92,11 @@ public final class ReviveBeaconEffectManager {
         }
 
         // Check config value
-        if (!showBossbar) return;
+        if (plugin.getConfig().getBoolean("showBossbar")) return;
 
         // Create Bossbar
         int countdown = reviveTime;
-        BossBar bossBar = Bukkit.createBossBar("", bossbarColor, bossbarStyle);
+        BossBar bossBar = Bukkit.createBossBar("", parseBarColor(plugin.getConfig().getString("bossbarColor").toUpperCase(), BarColor.RED), parseBarStyle(plugin.getConfig().getString("bossbarStyle").toUpperCase(), BarStyle.SOLID));
         bossBar.setVisible(true);
 
         new BukkitRunnable() {
@@ -134,7 +131,7 @@ public final class ReviveBeaconEffectManager {
                 // Refresh progress bar progress
                 bossBar.setProgress((double) timeleft / countdown);
 
-                String title = bossbarTitle
+                String title = plugin.getLanguageManager().getString("reviveBossbarTitle")
                         .replace("&target&", target)
                         .replace("&remainingD&", String.valueOf(days))
                         .replace("&remainingH&", hFormatted)
@@ -426,5 +423,27 @@ public final class ReviveBeaconEffectManager {
 
     private Location getKey(Location location) {
         return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    /**
+     * Parses a BarColor from a string, returning a fallback color if the string is invalid.
+     * @param color the name of the color to parse
+     * @param fallbackColor the color to return if the string is invalid
+     * @return the parsed color, or the fallback color if the string is invalid
+     */
+    private BarColor parseBarColor(String color, BarColor fallbackColor) {
+        BarColor barColor = BarColor.valueOf(color.toUpperCase());
+        return barColor != null ? barColor : fallbackColor;
+    }
+
+    /**
+     * Parses a BarStyle from a string, returning a fallback style if the string is invalid.
+     * @param style the style to parse
+     * @param fallbackStyle the style to return if the string is invalid
+     * @return the parsed style, or the fallback style if the string is invalid
+     */
+    private BarStyle parseBarStyle(String style, BarStyle fallbackStyle) {
+        BarStyle barStyle = BarStyle.valueOf(style.toUpperCase());
+        return barStyle != null ? barStyle : fallbackStyle;
     }
 }

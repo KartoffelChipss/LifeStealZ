@@ -132,7 +132,7 @@ showBossbar: false
 
 # The Title of the Bossbar
 # Placeholders: &target&, &remainingD&, &remainingH&, &remainingM&, &remainingS&, &location&, &locationX&, &locationY&, &locationZ&
-bossbarTitle: "&cReviving &target& &7&l| &r&3&remainingH&:&remainingM&:&remainingS& remaining &7&l| &r&6X: &locationX& Y: &locationY& Z: &locationZ&"
+# Can be found in the lang file under "reviveBossbarTitle"
 
 # The Color of the Bossbar itself.
 # Available Options: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW

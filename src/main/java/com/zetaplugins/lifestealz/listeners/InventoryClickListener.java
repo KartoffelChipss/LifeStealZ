@@ -350,11 +350,7 @@ public final class InventoryClickListener implements Listener {
                 itemData.getParticleColor(),
                 itemData.getInnerLaser(),
                 itemData.getOuterLaser(),
-                itemData.getReviveTime(),
-                itemData.shouldShowBossbar(),
-                itemData.getBossbarTitle(),
-                itemData.getBossbarColor(),
-                itemData.getBossbarStyle()
+                itemData.getReviveTime()
         );
 
         BukkitTask reviveTask = new BukkitRunnable() {
