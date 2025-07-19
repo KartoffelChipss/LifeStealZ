@@ -2,12 +2,11 @@ package org.strassburger.lifestealz.commands.MainCommand.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
-import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.commands.SubCommand;
-import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.SchedulerUtils;
-import org.strassburger.lifestealz.util.commands.CommandUtils;
-import org.strassburger.lifestealz.storage.Storage;
+import com.zetaplugins.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.commands.SubCommand;
+import com.zetaplugins.lifestealz.util.MessageUtils;
+import com.zetaplugins.lifestealz.util.commands.CommandUtils;
+import com.zetaplugins.lifestealz.storage.Storage;
 
 import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
 
