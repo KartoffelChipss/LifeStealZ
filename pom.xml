@@ -4,20 +4,20 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.strassburger</groupId>
+    <groupId>com.zetaplugins</groupId>
     <artifactId>lifestealz</artifactId>
-    <version>2.17.1</version>
+    <version>2.17.3</version>
     <packaging>jar</packaging>
 
     <name>LifeStealZ</name>
 
     <description>LifeStealZ - The Ultimate LifeSteal SMP Plugin!</description>
-    <url>https://github.com/KartoffelChipss/LifeStealZ</url>
+    <url>https://github.com/ZetaPlugins/LifeStealZ</url>
 
     <licenses>
         <license>
             <name>GNU General Public License v3.0</name>
-            <url>https://github.com/KartoffelChipss/LifeStealZ/blob/main/LICENSE</url>
+            <url>https://github.com/ZetaPlugins/LifeStealZ/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -32,13 +32,13 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/KartoffelChipss/LifeStealZ/issues</url>
+        <url>https://github.com/ZetaPlugins/LifeStealZ/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/KartoffelChipss/LifeStealZ</url>
-        <connection>scm:git:git://github.com/KartoffelChipss/LifeStealZ.git</connection>
-        <developerConnection>scm:git:ssh://github.com/KartoffelChipss/LifeStealZ.git</developerConnection>
+        <url>https://github.com/ZetaPlugins/LifeStealZ</url>
+        <connection>scm:git:git://github.com/ZetaPlugins/LifeStealZ.git</connection>
+        <developerConnection>scm:git:ssh://github.com/ZetaPlugins/LifeStealZ.git</developerConnection>
     </scm>
 
     <properties>
@@ -46,13 +46,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/KartoffelChipss/LifeStealZ</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <plugins>
@@ -129,7 +122,7 @@
                             implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                         <transformer
                             implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>org.strassburger.lifestealz.LifeStealZ</mainClass> <!-- Set
+                            <mainClass>com.zetaplugins.lifestealz.LifeStealZ</mainClass> <!-- Set
                             your main class if needed -->
                         </transformer>
                     </transformers>
@@ -224,9 +217,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.geysermc.geyser</groupId>
+            <groupId>org.geysermc.floodgate</groupId>
             <artifactId>api</artifactId>
-            <version>2.7.1-SNAPSHOT</version>
+            <version>2.2.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

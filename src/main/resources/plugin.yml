@@ -1,6 +1,6 @@
 name: LifeStealZ
 version: '${project.version}'
-main: org.strassburger.lifestealz.LifeStealZ
+main: com.zetaplugins.lifestealz.LifeStealZ
 api-version: '1.19'
 author: Kartoffelchips
 website: https://lsz.strassburger.dev/
@@ -10,7 +10,7 @@ folia-supported: true
 softdepend:
     - PlaceholderAPI
     - WorldGuard
-    - Geyser-Spigot
+    - floodgate
 
 commands:
     lifestealz:
