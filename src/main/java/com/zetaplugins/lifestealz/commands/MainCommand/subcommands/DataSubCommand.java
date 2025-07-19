@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.commands.MainCommand.subcommands;
+package com.zetaplugins.lifestealz.commands.MainCommand.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
@@ -8,7 +8,7 @@ import com.zetaplugins.lifestealz.util.MessageUtils;
 import com.zetaplugins.lifestealz.util.commands.CommandUtils;
 import com.zetaplugins.lifestealz.storage.Storage;
 
-import static org.strassburger.lifestealz.util.commands.CommandUtils.throwUsageError;
+import static com.zetaplugins.lifestealz.util.commands.CommandUtils.throwUsageError;
 
 public final class DataSubCommand implements SubCommand {
     private final Storage storage;

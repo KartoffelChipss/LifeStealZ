@@ -56,9 +56,9 @@ public final class DebugSubCommand implements SubCommand {
 
                     // Create a formatted message with a clickable link
                     Component message = MessageUtils.getAndFormatMsg(
-                                    false,
-                                    "debugReportUploaded",
-                                    "&aDebug report uploaded: "
+                   false,
+                       "debugReportUploaded",
+                     "&aDebug report uploaded: "
                             )
                             .append(
                                     MessageUtils.formatMsg("&7" + pasteUrl)
