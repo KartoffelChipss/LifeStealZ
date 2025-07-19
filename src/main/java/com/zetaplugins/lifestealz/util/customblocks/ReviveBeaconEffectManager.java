@@ -92,7 +92,7 @@ public final class ReviveBeaconEffectManager {
         }
 
         // Check config value
-        if (plugin.getConfig().getBoolean("showBossbar")) return;
+        if (!plugin.getConfig().getBoolean("showBossbar")) return;
 
         // Create Bossbar
         int countdown = reviveTime;
@@ -102,7 +102,6 @@ public final class ReviveBeaconEffectManager {
         new BukkitRunnable() {
             int timeleft = countdown;
 
-            @Override
             public void run() {
                 if (timeleft <= 0){
                     bossBar.setVisible(false);
