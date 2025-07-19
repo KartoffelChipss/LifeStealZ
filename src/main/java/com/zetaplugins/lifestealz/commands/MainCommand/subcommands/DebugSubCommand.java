@@ -1,4 +1,4 @@
-package org.strassburger.lifestealz.commands.MainCommand.subcommands;
+package com.zetaplugins.lifestealz.commands.MainCommand.subcommands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -6,11 +6,10 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
-import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.commands.SubCommand;
-import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.SchedulerUtils;
-import org.strassburger.lifestealz.util.commands.CommandUtils;
+import com.zetaplugins.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.commands.SubCommand;
+import com.zetaplugins.lifestealz.util.MessageUtils;
+import com.zetaplugins.lifestealz.util.commands.CommandUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -88,6 +87,7 @@ public final class DebugSubCommand implements SubCommand {
                 ));
             }
         });
+
         return true;
     }
 
@@ -103,7 +103,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Generates the debug dump for the LifeStealZ plugin.
-     *
      * @return The formatted debug dump string.
      */
     private String generateDebugDump() {
@@ -140,22 +139,27 @@ public final class DebugSubCommand implements SubCommand {
         debug.append("-- Installed Plugins --\n")
                 .append(getInstalledPlugins()).append("\n\n");
 
-        debug.append("-- Lifecycle Logs --\n").
-                append(getPluginLogs()).append("\n\n");
+        debug.append("-- Lifecycle Logs --\n")
+                .append(getPluginLogs())
+                .append("\n\n");
         // Configuration files
         debug.append("-- Configuration Files --\n");
 
         // Main config
-        debug.append("# config.yml\n```yaml\n").
-                append(plugin.getConfig().saveToString()).append("\n```\n\n");
+        debug.append("# config.yml\n```yaml\n")
+                .append(plugin.getConfig().saveToString())
+                .append("\n```\n\n");
 
         // Storage config
-        debug.append("# storage.yml\n```yaml\n").
-                append(plugin.getConfigManager().getStorageConfig().saveToString()).append("\n```\n\n");
+        debug.append("# storage.yml\n```yaml\n")
+                .append(plugin.getConfigManager().getStorageConfig().saveToString())
+                .append("\n```\n\n");
 
         // Items config
-        debug.append("# items.yml\n```yaml\n").
-                append(plugin.getConfigManager().getCustomItemConfig().saveToString()).append("\n```\n\n");
+        debug.append("# items.yml\n```yaml\n")
+                .append(plugin.getConfigManager().getCustomItemConfig().saveToString())
+                .append("\n```\n\n");
+
 
 
         return debug.toString();
@@ -163,7 +167,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Extracts plugin-related logs from the server log file
-     *
      * @return A string containing all plugin-related log entries
      */
     private String getPluginLogs() {
@@ -235,7 +238,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Generates an SHA-256 hash of the plugin's binary.
-     *
      * @return The hash as a hexadecimal string.
      */
     private String generatePluginHash() {
@@ -268,7 +270,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Retrieves a list of installed plugins on the server.
-     *
      * @return A formatted string containing all installed plugins.
      */
     private String getInstalledPlugins() {
@@ -284,7 +285,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Uploads the debug dump to mclo.gs and returns the paste URL.
-     *
      * @param content The debug log content.
      * @return The mclo.gs URL or null if upload failed.
      */
@@ -332,7 +332,6 @@ public final class DebugSubCommand implements SubCommand {
 
     /**
      * Extracts the URL from the mclo.gs JSON response.
-     *
      * @param jsonResponse The raw JSON response.
      * @return The URL of the uploaded log or null if failed.
      */

@@ -1,5 +1,9 @@
-package org.strassburger.lifestealz.listeners;
+package com.zetaplugins.lifestealz.listeners;
 
+import com.zetaplugins.lifestealz.util.CooldownManager;
+import com.zetaplugins.lifestealz.util.GracePeriodManager;
+import com.zetaplugins.lifestealz.util.MessageUtils;
+import com.zetaplugins.lifestealz.util.WebHookManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,18 +14,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.storage.PlayerData;
-import org.strassburger.lifestealz.util.*;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.util.worldguard.WorldGuardManager;
+import com.zetaplugins.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.util.customitems.CustomItemManager;
+import com.zetaplugins.lifestealz.storage.PlayerData;
+import com.zetaplugins.lifestealz.util.worldguard.WorldGuardManager;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
 
-import static org.strassburger.lifestealz.util.MaxHeartsManager.getMaxHearts;
+import static com.zetaplugins.lifestealz.util.MaxHeartsManager.getMaxHearts;
 
 public final class PlayerDeathListener implements Listener {
 
@@ -41,8 +44,8 @@ public final class PlayerDeathListener implements Listener {
 
         UUID playerUUID = player.getUniqueId();
         if (player.hasMetadata("combat_log_npc")) {
-            // If the player is a combat log NPC, get the original player's UUID
-            playerUUID = (UUID) player.getMetadata("combat_log_npc").get(0).value();
+                // If the player is a combat log NPC, get the original player's UUID
+                playerUUID = (UUID) player.getMetadata("combat_log_npc").get(0).value();
         }
         final PlayerData playerData = plugin.getStorage().load(playerUUID);
 
@@ -68,9 +71,17 @@ public final class PlayerDeathListener implements Listener {
 
         // Drop hearts or handle heart gain for the killer (if applicable)
         if (restrictedHeartLossByGracePeriod(player) && isDeathByPlayer) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartGainFromPlayersInGracePeriod", "&cYou can't gain hearts from players during their grace period!"));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartGainFromPlayersInGracePeriod",
+                    "&cYou can't gain hearts from players during their grace period!"
+            ));
         } else if (isDeathByPlayer && restrictedHeartGainByGracePeriod(killer)) {
-            killer.sendMessage(MessageUtils.getAndFormatMsg(false, "noHeartGainInGracePeriod", "&cYou can't gain hearts during the grace period!"));
+            killer.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "noHeartGainInGracePeriod",
+                    "&cYou can't gain hearts during the grace period!"
+            ));
         } else if (isDeathByPlayer && plugin.getConfig().getBoolean("dropHeartsPlayer")) {
             dropHeartsNaturally(player.getLocation(), (int) (healthToLoose / 2), CustomItemManager.createKillHeart());
         } else if (isDeathByPlayer) {
@@ -109,7 +120,10 @@ public final class PlayerDeathListener implements Listener {
 
         SchedulerUtils.scheduleSyncDelayedTask(plugin, () -> {
             for (String command : elimCommands) {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("&player&", player.getName()));
+                plugin.getServer().dispatchCommand(
+                        plugin.getServer().getConsoleSender(),
+                        command.replace("&player&", player.getName())
+                );
             }
         }, 1L);
 

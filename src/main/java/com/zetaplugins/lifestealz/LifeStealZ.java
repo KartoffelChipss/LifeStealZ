@@ -1,5 +1,6 @@
-package org.strassburger.lifestealz;
+package com.zetaplugins.lifestealz;
 
+import com.zetaplugins.lifestealz.util.*;
 import com.tcoded.folialib.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,20 +1,16 @@
-package org.strassburger.lifestealz.util.customitems.recipe;
+package com.zetaplugins.lifestealz.util.customitems.recipe;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.util.GuiManager;
-import org.strassburger.lifestealz.util.MessageUtils;
-import org.strassburger.lifestealz.util.SchedulerUtils;
-import org.strassburger.lifestealz.util.customitems.CustomItem;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
+import com.zetaplugins.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.util.GuiManager;
+import com.zetaplugins.lifestealz.util.MessageUtils;
+import com.zetaplugins.lifestealz.util.customitems.CustomItem;
+import com.zetaplugins.lifestealz.util.customitems.CustomItemManager;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,9 +25,8 @@ final class RecipeRenderer {
 
     /**
      * Saves that an animation was started in an inventory to stop them when the inventory is closed
-     *
      * @param inventory The inventory to save the animation for
-     * @param taskId    The task id of the animation
+     * @param taskId The task id of the animation
      */
     private void addAnimation(Inventory inventory, SchedulerUtils.UniversalTask task) {
         if (animationMap.containsKey(inventory)) animationMap.get(inventory).add(task);
@@ -40,7 +35,6 @@ final class RecipeRenderer {
 
     /**
      * Cancels all animations for an inventory
-     *
      * @param inventory The inventory to cancel the animations for
      */
     public void cancelAnimations(Inventory inventory) {
@@ -53,7 +47,6 @@ final class RecipeRenderer {
 
     /**
      * Renders the recipe for a custom item
-     *
      * @param player The player to render the recipe for
      * @param itemId The id of the item to render the recipe for
      */
@@ -94,9 +87,8 @@ final class RecipeRenderer {
 
     /**
      * Renders the recipe for a custom item
-     *
-     * @param player   The player to render the recipe for
-     * @param itemId   The id of the item to render the recipe for
+     * @param player The player to render the recipe for
+     * @param itemId The id of the item to render the recipe for
      * @param recipeId The recipe id of the recipe to render
      */
     public void renderRecipe(Player player, String itemId, String recipeId) {
@@ -154,7 +146,7 @@ final class RecipeRenderer {
                 .makeForbidden()
                 .getItemStack();
 
-        List<Integer> glassSlots = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 22, 23, 25, 26, 27, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44);
+        List<Integer> glassSlots = Arrays.asList(0,1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,22,23,25,26,27,31,32,33,34,35,36,37,38,39,41,42,43,44);
         for (int slot : glassSlots) {
             inventory.setItem(slot, glass);
         }
@@ -168,7 +160,7 @@ final class RecipeRenderer {
         renderIngredient(inventory, 28, rowThree.get(0));
         renderIngredient(inventory, 29, rowThree.get(1));
         renderIngredient(inventory, 30, rowThree.get(2));
-        inventory.setItem(24, new CustomItem(CustomItemManager.createCustomItem(itemId)).makeForbidden().getItemStack());
+        inventory.setItem(24,new CustomItem(CustomItemManager.createCustomItem(itemId)).makeForbidden().getItemStack());
 
         GuiManager.RECIPE_GUI_MAP.put(player.getUniqueId(), inventory);
         player.openInventory(inventory);

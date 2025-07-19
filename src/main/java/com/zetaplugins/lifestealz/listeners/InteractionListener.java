@@ -1,9 +1,7 @@
-package org.strassburger.lifestealz.listeners;
+package com.zetaplugins.lifestealz.listeners;
 
-import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
-import org.bukkit.Material;
-import org.bukkit.World;
+import com.zetaplugins.lifestealz.util.*;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,13 +11,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.strassburger.lifestealz.LifeStealZ;
-import org.strassburger.lifestealz.storage.PlayerData;
-import org.strassburger.lifestealz.util.*;
-import org.strassburger.lifestealz.util.customitems.CustomItemManager;
-import org.strassburger.lifestealz.util.customitems.CustomItemType;
-import org.strassburger.lifestealz.util.customitems.customitemdata.CustomHeartItemData;
-import org.strassburger.lifestealz.util.customitems.customitemdata.CustomItemData;
+import org.bukkit.scheduler.BukkitRunnable;
+import com.zetaplugins.lifestealz.LifeStealZ;
+import com.zetaplugins.lifestealz.util.customitems.CustomItemType;
+import com.zetaplugins.lifestealz.util.customitems.customitemdata.CustomHeartItemData;
+import com.zetaplugins.lifestealz.util.customitems.customitemdata.CustomItemData;
+import com.zetaplugins.lifestealz.util.customitems.CustomItemManager;
+import com.zetaplugins.lifestealz.storage.PlayerData;
 
 import java.util.List;
 
@@ -37,7 +35,11 @@ public final class InteractionListener implements Listener {
         EquipmentSlot hand = event.getHand(); // Track which hand is being used
 
         if (shouldCancelRespawnAnchorUsage(event) || shouldCancelBedInteraction(event)) {
-            player.sendMessage(MessageUtils.getAndFormatMsg(false, "interactionNotAllowed", "&cYou are not allowed to interact with this!"));
+            player.sendMessage(MessageUtils.getAndFormatMsg(
+                    false,
+                    "interactionNotAllowed",
+                    "&cYou are not allowed to interact with this!"
+            ));
             event.setCancelled(true);
             return;
         }
@@ -75,7 +77,6 @@ public final class InteractionListener implements Listener {
 
     /**
      * Checks if the event should be cancelled when a player interacts with a respawn anchor
-     *
      * @param event PlayerInteractEvent
      * @return wether the event needs to be cancelled
      */
@@ -176,14 +177,12 @@ public final class InteractionListener implements Listener {
         playerData.setMaxHealth(newHearts);
         plugin.getStorage().save(playerData);
         LifeStealZ.setMaxHealth(player, newHearts);
-        if (plugin.getConfig().getBoolean("healOnHeartUse"))
-            player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
+        if (plugin.getConfig().getBoolean("healOnHeartUse")) player.setHealth(Math.min(player.getHealth() + heartsToAdd, newHearts));
 
         String customItemID = CustomItemManager.getCustomItemId(item);
         if (customItemID != null) {
             CustomItemData.CustomItemSoundData sound = CustomItemManager.getCustomItemData(customItemID).getSound();
-            if (sound.isEnabled())
-                player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
+            if (sound.isEnabled()) player.playSound(player.getLocation(), sound.getSound(), (float) sound.getVolume(), (float) sound.getPitch());
         }
 
         List<String> heartuseCommands = plugin.getConfig().getStringList("heartuseCommands");
@@ -237,6 +236,7 @@ public final class InteractionListener implements Listener {
             player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
             player.getInventory().setItemInOffHand(originalOffHandItem);
         }, 3L);
+
     }
 
     private void updateItemInHand(Player player, ItemStack item, int slot) {
