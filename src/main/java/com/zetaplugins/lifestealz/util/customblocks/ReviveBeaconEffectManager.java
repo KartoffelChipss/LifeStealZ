@@ -2,8 +2,12 @@ package com.zetaplugins.lifestealz.util.customblocks;
 
 import org.bukkit.Sound;
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
@@ -59,32 +63,87 @@ public final class ReviveBeaconEffectManager {
     /**
      * Starts the reviving particle effects for a Revive Beacon at the specified location.
      * @param location The location of the Revive Beacon where the particles will be spawned.
+     * @param target The name of the Player who is being revived.
      * @param showLaser Whether to show the laser effect.
      * @param showParticleRing Whether to show the particle ring effect.
      * @param particleColor The color of the particles in the ring.
      * @param innerLaserMaterial The material for the inner laser beam.
      * @param outerLaserMaterial The material for the outer laser beam.
      */
-    public void startRevivingEffects(Location location, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial) {
+    public void startRevivingEffects(Location location, String target, boolean showLaser, boolean showParticleRing, ParticleColor particleColor, Material innerLaserMaterial, Material outerLaserMaterial, int reviveTime) {
         if (revivingParticleBeacons.containsKey(location) || lasers.containsKey(location)) return;
 
         if (showLaser) spawnBeaconLaser(location, innerLaserMaterial, outerLaserMaterial);
 
         location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
 
-        if (!showParticleRing) return;
+        if (showParticleRing) {
+            var runnable = new BukkitRunnable() {
+                final Location center = location.clone().add(0.5, 1.0, 0.5);
 
-        var runnable = new BukkitRunnable() {
-            final Location center = location.clone().add(0.5, 1.0, 0.5);
+                public void run() {
+                    //spawnVerticalParticleBeam(center);
+
+                    spawnRing(center, particleColor);
+                }
+            }.runTaskTimer(plugin, 0L, 10L);
+
+            revivingParticleBeacons.put(getKey(location), runnable);
+        }
+
+        // Check config value
+        if (!plugin.getConfig().getBoolean("showBossbar")) return;
+
+        // Create Bossbar
+        int countdown = reviveTime;
+        BossBar bossBar = Bukkit.createBossBar("", parseBarColor(plugin.getConfig().getString("bossbarColor").toUpperCase(), BarColor.RED), parseBarStyle(plugin.getConfig().getString("bossbarStyle").toUpperCase(), BarStyle.SOLID));
+        bossBar.setVisible(true);
+
+        new BukkitRunnable() {
+            int timeleft = countdown;
 
             public void run() {
-                //spawnVerticalParticleBeam(center);
+                if (timeleft <= 0){
+                    bossBar.setVisible(false);
+                    bossBar.removeAll();
+                    cancel();
+                    return;
+                }
 
-                spawnRing(center, particleColor);
+                // Calculate Time
+                int days = timeleft / 86400;
+                int hours = (timeleft % 86400) / 3600;
+                int minutes = (timeleft & 3600) / 60;
+                int seconds = timeleft % 60;
+
+                // Format to two digits
+                String hFormatted = String.format("%02d", hours);
+                String mFormatted = String.format("%02d", minutes);
+                String sFormatted = String.format("%02d", seconds);
+
+                // Show bossbar to all players
+                // (This is in the Task because new players may join during this time)
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    bossBar.addPlayer(p);
+                }
+
+                // Refresh progress bar progress
+                bossBar.setProgress((double) timeleft / countdown);
+
+                String title = plugin.getLanguageManager().getString("reviveBossbarTitle")
+                        .replace("&target&", target)
+                        .replace("&remainingD&", String.valueOf(days))
+                        .replace("&remainingH&", hFormatted)
+                        .replace("&remainingM&", mFormatted)
+                        .replace("&remainingS&", sFormatted)
+                        .replace("&locationX&", String.valueOf(location.getBlockX()))
+                        .replace("&locationY&", String.valueOf(location.getBlockY()))
+                        .replace("&locationZ&", String.valueOf(location.getBlockZ()))
+                        .replace("&location&", location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
+                bossBar.setTitle(ChatColor.translateAlternateColorCodes('&', title));
+                timeleft--;
             }
-        }.runTaskTimer(plugin, 0L, 10L);
-
-        revivingParticleBeacons.put(getKey(location), runnable);
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     /**
@@ -363,5 +422,27 @@ public final class ReviveBeaconEffectManager {
 
     private Location getKey(Location location) {
         return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    /**
+     * Parses a BarColor from a string, returning a fallback color if the string is invalid.
+     * @param color the name of the color to parse
+     * @param fallbackColor the color to return if the string is invalid
+     * @return the parsed color, or the fallback color if the string is invalid
+     */
+    private BarColor parseBarColor(String color, BarColor fallbackColor) {
+        BarColor barColor = BarColor.valueOf(color.toUpperCase());
+        return barColor != null ? barColor : fallbackColor;
+    }
+
+    /**
+     * Parses a BarStyle from a string, returning a fallback style if the string is invalid.
+     * @param style the style to parse
+     * @param fallbackStyle the style to return if the string is invalid
+     * @return the parsed style, or the fallback style if the string is invalid
+     */
+    private BarStyle parseBarStyle(String style, BarStyle fallbackStyle) {
+        BarStyle barStyle = BarStyle.valueOf(style.toUpperCase());
+        return barStyle != null ? barStyle : fallbackStyle;
     }
 }
