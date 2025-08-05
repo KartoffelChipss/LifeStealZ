@@ -36,7 +36,22 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.MVN_REPO_SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Upload artifact to VPS
+      - name: Generate checksums
+        run: |
+          ARTIFACT_ID=${{ steps.meta.outputs.artifactId }}
+          VERSION=${{ steps.meta.outputs.version }}
+
+          JAR_FILE=target/$ARTIFACT_ID-$VERSION.jar
+          POM_FILE=target/$ARTIFACT_ID-$VERSION.pom
+
+          cp pom.xml $POM_FILE
+
+          for file in $JAR_FILE $POM_FILE; do
+            sha1sum "$file" | awk '{ print $1 }' > "$file.sha1"
+            md5sum "$file" | awk '{ print $1 }' > "$file.md5"
+          done
+
+      - name: Upload artifact and checksums to VPS
         run: |
           GROUP_PATH=$(echo "${{ steps.meta.outputs.groupId }}" | sed 's/\./\//g')
           ARTIFACT_ID=${{ steps.meta.outputs.artifactId }}
@@ -46,6 +61,17 @@ jobs:
           echo "Creating remote directory: $REMOTE_DIR"
           ssh ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }} "mkdir -p $REMOTE_DIR"
 
-          echo "Uploading JAR and POM"
-          scp target/$ARTIFACT_ID-$VERSION.jar ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }}:$REMOTE_DIR/
-          scp pom.xml ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }}:$REMOTE_DIR/$ARTIFACT_ID-$VERSION.pom
+          FILES=(
+            "target/$ARTIFACT_ID-$VERSION.jar"
+            "target/$ARTIFACT_ID-$VERSION.jar.sha1"
+            "target/$ARTIFACT_ID-$VERSION.jar.md5"
+            "target/$ARTIFACT_ID-$VERSION.pom"
+            "target/$ARTIFACT_ID-$VERSION.pom.sha1"
+            "target/$ARTIFACT_ID-$VERSION.pom.md5"
+          )
+
+          echo "Uploading files..."
+          for file in "${FILES[@]}"; do
+            echo "Uploading $file"
+            scp "$file" ${{ secrets.MVN_REPO_SSH_USER }}@${{ secrets.MVN_REPO_SSH_HOST }}:$REMOTE_DIR/
+          done
