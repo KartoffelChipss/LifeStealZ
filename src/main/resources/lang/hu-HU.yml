@@ -1,0 +1,128 @@
+# LifeStealZ language file
+# ja-JP - by tttpetipro
+
+prefix: "&8[&cLifeStealZ&8]"
+newVersionAvailable: |-
+  &7A LifeStealZ -nek egy új verziója elérhető!
+  &c<click:OPEN_URL:https://modrinth.com/plugin/lifestealz/versions>https://modrinth.com/plugin/lifestealz/versions</click>
+usageError: "&cHasználat: %usage%"
+noPermsError: "<red>Nincsen jogod, hogy végrehajtsd ezt a parancsot!"
+needToBePlayer: "&cJátékosnak kell lenned a parancs végrehajtásához!"
+playerNotFound: "&cJátékos nem találva!"
+worldNotWhitelisted: "&cEz a világ nincsen megengedve a LifeStealZ -nek!"
+specifyPlayerOrBePlayer: "&cKi kell jelölnöd egy játékost, vagy egy játékosnak kell
+  lenned!"
+noPermissionError: "&cNincsen jogod, hogy ezt használd!"
+noPlayerData: "&cEz a játékos még nem játszott ezen a szerveren!"
+eliminateSuccess: "&7Sikeresen kivégezted &c%player%&7 -t!"
+reviveSuccess: "&7Sikeresen újraélesztetted &c%player% -t!"
+massReviveSuccess: "&7Sikeresen felélesztettél &c%amount% &7játékost!"
+massReviveError: "&cHiba történt az összes játékos újraélesztésekor: %error%"
+reviveMaxReached: "&cEz a játékos már újra lett élesztve %amount% -szor/szer/ször!"
+onlyReviveElimPlayers: "&cCsak kivégzett játékosokat tudsz újraéleszteni!"
+eliminatedJoin: "&cNem maradt már több szíved!"
+eliminationAnnouncement: "&c%player% &7 ki lett végezve &c%killer%&7 által!"
+eliminateionAnnouncementNature: "&c%player% &7 ki lett végezve!"
+setHeartsConfirmSingle: "&7Sikeresen beállítottad &c%player% &7szíveit &c%amount%
+  szívre"
+setHeartsConfirmMultiple: "&7Sikeresen beállította a &c%pamount% játékosokat &7szíveket
+  &c%amount% értékre"
+addHeartsConfirmSingle: "&7Sikeresen hozzáadva &c%amount% &7szívek &c%player% játékoshoz"
+addHeartsConfirmMultiple: "&7Sikeresen hozzáadtad a &c%amount% &7szíveket &c%pamount%
+  játékoshoz"
+removeHeartsConfirmSingle: "&7Sikeresen eltávolítva &c%amount% &7szívek innen: &c%player%"
+removeHeartsConfirmMultiple: "&7Sikeresen eltávolítva &c%amount% &7szívek &c%pamount%
+  játékostól"
+connotSetHeartsBelowOrToZero: "&cNem állíthatod egy játékos szívét 0 alá vagy 0-ra!"
+getHearts: "&c%player% &7 -nak/nek éppen &c%amount% &7 szíve van!"
+reloadMsg: "&7Sikeresen újraindítottad a plugint!"
+versionMsg: "&7A <red>%version% verziót használod"
+newVersionMsg: |2
+
+  &c<b><grey>></grey> LifeStealZ</b> <grey>v%version%</grey>
+
+  &c <u><click:open_url:'https://wiki.lifestealz.com/'>Dokumentáció</click></u> &c<u><click:open_url:'https://strassburger.org/discord'>Támogasd a Discordot</click></u>
+noWithdraw: "&cKi lennél végezve, ha még egy szívet kivennél!"
+withdrawConfirmmsg: "&8&oUse <underlined><click:SUGGEST_COMMAND:/withdrawheart %amount%
+  confirm>/withdrawheart %amount% confirm</click></underlined> ha biztosan ki szeretnél
+  venni egy szívet"
+maxHeartLimitReached: "&cMár elérted a  %limit% szívnyi limitet!"
+closeBtn: "&cBezárás"
+backBtn: "&cVissza"
+nextBtn: "&cKövetkező"
+reviveTitle: "&8Élessz újra egy játékost"
+revivePlayerDesc: "&7Klikkej, hogy újraéleszd ezt a játékost"
+viewheartsYou: "&7Éppen &c%amount% &7 szíved van!"
+viewheartsOther: "&c%player% &7 -nak/nek éppen &c%amount% &7 szíve van!"
+heartconsume: "&7Kaptál &c%amount% &7 szívet!"
+heartconsumeCooldown: "&cVárnod kell, mielőtt használhatsz mégegy szívet!"
+recipeNotCraftable: "&cEz a tárgy nem készíthető el!"
+recipeNotFound: "&Ez a recept nem létezik!"
+altKill: "&cLegyél szíves nem megölni altokat! Ez a próbálkozás le lett jegyezve!"
+withdrawMin: "&cNem vehetsz ki kevesebb mint 1 szívet!"
+noInventorySpace: "&cNincs elég helyed, hogy ennyi szívet kivegyél!"
+giveItem: "&7Kaptál %amount%x &c%item%&7!"
+heartGainCooldown: "&cVárnod kell, mielőtt kaphatnál mégegy szívet!"
+exportData: "&7A játékosadatok exportálása sikeresen megtörtént a &c%file% fájlba."
+exportDataError: "&cNem sikerült exportálni az adatokat! A részletekért ellenőrizze
+  a konzolt."
+exportingData: "&7Játékosadatok exportálása..."
+importData: |-
+  &7Sikeresen importálva &c%file%&7!
+  &cKérjük, indítsa újra a szervert a hibátlan migráció biztosítása érdekében!
+importDataError: "&cNem sikerült importálni az adatokat! A részletekért ellenőrizze
+  a konzolt."
+importingData: "&7Játékosadatok importálása..."
+unwhitelistedWorld: |2
+
+  <red><b><grey>></grey> Engedélyezett világok</b></red>
+
+  <gray>Éppen a  <red><click:COPY_TO_CLIPBOARD:'&world&'><hover:show_text:'&7Copy to clipboard'>&world&</hover></click></red> nevű világon játszasz.
+  Ez a világ nincs engedélyezve, itt az LSZ nem fog működni.</gray>
+
+  <red><u><click:open_url:'https://lsz.strassburger.dev/configuration/whitelist'>Dokumentáció</click></u></red>   <red><u><click:open_url:'https://strassburger.org/discord'>Segítségkérő discord</click></u></red>   <u><hover:show_text:'<gray>Ha ignorálni akarod, allítsd be a 'supressWhitelistMessage' -t <b>true</b> -ra a config fájl-ba.</gray>'><red>Tűntesd el az üzenetet</red></hover></u>
+itemFramesDisabled: "&cNem rakhatsz egyedi tárgyakat tárgykeretekbe!"
+itemMinHearts: "&cLegalább %amount% darab szívednek kell lennie, hogy használd ezt
+  a tárgyat!"
+itemMaxHearts: "&cElérted a maximális számú szíveket ezzel a tárggyal!"
+webhookEliminationTitle: Játékos kiiktatva
+webhookElimination: "**%player%** ki lett iktatva **%killer%** által!"
+webhookEliminationColor: ea3323
+webhookReviveTitle: Játékos újraélesztve
+webhookRevive: "**%player%** újra lett élesztve **%reviver%** által!"
+webhookReviveColor: b094ee
+gracePeriodEnd: "&7 A türelmi időszak véget ért!"
+noDamageInGracePeriod: "&c A türelmi időszak alatt nem okozhatsz sebzést a játékosoknak!"
+noHeartUseInGracePeriod: "&c A türelmi időszak alatt nem használhatsz szíveket!"
+noHeartGainInGracePeriod: "&c A türelmi időszak alatt nem lehet szíveket szerezni!"
+noHeartGainFromPlayersInGracePeriod: "&cNem szerezhetsz szíveket a játékosoktól a
+  türelmi időszak alatt!"
+noHeartLossInGracePeriod: "&c A türelmi időszakban nem veszítheted el a szívedet!"
+gracePeriodSkipSuccess: "&7Sikeresen kihagyta a türelmi időszakot a következő játékos
+  számára: &c%playerCount% &7."
+gracePeriodResetSuccess: "&7Sikeresen visszaállítottuk a türelmi időszakot a következőhöz:
+  &c%playerCount% &7játékosok."
+gracePeriodSkipSuccessOnePlayer: "&7Sikeresen kihagyta a türelmi időszakot &c%player%&7
+  számára."
+gracePeriodResetSuccessOnePlayer: "&7Sikeresen visszaállítottuk a türelmi időszakot
+  a következőhöz: &c%player%&7."
+interactionNotAllowed: "&cEzzel nem léphetsz interakcióba!"
+generatingDebugReport: "&7 Hibakeresési jelentés generálása..."
+debugReportUploaded: "&aHibakeresési jelentés feltöltve:"
+clickToOpenDebugReport: "&eKattintson a hibakeresési jelentés megnyitásához"
+failedToUploadDebugReport: "&cNem sikerült feltölteni a hibakeresési jelentést. Próbáld
+  újra később."
+errorWhileGeneratingDebugReport: "&cHiba történt a hibakeresési jelentés létrehozásakor."
+recipeInventoryTitle: "&8Kézműves recept"
+reviveBeaconAlreadyInUse: "&cEz az újraélesztő jelző már használatban van! Kérjük,
+  várjon, amíg a jelenlegi újraélesztés befejeződik."
+reviveBeaconStart: "&c%player% &7 újraéled &c%seconds% másodperc&7 múlva! Kérjük,
+  várjon..."
+reviveBeaconBreak: "&7Az újraélesztő jeladódat a &c%breaker%&7 törte fel, az újraélesztési
+  folyamatot megszakították."
+beaconInUseInteract: "&7 Már folyamatban van egy újraélesztési folyamat. Hátralévő
+  idő: &c%timeLeft% másodperc&7."
+alreadyRevivingPlayer: "&cEzt a játékost már egy másik jeladó éleszti újra! Kérjük,
+  várjon, amíg a jelenlegi újraélesztés befejeződik."
+noReviveBeaconBreak: "&c Használat közben nem törheted el az újraélesztő jelzőt!"
+noItemUseInWorld: "&cEzt a tárgyat nem használhatod ebben a világban!"
