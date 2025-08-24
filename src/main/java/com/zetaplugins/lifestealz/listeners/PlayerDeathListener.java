@@ -309,51 +309,6 @@ public final class PlayerDeathListener implements Listener {
         CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
     }
 
-    private void handleKillerHeartGain(PlayerData playerData, Player killer, double healthGain) {
-        final boolean heartGainCooldownEnabled = plugin.getConfig().getBoolean("heartGainCooldown.enabled");
-        final long heartGainCooldown = plugin.getConfig().getLong("heartGainCooldown.cooldown");
-        final boolean heartGainCooldownDropOnCooldown = plugin.getConfig().getBoolean("heartGainCooldown.dropOnCooldown");
-        final double maxHearts = getMaxHearts(killer, plugin.getConfig());
-        final double minHearts = plugin.getConfig().getInt("minHearts") * 2;
-        final boolean heartRewardOnElimination = plugin.getConfig().getBoolean("heartRewardOnElimination");
-        final boolean dropHeartsIfMax = plugin.getConfig().getBoolean("dropHeartsIfMax");
-
-        PlayerData killerPlayerData = plugin.getStorage().load(killer.getUniqueId());
-
-        if (heartGainCooldownEnabled
-                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) != null
-                && CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown > System.currentTimeMillis()) {
-            long timeLeft = (CooldownManager.lastHeartGain.get(killer.getUniqueId()) + heartGainCooldown - System.currentTimeMillis()) / 1000;
-            killer.sendMessage(MessageUtils.getAndFormatMsg(
-                    false,
-                    "heartGainCooldown",
-                    "&cYou have to wait before gaining another heart!",
-                    new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))
-            ));
-            if (heartGainCooldownDropOnCooldown) {
-                dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createHeartGainCooldownHeart());
-            }
-        } else if (playerData.getMaxHealth() - healthGain > minHearts || (playerData.getMaxHealth() - healthGain <= minHearts && heartRewardOnElimination)) {
-            if (killerPlayerData.getMaxHealth() + healthGain > maxHearts) {
-                if (dropHeartsIfMax) {
-                    dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createMaxHealthHeart());
-                } else {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(
-                            false, "maxHeartLimitReached",
-                            "&cYou already reached the limit of %limit% hearts!",
-                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")
-                    ));
-                }
-            } else {
-                killerPlayerData.setMaxHealth(killerPlayerData.getMaxHealth() + healthGain);
-                plugin.getStorage().save(killerPlayerData);
-                LifeStealZ.setMaxHealth(killer, killerPlayerData.getMaxHealth());
-                killer.setHealth(Math.min(killer.getHealth() + healthGain, killerPlayerData.getMaxHealth()));
-                CooldownManager.lastHeartGain.put(killer.getUniqueId(), System.currentTimeMillis());
-            }
-        }
-    }
-
     private boolean handleAntiAltLogic(PlayerDeathEvent event, Player player, @Nullable Player killer) {
         if (killer == null || player.getUniqueId().equals(killer.getUniqueId())) return false;
 
