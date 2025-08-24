@@ -1,9 +1,12 @@
 com.zetaplugins.lifestealz
+com.zetaplugins.lifestealz.addon
 com.zetaplugins.lifestealz.api
 com.zetaplugins.lifestealz.caches
 com.zetaplugins.lifestealz.commands
 com.zetaplugins.lifestealz.commands.MainCommand
 com.zetaplugins.lifestealz.commands.MainCommand.subcommands
+com.zetaplugins.lifestealz.events
+com.zetaplugins.lifestealz.events.death
 com.zetaplugins.lifestealz.listeners
 com.zetaplugins.lifestealz.listeners.revivebeacon
 com.zetaplugins.lifestealz.storage
