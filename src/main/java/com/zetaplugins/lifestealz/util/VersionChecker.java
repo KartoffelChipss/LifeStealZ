@@ -43,8 +43,6 @@ public final class VersionChecker {
         String latestVersion = fetchLatestVersion();
         if (latestVersion != null) {
             String currentVersion = plugin.getDescription().getVersion();
-            System.out.println("Current version: " + currentVersion);
-            System.out.println("Latest version: " + latestVersion);
             if (!latestVersion.trim().equals(currentVersion.trim())) {
                 newVersionAvailable = true;
 
