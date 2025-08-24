@@ -1,8 +1,10 @@
 package com.zetaplugins.lifestealz.events.death;
 
 import com.zetaplugins.lifestealz.events.ZPlayerDeathEventBase;
+import com.zetaplugins.lifestealz.util.MessageUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -17,10 +19,10 @@ public class ZPlayerGracePeriodDeathEvent extends ZPlayerDeathEventBase {
     private final boolean isHeartGainBlocked;
     
     @Getter @Setter
-    private String messageToVictim;
+    private Component messageToVictim;
     
     @Getter @Setter
-    private String messageToKiller;
+    private Component messageToKiller;
 
     public ZPlayerGracePeriodDeathEvent(PlayerDeathEvent originalEvent, Player killer,
                                         boolean heartLossBlocked, boolean heartGainBlocked) {
@@ -28,7 +30,14 @@ public class ZPlayerGracePeriodDeathEvent extends ZPlayerDeathEventBase {
         this.killer = killer;
         this.isHeartLossBlocked = heartLossBlocked;
         this.isHeartGainBlocked = heartGainBlocked;
-        this.messageToVictim = "You can't lose hearts during the grace period!";
-        this.messageToKiller = killer != null ? "You can't gain hearts during the grace period!" : "";
+        this.messageToVictim = MessageUtils.getAndFormatMsg(
+                false,
+                "noHeartLossInGracePeriod",
+                "&cYou can't lose hearts during the grace period!"
+        );
+        this.messageToKiller = killer != null ? MessageUtils.getAndFormatMsg(
+                false,
+                "noHeartGainInGracePeriod",
+                "&cYou can't gain hearts during the grace period!") : Component.text("");
     }
 }

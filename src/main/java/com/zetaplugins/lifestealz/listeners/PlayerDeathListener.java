@@ -133,12 +133,7 @@ public final class PlayerDeathListener implements Listener {
             Bukkit.getPluginManager().callEvent(cooldownEvent);
 
             if (!cooldownEvent.isCancelled()) {
-                killer.sendMessage(MessageUtils.getAndFormatMsg(
-                        false,
-                        "heartGainCooldown",
-                        cooldownEvent.getCooldownMessage(),
-                        new MessageUtils.Replaceable("%time%", MessageUtils.formatTime(timeLeft))
-                ));
+                killer.sendMessage(cooldownEvent.getCooldownMessage());
 
                 if (cooldownEvent.isShouldDropHeartsInstead()) {
                     dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createHeartGainCooldownHeart());
@@ -163,11 +158,7 @@ public final class PlayerDeathListener implements Listener {
                 if (maxHeartsEvent.isShouldDropHeartsInstead()) {
                     dropHeartsNaturally(killer.getLocation(), (int) (healthGain / 2), CustomItemManager.createMaxHealthHeart());
                 } else {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(
-                            false, "maxHeartLimitReached",
-                            maxHeartsEvent.getMaxHeartsMessage(),
-                            new MessageUtils.Replaceable("%limit%", (int) maxHearts / 2 + "")
-                    ));
+                    killer.sendMessage(maxHeartsEvent.getMaxHeartsMessage());
                 }
                 return true; // Prevent normal heart gain
             }
@@ -245,13 +236,13 @@ public final class PlayerDeathListener implements Listener {
                 defaultMessage,
                 new MessageUtils.Replaceable("%player%", player.getName()),
                 new MessageUtils.Replaceable("%killer%", killer != null ? killer.getName() : "")
-        ).toString());
+        ));
 
         eliminationEvent.setKickMessage(MessageUtils.getAndFormatMsg(
                 false,
                 "eliminatedJoin",
                 "&cYou don't have any hearts left!"
-        ).toString());
+        ));
 
         Bukkit.getPluginManager().callEvent(eliminationEvent);
 
@@ -278,15 +269,14 @@ public final class PlayerDeathListener implements Listener {
 
             // Kick the player
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                Component kickMessage = Component.text(eliminationEvent.getKickMessage());
                 if (player.isOnline()) { // Avoids trying to kick NPCs since they are not online
-                    player.kick(kickMessage);
+                    player.kick(eliminationEvent.getKickMessage());
                 }
             }, 1L);
 
             // Announce elimination
             if (eliminationEvent.isShouldAnnounceElimination()) {
-                Bukkit.broadcast(Component.text(eliminationEvent.getEliminationMessage()));
+                Bukkit.broadcast(eliminationEvent.getEliminationMessage());
                 event.setDeathMessage(null);
             }
 
@@ -329,8 +319,7 @@ public final class PlayerDeathListener implements Listener {
                             + player.getName() + " with the same IP address! (Probably an alt account)");
                 }
                 if (altEvent.isShouldSendMessage()) {
-                    killer.sendMessage(MessageUtils.getAndFormatMsg(false, "altKill",
-                            altEvent.getWarningMessage()));
+                    killer.sendMessage(altEvent.getWarningMessage());
                 }
                 for (String command : plugin.getConfig().getStringList("antiAlt.commands")) {
                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
