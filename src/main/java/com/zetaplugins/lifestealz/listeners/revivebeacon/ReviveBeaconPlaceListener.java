@@ -1,10 +1,15 @@
 package com.zetaplugins.lifestealz.listeners.revivebeacon;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import com.zetaplugins.lifestealz.LifeStealZ;
 import com.zetaplugins.lifestealz.util.MessageUtils;
@@ -27,6 +32,12 @@ public final class ReviveBeaconPlaceListener implements Listener {
 
         ItemStack itemInHand = event.getItemInHand();
         if (!CustomItemType.REVIVE_BEACON.is(itemInHand)) return;
+
+        Player player = event.getPlayer();
+        if (!canPlace(player, block.getLocation(), Material.BEACON)) {
+            event.setCancelled(true);
+            return;
+        }
 
         String customItemId = CustomItemManager.getCustomItemId(itemInHand);
         CustomReviveBeaconItemData itemData;
@@ -55,5 +66,24 @@ public final class ReviveBeaconPlaceListener implements Listener {
                 itemData.shouldShowEnchantParticles(),
                 itemData.getDecoyMaterial()
         );
+    }
+
+    private boolean canPlace(Player player, Location loc, Material type) {
+        Block block = loc.getBlock();
+        Block placedAgainst = block.getRelative(BlockFace.DOWN);
+
+        BlockPlaceEvent placeEvent = new BlockPlaceEvent(
+                block,
+                block.getState(),
+                placedAgainst,
+                new ItemStack(type),
+                player,
+                true,
+                EquipmentSlot.HAND
+        );
+
+        Bukkit.getPluginManager().callEvent(placeEvent);
+
+        return !placeEvent.isCancelled();
     }
 }
